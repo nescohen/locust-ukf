@@ -21,9 +21,9 @@ int test()
 		return 1;
 	}
 	
-	uint8_t reg = 0x0F;
+	uint8_t reg = 0x21;
 	int32_t result;
-	result = i2c_smbus_read_byte_data(bus, reg);
+	result = i2c_smbus_read_word_data(bus, reg);
 	if (result < 0) {
 		/* register read error */
 		return 1;

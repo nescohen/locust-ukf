@@ -1,3 +1,3 @@
 #!/bin/bash
 
-gcc -o test.bin i2cbus.c
+gcc -o test.bin gyroutil.c test.c
