@@ -1,3 +1,3 @@
 #!/bin/bash
 
-gcc -o test.bin gyroutil.c test.c
+gcc -o test.bin sensorutil.c test.c
