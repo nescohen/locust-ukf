@@ -1,5 +1,5 @@
-#ifndef SENSORUTIL_H
-#define SENSORUTIL_H
+#ifndef BOARDUTIL_H
+#define BOARDUTIL_H
 
 #include <stdint.h>
 
@@ -19,5 +19,7 @@ int gyro_power_off();
 int accl_power_off();
 int gyro_poll(Vector3 *output);
 int accl_poll(Vector3 *output);
+
+int update_motors(int *settings); /* settings points to a 4 size integer array */
 
 #endif
