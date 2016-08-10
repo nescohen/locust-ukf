@@ -48,6 +48,8 @@ int main()
 	double deg_y = 0;
 	double deg_z = 0;
 
+	int motors[4] = {0,0,0,0};
+	long total = 0;
 	if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
 	while(!stop) {
 		Vector3 gyro;
@@ -59,6 +61,7 @@ int main()
 		gyro_poll(&gyro);
 		accl_poll(&accel);
 		long elapsed = curr_clock.tv_nsec - last_clock.tv_nsec + (curr_clock.tv_sec - last_clock.tv_sec)*1000000000;
+		total += elapsed;
 
 		deg_x += (double)gyro.x / (double)SIGNED_16_MAX * GYRO_SENSATIVITY * elapsed / 1000000000.f;
 		deg_y += (double)gyro.y / (double)SIGNED_16_MAX * GYRO_SENSATIVITY * elapsed / 1000000000.f;
@@ -76,7 +79,6 @@ int main()
 			deg_y = roll*0.02 + deg_y*0.98;
 		}
 
-		int motors[4] = {0,0,0,0};
 		/*   front
 			0     1
 		left       right
@@ -126,11 +128,21 @@ int main()
 			motors[3] += (int)deg_y;
 		}
 
-		update_motors(motors);
+		if (total > 1000000000) {
+			update_motors(motors);
+			total = total % 1000000000;
+		}
 
-		//printf("\r%f|%f|%f ... %f|%f|%f[%ld] ... %d|%d|%d|%d     ", deg_x, deg_y, deg_z, grav.x, grav.y, grav.z, elapsed, motors[0], motors[1], motors[2], motors[3]);
+		printf("\r%f|%f|%f ... %f|%f|%f[%ld] ... %d|%d|%d|%d     ", deg_x, deg_y, deg_z, grav.x, grav.y, grav.z, elapsed, motors[0], motors[1], motors[2], motors[3]);
 	}
 	printf("\n");
+
+	int i;
+	for (i = 0; i < 4; i++)
+	{
+		motors[i] = 0;
+	}
+	update_motors(motors);
 	gyro_power_off();
 	accl_power_off();
 

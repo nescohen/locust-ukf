@@ -161,7 +161,11 @@ int accl_poll(Vector3 *output)
 
 static int send_update(int device, int motor, int8_t throttle)
 {
-	printf("Update: device=%d, motor=%d, throttle=%d\n", device, motor, throttle);
+	/* temporary safety measure - REMEMBER TO REMOVE */
+	if (throttle > 50) throttle = 50;
+	if (throttle < 0) throttle = 0;
+
+	/* printf("Update: device=%d, motor=%d, throttle=%d\n", device, motor, throttle); */
 	if ( ioctl(g_bus, I2C_SLAVE, device) < 0 ) {
 		return 1;
 	}
