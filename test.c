@@ -36,6 +36,112 @@ inline double magnitude(Realvect3 *vector)
 	return sqrt(sum);
 }
 
+void recovery(double x, double y, int *motors)
+{
+	/*   front
+		0     1
+	left       right
+		2     3
+		 rear
+	*/
+
+	int i;
+	for (i = 0; i < 4; i++) {
+		motors[i] = 100;
+	}
+
+	if (x > 45) {
+		motors[0] -= 50;
+		motors[1] -= 50;
+		motors[2] += 50;
+		motors[3] += 50;
+	}
+	else if (x < -45) {
+		motors[0] += 50;
+		motors[1] += 50;
+		motors[2] -= 50;
+		motors[3] -= 50;
+	}
+	else {
+		motors[0] -= (int)x;
+		motors[1] -= (int)x;
+		motors[2] += (int)x;
+		motors[3] += (int)x;
+	}
+
+	if (y > 45) {
+		motors[0] -= 50;
+		motors[2] -= 50;
+		motors[1] += 50;
+		motors[3] += 50;
+	}
+	else if (y < -45) {
+		motors[0] += 50;
+		motors[2] += 50;
+		motors[1] -= 50;
+		motors[3] -= 50;
+	}
+	else {
+		motors[0] -= (int)y;
+		motors[2] -= (int)y;
+		motors[1] += (int)y;
+		motors[3] += (int)y;
+	}
+}
+
+void recovery_debug(double x, double y, int *motors)
+{
+	/*   front
+		0     1
+	left       right
+		2     3
+		 rear
+	*/
+
+	int i;
+	for (i = 0; i < 4; i++) {
+		motors[i] = 50;
+	}
+
+	if (x > 45) {
+		motors[0] -= 25;
+		motors[1] -= 25;
+		motors[2] += 25;
+		motors[3] += 25;
+	}
+	else if (x < -45) {
+		motors[0] += 25;
+		motors[1] += 25;
+		motors[2] -= 25;
+		motors[3] -= 25;
+	}
+	else {
+		motors[0] -= (int)(x / 2);
+		motors[1] -= (int)(x / 2);
+		motors[2] += (int)(x / 2);
+		motors[3] += (int)(x / 2);
+	}
+
+	if (y > 45) {
+		motors[0] -= 25;
+		motors[2] -= 25;
+		motors[1] += 25;
+		motors[3] += 25;
+	}
+	else if (y < -45) {
+		motors[0] += 25;
+		motors[2] += 25;
+		motors[1] -= 25;
+		motors[3] -= 25;
+	}
+	else {
+		motors[0] -= (int)(y / 2);
+		motors[2] -= (int)(y / 2);
+		motors[1] += (int)(y / 2);
+		motors[3] += (int)(y / 2);
+	}
+}
+
 int main()
 {
 	signal(SIGINT, inthand);
@@ -79,56 +185,8 @@ int main()
 			deg_y = roll*0.02 + deg_y*0.98;
 		}
 
-		/*   front
-			0     1
-		left       right
-			2     3
-			 rear
-		*/
-		int i;
-		for (i = 0; i < 4; i++) {
-			motors[i] = 50; // should be 100
-		}
-
-		if (deg_x > 45) {
-			motors[0] -= 50;
-			motors[1] -= 50;
-			motors[2] += 50;
-			motors[3] += 50;
-		}
-		else if (deg_x < -45) {
-			motors[0] += 50;
-			motors[1] += 50;
-			motors[2] -= 50;
-			motors[3] -= 50;
-		}
-		else {
-			motors[0] -= (int)deg_x;
-			motors[1] -= (int)deg_x;
-			motors[2] += (int)deg_x;
-			motors[3] += (int)deg_x;
-		}
-
-		if (deg_y > 45) {
-			motors[0] -= 50;
-			motors[2] -= 50;
-			motors[1] += 50;
-			motors[3] += 50;
-		}
-		else if (deg_y < -45) {
-			motors[0] += 50;
-			motors[2] += 50;
-			motors[1] -= 50;
-			motors[3] -= 50;
-		}
-		else {
-			motors[0] -= (int)deg_y;
-			motors[2] -= (int)deg_y;
-			motors[1] += (int)deg_y;
-			motors[3] += (int)deg_y;
-		}
-
 		if (total > 1000000000) {
+			recovery_debug(deg_x, deg_y, motors);
 			update_motors(motors);
 			total = total % 1000000000;
 		}
