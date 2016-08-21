@@ -1,5 +1,8 @@
 /* Nes Cohen */
 /* 6/28/2016 */
+
+/* TODO: look for divide by zero error */
+
 #include "boardutil.h"
 #include <time.h>
 #include <math.h>
