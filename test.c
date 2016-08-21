@@ -185,10 +185,10 @@ int main()
 			deg_y = roll*0.02 + deg_y*0.98;
 		}
 
-		if (total > 1000000000) {
+		if (total > 100000000) {
 			recovery_debug(deg_x, deg_y, motors);
 			update_motors(motors);
-			total = total % 1000000000;
+			total = total % 100000000;
 		}
 
 		printf("\r%f|%f|%f ... %f|%f|%f[%ld] ... %d|%d|%d|%d     ", deg_x, deg_y, deg_z, grav.x, grav.y, grav.z, elapsed, motors[0], motors[1], motors[2], motors[3]);
