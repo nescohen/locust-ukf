@@ -144,6 +144,11 @@ void recovery_debug(double x, double y, int *motors)
 		motors[3] += (int)(y / 2);
 	}
 }
+void trim(int *current_motor_speed, int *trim_amount){
+	for(int i = 0, i < 4, i++){
+		current_motor_speed[i] += trim_amount[i];
+	}
+}
 
 int main()
 {
@@ -193,10 +198,13 @@ int main()
 			update_motors(motors);
 			total = total % 100000000;
 		}
+		if (deg_x > 45 || deg_x < -45 || deg_y > 45 || deg_y < -45) {
+			stop = 1;
+		}
 
-		printf("\r%f|%f|%f ... %f|%f|%f[%ld] ... %d|%d|%d|%d     ", deg_x, deg_y, deg_z, grav.x, grav.y, grav.z, elapsed, motors[0], motors[1], motors[2], motors[3]);
+		/* printf("\r%f|%f|%f ... %f|%f|%f[%ld] ... %d|%d|%d|%d     ", deg_x, deg_y, deg_z, grav.x, grav.y, grav.z, elapsed, motors[0], motors[1], motors[2], motors[3]); */
 	}
-	printf("\n");
+	/* printf("\n"); */
 
 	int i;
 	for (i = 0; i < 4; i++)
