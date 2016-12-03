@@ -11,7 +11,7 @@ void handle_signal(int signal)
 int main()
 {
 	int motors[4] = {0, 0, 0, 0};
-	int up = 1;
+	int up = 5;
 
 	open_bus(DEVICE_FILE);
 	update_motors(motors);
@@ -39,6 +39,14 @@ int main()
 		update_motors(motors);
 		sleep(1);
 	}
+	
+	int i;
+	for (i = 0; i < 4; i++)
+	{
+		motors[i] = 0;
+	}
+
+	update_motors(motors);
 
 	return 0;
 }

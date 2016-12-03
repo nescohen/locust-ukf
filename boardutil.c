@@ -9,6 +9,7 @@
 
 #define GYRO_ADDR 0x69
 #define ACCL_ADDR 0x19
+#define COMP_ADDR 0x1E
 #define GYRO_POWER_ON 0xCF /* sets output rate to 800 hz and the low pass cut off to 30 */
 #define GYRO_POWER_OFF 0x00
 #define GYRO_HIGH_PASS_MAX 0x29
@@ -17,6 +18,9 @@
 #define ACCL_POWER_ON 0x57
 #define ACCL_POWER_OFF 0x07
 #define ACCL_HIGH_REZ 0x08
+#define COMP_POWER_ON 0x00
+#define COMP_POWER_OFF 0x03
+#define COMP_SET_GAIN 0x80
 
 #define FORWARD_CONTROL 0x44
 #define REAR_CONTROL 0x45
@@ -72,6 +76,24 @@ int accl_power_on()
 	return 0;
 }
 
+int comp_power_on()
+{
+	if (ioctl(g_bus, I2C_SLAVE, COMP_ADDR) < 0) {
+		return 2;
+	}
+	
+	int32_t result;
+	result = i2c_smbus_write_byte_data(g_bus, 0x02, COMP_POWER_ON);
+	if (result < 0) {
+		return 1;
+	}
+	result = i2c_smbus_write_byte_data(g_bus, 0x01, COMP_SET_GAIN);
+	if (result < 0) {
+		return 1;
+	}
+	return 0;
+}
+
 int gyro_power_off()
 {
 	if (ioctl(g_bus, I2C_SLAVE, GYRO_ADDR) < 0) {
@@ -92,6 +114,20 @@ int accl_power_off()
 	result = i2c_smbus_write_byte_data(g_bus, 0x20, ACCL_POWER_OFF);
 	if (result < 0) {
 		return 3;
+	}
+	return 0;
+}
+
+int comp_power_off()
+{
+	if (ioctl(g_bus, I2C_SLAVE, COMP_ADDR) < 0) {
+		return 2;
+	}
+	
+	int32_t result;
+	result = i2c_smbus_write_byte_data(g_bus, 0x02, COMP_POWER_OFF);
+	if (result < 0) {
+		return 1;
 	}
 	return 0;
 }
@@ -159,11 +195,43 @@ int accl_poll(Vector3 *output)
 	return 0;
 }
 
+int comp_poll(Vector3 *output)
+{
+	
+	if (ioctl(g_bus, I2C_SLAVE, COMP_ADDR) < 0) {
+		return 2;
+	}
+	int32_t result;
+
+	result = i2c_smbus_read_byte_data(g_bus, 0x04);
+	if (result < 0) return 1;
+	output->x = (int16_t)result;
+	result = i2c_smbus_read_byte_data(g_bus, 0x03);
+	if (result < 0) return 1;
+	output->x |= (int16_t)result << 8;
+
+	result = i2c_smbus_read_byte_data(g_bus, 0x06);
+	if (result < 0) return 1;
+	output->y = (int16_t)result;
+	result = i2c_smbus_read_byte_data(g_bus, 0x05);
+	if (result < 0) return 1;
+	output->y |= (int16_t)result << 8;
+
+	result = i2c_smbus_read_byte_data(g_bus, 0x08);
+	if (result < 0) return 1;
+	output->z = (int16_t)result;
+	result = i2c_smbus_read_byte_data(g_bus, 0x07);
+	if (result < 0) return 1;
+	output->z |= (int16_t)result << 8;
+
+	return 0;
+}
+
 static int send_update(int device, int motor, int8_t throttle)
 {
 	/* temporary safety measure - REMEMBER TO REMOVE */
-	if (throttle > 50) throttle = 50;
-	if (throttle < 0) throttle = 0;
+	/*if (throttle > 50) throttle = 50;
+	if (throttle < 0) throttle = 0;*/
 
 	/* printf("Update: device=%d, motor=%d, throttle=%d\n", device, motor, throttle); */
 	if ( ioctl(g_bus, I2C_SLAVE, device) < 0 ) {
