@@ -1,3 +1,3 @@
 #!/bin/bash
 
-gcc -o test.bin -Wall -O3 boardutil.c test.c -lm
+gcc -o test.bin boardutil.c flight-control.c -lm
