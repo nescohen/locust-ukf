@@ -1,3 +1,3 @@
 #!/bin/bash
 
-gcc -o motors.bin motor.c boardutil.c
+gcc -o motor.bin motor.c boardutil.c

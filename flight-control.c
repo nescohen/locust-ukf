@@ -103,8 +103,9 @@ void recovery(double x, double y, int power, int *motors)
 		motors[3] += (int)((float)y/45.f*MAX_CORRECT*power);
 	}
 }
-void trim(int *current_motor_speed, int *trim_amount){
-	for(int i = 0, i < 4, i++){
+void trim(int *current_motor_speed, const int *trim_amount){
+	int i;
+	for(i = 0; i < 4; i++){
 		current_motor_speed[i] += trim_amount[i];
 	}
 }
@@ -112,6 +113,7 @@ void trim(int *current_motor_speed, int *trim_amount){
 int main(int argc, char **argv)
 {
 	signal(SIGINT, inthand);
+	signal(SIGTSTP, inthand);
 
 	open_bus(DEVICE_FILE);
 	gyro_power_on();
@@ -195,7 +197,7 @@ int main(int argc, char **argv)
 			stop = 1;
 		}
 
-		printf("\r%f|%f|%f(%f) ... %f|%f|%f[%f] ... %d|%d|%d| ... %d|%d|%d|%d     ", deg_x, deg_y, deg_z, angle, grav.x, grav.y, grav.z, accel_mag, north.x, north.y, north.z, motors[0], motors[1], motors[2], motors[3]);
+		/* printf("\r%f|%f|%f(%f) ... %f|%f|%f[%f] ... %d|%d|%d| ... %d|%d|%d|%d     ", deg_x, deg_y, deg_z, angle, grav.x, grav.y, grav.z, accel_mag, north.x, north.y, north.z, motors[0], motors[1], motors[2], motors[3]); */
 	}
 	/* printf("\n"); */
 
