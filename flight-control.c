@@ -2,11 +2,13 @@
 /* 6/28/2016 */
 
 #include "boardutil.h"
+#include "flight-input.h"
 #include <time.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <pthread.h>
 #include <unistd.h>
 
 #define SIGNED_16_MAX 0x7FFF
@@ -113,10 +115,14 @@ int main(int argc, char **argv)
 	signal(SIGINT, inthand);
 	signal(SIGTSTP, inthand);
 
-	open_bus(DEVICE_FILE);
+	Controls controls;
+	pthread_t inout_thread;
+
 	gyro_power_on();
 	accl_power_on();
 	comp_power_on();
+
+	pthread_create(&inout_thread, NULL, &start_inout, NULL);
 	
 	int power;
 	if (argc > 1) {
