@@ -28,7 +28,7 @@ void *start_inout()
 			}
 			if (is_int) {
 				pthread_mutex_lock(&g_control_lock);
-				g_controls.throttle = strlol(arg, NULL, 10);
+				g_controls.throttle = strtol(arg, NULL, 10);
 				pthread_mutex_unlock(&g_control_lock);
 			}
 			else {
