@@ -3,7 +3,7 @@
 
 typedef struct controls
 {
-	float throttle;
+	int throttle;
 	float roll; /* unused */
 	float pitch; /* unused */
 } Controls;
