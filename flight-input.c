@@ -8,14 +8,14 @@ pthread_mutex_t g_control_lock;
 
 void *start_inout()
 {
-	char *command;
-	char *arg;
+	char command[20];
+	char arg[20];
 
 	g_controls.throttle = 0;
 	pthread_mutex_init(&g_control_lock, NULL);
 
 	while(1) {
-		scanf("%s %s\n", &command, &arg);
+		scanf("%20s %20s\n", &command, &arg);
 		if (strcmp(command, "throttle") == 0) {
 			int is_int = 1;
 			char *c = arg;
