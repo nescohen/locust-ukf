@@ -1,8 +1,6 @@
 /* Nes Cohen */
 /* 6/28/2016 */
 
-/* TODO: look for divide by zero error */
-
 #include "boardutil.h"
 #include <time.h>
 #include <math.h>
@@ -27,7 +25,7 @@ typedef struct realvect3
 	double z;
 } Realvect3;
 
-volatile int stop;
+int stop;
 struct timespec curr_clock;
 struct timespec last_clock;
 
