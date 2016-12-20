@@ -8,14 +8,14 @@ pthread_mutex_t g_control_lock;
 
 void *start_inout()
 {
-	char command[20];
-	char arg[20];
+	char *command;
+	char *arg;
 
 	g_controls.throttle = 0;
 	pthread_mutex_init(&g_control_lock, NULL);
 
 	while(1) {
-		scanf("%20s %20s\n", &command, &arg);
+		scanf("%s %s\n", &command, &arg);
 		if (strcmp(command, "throttle") == 0) {
 			int is_int = 1;
 			char *c = arg;
@@ -35,6 +35,18 @@ void *start_inout()
 				printf("Invalid throttle value\n");
 			}
 		}
+		if (strcmp(command, "trim_p") == 0)
+		{
+			pthread_mutex_lock(&g_control_lock);
+			g_controls.pitch = strtol(arg, NULL, 10);
+			pthread_mutex_unlock(&g_control_lock);
+		}
+		if (strcmp(command, "trim_r") == 0)
+		{
+			pthread_mutex_lock(&g_control_lock);
+			g_controls.roll = strtol(arg, NULL, 10);
+			pthread_mutex_unlock(&g_control_lock);
+		}
 		else {
 			printf("Invalid command\n");
 		}
@@ -48,3 +60,4 @@ void get_controls(Controls *controls)
 		pthread_mutex_unlock(&g_control_lock);
 	}
 }
+/*(((Coding)))*/
