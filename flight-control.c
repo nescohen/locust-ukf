@@ -3,6 +3,7 @@
 
 #include "boardutil.h"
 #include "flight-input.h"
+#include "error_log.h"
 #include <time.h>
 #include <math.h>
 #include <stdio.h>
@@ -51,7 +52,7 @@ double angle_between(const double *array)
 	return acos(cosine)*180/M_PI;
 }
 
-void recovery(double x, double y, int power, int *motors)
+void recovery(double x, double y, int power, int *motors, Controls *controls)
 {
 	/*   front
 		0     1
@@ -60,16 +61,16 @@ void recovery(double x, double y, int power, int *motors)
 		 rear
 	*/
 
-	int i;
-	/*for (i = 0; i < 4; i++) {
+	/*int i;
+	for (i = 0; i < 4; i++) {
 		motors[i] = power;
 	}*/
 		//Andy - No longer needed
 
-		motors[0] = power + controls.pitch - controls.roll;
-		motors[1] =	power + controls.pitch + controls.roll;
-		motors[2] =	power - controls.pitch - controls.roll;
-		motors[3] =	power - controls.pitch + controls.roll;
+		motors[0] = power + controls->pitch - controls->roll;
+		motors[1] =	power + controls->pitch + controls->roll;
+		motors[2] =	power - controls->pitch - controls->roll;
+		motors[3] =	power - controls->pitch + controls->roll;
 		//Andy - set trim before correcting
 
 	if (x > 45) {
@@ -206,13 +207,8 @@ int main(int argc, char **argv)
 		if (total > 10000000) {
 			if (check_update()) {
 				get_controls(&controls);
-				printf("throttle=%d\n", controls.throttle);
-				printf("motor=%d\n", motors[0]);
 			}
-			recovery(deg_x, deg_y, controls.throttle, motors);
-			FILE *error = fopen("error.log", "a");
-			fprintf(error, "motors = %d", motors[0]);
-			fclose(error);
+			recovery(deg_x, deg_y, controls.throttle, motors, &controls);
 			update_motors(motors);
 			total = total % 10000000;
 		}

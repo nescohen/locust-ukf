@@ -1,4 +1,5 @@
 #include "flight-input.h"
+#include "error_log.h"
 #include <stdio.h>
 #include <pthread.h>
 #include <string.h>
@@ -12,7 +13,7 @@ int is_int(char *check)
 	char *c = check;
 	while (*c != 0) {
 		if (*c > 57 || *c < 48) {
-			c++
+			c++;
 		}
 		else return 0;
 	}

@@ -1,11 +1,12 @@
 /* Nes Cohen */
 /* 6/28/2016 */
 
+#include "boardutil.h"
+#include "error_log.h"
 #include <linux/i2c-dev.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
-#include "boardutil.h"
 
 #define GYRO_ADDR 0x69
 #define ACCL_ADDR 0x19
@@ -243,6 +244,7 @@ static int send_update(int device, int motor, int8_t throttle)
 int update_motors(int *settings)
 /* settings points to a 4-length array of integers */
 {
+	log_error("Motors updated.");
 	send_update( FORWARD_CONTROL, MOTOR_PORT,      (int8_t)settings[0] );
 	send_update( FORWARD_CONTROL, MOTOR_STARBOARD, (int8_t)settings[1] );
 	send_update( REAR_CONTROL,    MOTOR_PORT,      (int8_t)settings[2] );
