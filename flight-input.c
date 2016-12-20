@@ -4,22 +4,22 @@
 #include <pthread.h>
 #include <string.h>
 
-Controls g_controls;
-int g_update; /* 1 = needs update, 0 = no update needed */
+Controls g_controls = {0, 0, 0};
+int g_update = 1; /* 1 = needs update, 0 = no update needed */
 pthread_mutex_t g_control_lock;
 
 int is_int(char *check)
+//Andy - check if supplied parameter is an int
 {
 	char *c = check;
 	while (*c != 0) {
 		if (*c > 57 || *c < 48) {
-			c++;
+			return 0;
 		}
-		else return 0;
+		c++;
 	}
 	return 1;
 }
-//Andy - check if supplied parameter is an int
 
 void *start_inout()
 {
@@ -27,8 +27,6 @@ void *start_inout()
 	char command[20];
 	char arg[20];
 
-	g_controls.throttle = 0;
-	g_update = 0;
 	pthread_mutex_init(&g_control_lock, NULL);
 
 	while(1) {
