@@ -4,6 +4,7 @@
 #include <string.h>
 
 Controls g_controls;
+int g_update; /* 1 = needs update, 0 = no update needed */
 pthread_mutex_t g_control_lock;
 
 void *start_inout()
@@ -13,6 +14,7 @@ void *start_inout()
 	char arg[20];
 
 	g_controls.throttle = 0;
+	g_update = 0;
 	pthread_mutex_init(&g_control_lock, NULL);
 
 	while(1) {
@@ -31,6 +33,7 @@ void *start_inout()
 			}
 			if (is_int) {
 				pthread_mutex_lock(&g_control_lock);
+				g_update = 1;
 				g_controls.throttle = 2*strtol(arg, NULL, 10);
 				pthread_mutex_unlock(&g_control_lock);
 			}
@@ -41,12 +44,14 @@ void *start_inout()
 		else if (strcmp(command, "trim_p") == 0)
 		{
 			pthread_mutex_lock(&g_control_lock);
+			g_update = 1;
 			g_controls.pitch = strtol(arg, NULL, 10);
 			pthread_mutex_unlock(&g_control_lock);
 		}
 		else if (strcmp(command, "trim_r") == 0)
 		{
 			pthread_mutex_lock(&g_control_lock);
+			g_update = 1;
 			g_controls.roll = strtol(arg, NULL, 10);
 			pthread_mutex_unlock(&g_control_lock);
 		}
@@ -62,9 +67,18 @@ void *start_inout()
 void get_controls(Controls *controls)
 {
 	if (pthread_mutex_trylock(&g_control_lock) == 0) {
-		//printf("Mutex is unlocked\n");
 		memcpy(controls, &g_controls, sizeof(Controls));
+		g_update = 0;
 		pthread_mutex_unlock(&g_control_lock);
 	}
-	//else printf("Mutex is lockedi\n");
+}
+
+int check_update()
+{
+	if (pthread_mutex_trylock(&g_control_lock) == 0) {
+		int update = g_update;
+		pthread_mutex_unlock(&g_control_lock);
+		return update;
+	}
+	else return 0;
 }

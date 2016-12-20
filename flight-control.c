@@ -194,10 +194,16 @@ int main(int argc, char **argv)
 			deg_y = roll*0.02 + deg_y*0.98;
 		}
 
-		if (total > 10000000000) {
-			get_controls(&controls);
-			printf("throttle=%d\n", controls.throttle);
+		if (total > 10000000) {
+			if (check_update()) {
+				get_controls(&controls);
+				printf("throttle=%d\n", controls.throttle);
+				printf("motor=%d\n", motors[0]);
+			}
 			recovery(deg_x, deg_y, controls.throttle, motors);
+			FILE *error = fopen("error.log", "a");
+			fprintf(error, "motors = %d", motors[0]);
+			fclose(error);
 			update_motors(motors);
 			total = total % 10000000;
 		}
