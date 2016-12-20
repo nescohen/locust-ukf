@@ -116,6 +116,7 @@ int main(int argc, char **argv)
 	signal(SIGTSTP, inthand);
 
 	Controls controls;
+	controls.throttle = 0;
 	pthread_t inout_thread;
 
 	gyro_power_on();
@@ -193,7 +194,8 @@ int main(int argc, char **argv)
 		}
 
 		if (total > 10000000) {
-			recovery(deg_x, deg_y, power, motors);
+			get_controls(&controls);
+			recovery(deg_x, deg_y, controls.throttle, motors);
 			update_motors(motors);
 			total = total % 10000000;
 		}
