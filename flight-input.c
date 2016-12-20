@@ -13,6 +13,7 @@ int is_int(char *check)
 //Andy - check if supplied parameter is an int
 {
 	char *c = check;
+	if (*c == '-' || *c == '+') c++; /* check for optional sign character */
 	while (*c != 0) {
 		if (*c > 57 || *c < 48) {
 			return 0;

@@ -61,17 +61,11 @@ void recovery(double x, double y, Controls *controls, int *motors)
 		 rear
 	*/
 
-	/*int i;
-	for (i = 0; i < 4; i++) {
-		motors[i] = power;
-	}*/
-		//Andy - No longer needed
-
-		motors[0] = controls->throttle + controls->pitch - controls->roll;
-		motors[1] =	controls->throttle + controls->pitch + controls->roll;
-		motors[2] =	controls->throttle - controls->pitch - controls->roll;
-		motors[3] =	controls->throttle - controls->pitch + controls->roll;
-		//Andy - set trim before correcting
+	motors[0] = controls->throttle + controls->pitch - controls->roll;
+	motors[1] =	controls->throttle + controls->pitch + controls->roll;
+	motors[2] =	controls->throttle - controls->pitch - controls->roll;
+	motors[3] =	controls->throttle - controls->pitch + controls->roll;
+	//Andy - set trim before correcting
 
 	if (x > 45) {
 		motors[0] += controls->throttle*MAX_CORRECT;
@@ -110,16 +104,24 @@ void recovery(double x, double y, Controls *controls, int *motors)
 		motors[1] += (int)((float)y/45.f*MAX_CORRECT*controls->throttle);
 		motors[3] += (int)((float)y/45.f*MAX_CORRECT*controls->throttle);
 	}
+
+	int i;
+	for (i = 0; i < 4; i++) {
+		if (motors[i] < 0) {
+			motors[i] = 0;
+		}
+		if (motors[i] > 200) {
+			motors[i] = 200;
+		}
+	}
 }
 
-/*void trim(int *current_motor_speed, const int *trim_amount){
+void trim(int *current_motor_speed, const int *trim_amount){
 	int i;
 	for(i = 0; i < 4; i++){
 		current_motor_speed[i] += trim_amount[i];
 	}
 }
-*/
-//Andy - Not in Use
 
 int main(int argc, char **argv)
 {
@@ -136,19 +138,6 @@ int main(int argc, char **argv)
 
 	pthread_create(&inout_thread, NULL, &start_inout, NULL);
 	
-	int power;
-	if (argc > 1) {
-		long input;
-		if ((input = strtol(argv[1], NULL, 0)) != 0) {
-			power = (int)input;
-			printf("Power=%d, input=%ld, argv=\"%s\"\n", power, input, argv[1]);
-		}
-		else return 1;
-	}
-	else return 1;
-	if (power > 190) power = 190;
-	else if (power < 10) power = 10;
-
 	double deg_x = 0;
 	double deg_y = 0;
 	double deg_z = 0;
