@@ -52,7 +52,7 @@ double angle_between(const double *array)
 	return acos(cosine)*180/M_PI;
 }
 
-void recovery(double x, double y, int power, int *motors, Controls *controls)
+void recovery(double x, double y, Controls *controls, int *motors)
 {
 	/*   front
 		0     1
@@ -67,48 +67,48 @@ void recovery(double x, double y, int power, int *motors, Controls *controls)
 	}*/
 		//Andy - No longer needed
 
-		motors[0] = power + controls->pitch - controls->roll;
-		motors[1] =	power + controls->pitch + controls->roll;
-		motors[2] =	power - controls->pitch - controls->roll;
-		motors[3] =	power - controls->pitch + controls->roll;
+		motors[0] = controls->throttle + controls->pitch - controls->roll;
+		motors[1] =	controls->throttle + controls->pitch + controls->roll;
+		motors[2] =	controls->throttle - controls->pitch - controls->roll;
+		motors[3] =	controls->throttle - controls->pitch + controls->roll;
 		//Andy - set trim before correcting
 
 	if (x > 45) {
-		motors[0] += power*MAX_CORRECT;
-		motors[1] += power*MAX_CORRECT;
-		motors[2] -= power*MAX_CORRECT;
-		motors[3] -= power*MAX_CORRECT;
+		motors[0] += controls->throttle*MAX_CORRECT;
+		motors[1] += controls->throttle*MAX_CORRECT;
+		motors[2] -= controls->throttle*MAX_CORRECT;
+		motors[3] -= controls->throttle*MAX_CORRECT;
 	}
 	else if (x < -45) {
-		motors[0] -= power*MAX_CORRECT;
-		motors[1] -= power*MAX_CORRECT;
-		motors[2] += power*MAX_CORRECT;
-		motors[3] += power*MAX_CORRECT;
+		motors[0] -= controls->throttle*MAX_CORRECT;
+		motors[1] -= controls->throttle*MAX_CORRECT;
+		motors[2] += controls->throttle*MAX_CORRECT;
+		motors[3] += controls->throttle*MAX_CORRECT;
 	}
 	else {
-		motors[0] += (int)((float)x/45.f*MAX_CORRECT*power);
-		motors[1] += (int)((float)x/45.f*MAX_CORRECT*power);
-		motors[2] -= (int)((float)x/45.f*MAX_CORRECT*power);
-		motors[3] -= (int)((float)x/45.f*MAX_CORRECT*power);
+		motors[0] += (int)((float)x/45.f*MAX_CORRECT*controls->throttle);
+		motors[1] += (int)((float)x/45.f*MAX_CORRECT*controls->throttle);
+		motors[2] -= (int)((float)x/45.f*MAX_CORRECT*controls->throttle);
+		motors[3] -= (int)((float)x/45.f*MAX_CORRECT*controls->throttle);
 	}
 
 	if (y > 45) {
-		motors[0] -= power*MAX_CORRECT;
-		motors[2] -= power*MAX_CORRECT;
-		motors[1] += power*MAX_CORRECT;
-		motors[3] += power*MAX_CORRECT;
+		motors[0] -= controls->throttle*MAX_CORRECT;
+		motors[2] -= controls->throttle*MAX_CORRECT;
+		motors[1] += controls->throttle*MAX_CORRECT;
+		motors[3] += controls->throttle*MAX_CORRECT;
 	}
 	else if (y < -45) {
-		motors[0] += power*MAX_CORRECT;
-		motors[2] += power*MAX_CORRECT;
-		motors[1] -= power*MAX_CORRECT;
-		motors[3] -= power*MAX_CORRECT;
+		motors[0] += controls->throttle*MAX_CORRECT;
+		motors[2] += controls->throttle*MAX_CORRECT;
+		motors[1] -= controls->throttle*MAX_CORRECT;
+		motors[3] -= controls->throttle*MAX_CORRECT;
 	}
 	else {
-		motors[0] -= (int)((float)y/45.f*MAX_CORRECT*power);
-		motors[2] -= (int)((float)y/45.f*MAX_CORRECT*power);
-		motors[1] += (int)((float)y/45.f*MAX_CORRECT*power);
-		motors[3] += (int)((float)y/45.f*MAX_CORRECT*power);
+		motors[0] -= (int)((float)y/45.f*MAX_CORRECT*controls->throttle);
+		motors[2] -= (int)((float)y/45.f*MAX_CORRECT*controls->throttle);
+		motors[1] += (int)((float)y/45.f*MAX_CORRECT*controls->throttle);
+		motors[3] += (int)((float)y/45.f*MAX_CORRECT*controls->throttle);
 	}
 }
 
@@ -126,10 +126,10 @@ int main(int argc, char **argv)
 	signal(SIGINT, inthand);
 	signal(SIGTSTP, inthand);
 
-	Controls controls;
-	controls.throttle = 0;
+	Controls controls = {0, 0, 0};
 	pthread_t inout_thread;
 
+	open_bus(DEVICE_FILE);
 	gyro_power_on();
 	accl_power_on();
 	comp_power_on();
@@ -208,7 +208,7 @@ int main(int argc, char **argv)
 			if (check_update()) {
 				get_controls(&controls);
 			}
-			recovery(deg_x, deg_y, controls.throttle, motors, &controls);
+			recovery(deg_x, deg_y, &controls, motors);
 			update_motors(motors);
 			total = total % 10000000;
 		}

@@ -1,5 +1,6 @@
 #include "flight-input.h"
 #include "error_log.h"
+#include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
 #include <string.h>
@@ -31,7 +32,7 @@ void *start_inout()
 
 	while(1) {
 		fgets(buffer, 100, stdin);
-		sscanf(buffer, "%20s %20s", &command, &arg);
+		sscanf(buffer, "%20s %20s", command, arg);
 		printf("Input received: command=\"%s\" arg=\"%s\"\n", command, arg);
 		if (strcmp(command, "throttle") == 0) {
 			if (is_int(arg)) {

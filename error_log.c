@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 static FILE *error_log = NULL;
-static count = 0;
+static int count = 0;
 
 void log_error(const char *msg)
 {

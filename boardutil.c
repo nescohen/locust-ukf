@@ -7,6 +7,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <errno.h>
 
 #define GYRO_ADDR 0x69
 #define ACCL_ADDR 0x19
@@ -230,13 +231,11 @@ int comp_poll(Vector3 *output)
 
 static int send_update(int device, int motor, int8_t throttle)
 {
-	/* temporary safety measure - REMEMBER TO REMOVE */
-	/*if (throttle > 50) throttle = 50;
-	if (throttle < 0) throttle = 0;*/
+	int error;
 
-	/* printf("Update: device=%d, motor=%d, throttle=%d\n", device, motor, throttle); */
-	if ( ioctl(g_bus, I2C_SLAVE, device) < 0 ) {
-		return 1;
+	error = ioctl(g_bus, I2C_SLAVE, device);
+	if ( error < 0 ) {
+		return errno;
 	}
 	return i2c_smbus_write_byte_data(g_bus, motor, throttle);
 }
