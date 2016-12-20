@@ -17,6 +17,7 @@ int is_int(char *check)
 	}
 	return 1;
 }
+//Andy - check if supplied parameter is an int
 
 void *start_inout()
 {
@@ -51,6 +52,7 @@ void *start_inout()
 				printf("Invalid trim value\n");
 			}
 		}
+		//Andy - Apply pitch trim value to control struct
 		else if (strcmp(command, "trim_r") == 0)	{
 			if(is_int(arg)){
 				pthread_mutex_lock(&g_control_lock);
@@ -61,6 +63,7 @@ void *start_inout()
 				printf("Invalid trim value\n");
 			}
 		}
+		// Andy - Apply roll trim value to control struct
 		else {
 			printf("Invalid command\n");
 		}

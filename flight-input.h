@@ -4,8 +4,8 @@
 typedef struct controls
 {
 	int throttle;
-	float roll; /* unused */
-	float pitch; /* unused */
+	int roll; 
+	int pitch;
 } Controls;
 
 void *start_inout(); /* spawn a thread to call this function to start input output engine */
