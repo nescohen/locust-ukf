@@ -244,10 +244,18 @@ static int send_update(int device, int motor, int8_t throttle)
 int update_motors(int *settings)
 /* settings points to a 4-length array of integers */
 {
-	log_error("Motors updated.");
-	send_update( FORWARD_CONTROL, MOTOR_PORT,      (int8_t)settings[0] );
-	send_update( FORWARD_CONTROL, MOTOR_STARBOARD, (int8_t)settings[1] );
-	send_update( REAR_CONTROL,    MOTOR_PORT,      (int8_t)settings[2] );
-	send_update( REAR_CONTROL,    MOTOR_STARBOARD, (int8_t)settings[3] );
+	char buffer[100];
+	int err[4];
+	int i;
+
+	err[0] = send_update( FORWARD_CONTROL, MOTOR_PORT,      (int8_t)settings[0] );
+	err[1] = send_update( FORWARD_CONTROL, MOTOR_STARBOARD, (int8_t)settings[1] );
+	err[2] = send_update( REAR_CONTROL,    MOTOR_PORT,      (int8_t)settings[2] );
+	err[3] = send_update( REAR_CONTROL,    MOTOR_STARBOARD, (int8_t)settings[3] );
+
+	for (i = 0; i < 4; i++) {
+		snprintf(buffer, 100, "motor=%d throttle=%d error=%d", i, settings[i], err[i]);
+		log_error(buffer);
+	}
 	return 0;
 }
