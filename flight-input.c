@@ -22,6 +22,50 @@ int is_int(char *check)
 	return 1;
 }
 
+void process_command(char *command, char *arg)
+{
+	printf("Input received: command=\"%s\" arg=\"%s\"\n", command, arg);
+	if (strcmp(command, "throttle") == 0) {
+		if (is_int(arg)) {
+			pthread_mutex_lock(&g_control_lock);
+			g_update = 1;
+			g_controls.throttle = 2*strtol(arg, NULL, 10);
+			pthread_mutex_unlock(&g_control_lock);
+		}
+		else {
+			printf("Invalid throttle value\n");
+		}
+	}
+	else if (strcmp(command, "trim_p") == 0) {
+		if (is_int(arg)) {
+			pthread_mutex_lock(&g_control_lock);
+			g_controls.pitch = strtol(arg, NULL, 10);
+			g_update = 1;
+			pthread_mutex_unlock(&g_control_lock);
+		}
+		else {
+			printf("Invalid trim value\n");
+		}
+	}
+	//Andy - Apply pitch trim value to control struct
+	else if (strcmp(command, "trim_r") == 0)	{
+		if(is_int(arg)){
+			pthread_mutex_lock(&g_control_lock);
+			g_controls.roll = strtol(arg, NULL, 10);
+			g_update = 1;
+			pthread_mutex_unlock(&g_control_lock);
+		}
+		else {
+			printf("Invalid trim value\n");
+		}
+	}
+	// Andy - Apply roll trim value to control struct
+	else {
+		printf("Invalid command\n");
+	}
+}
+
+
 void *start_inout()
 {
 	char buffer[100];
@@ -31,50 +75,12 @@ void *start_inout()
 	pthread_mutex_init(&g_control_lock, NULL);
 
 	while(1) {
-		fgets(buffer, 100, stdin);
-		sscanf(buffer, "%20s %20s", command, arg);
-		printf("Input received: command=\"%s\" arg=\"%s\"\n", command, arg);
-		if (strcmp(command, "throttle") == 0) {
-			if (is_int(arg)) {
-				pthread_mutex_lock(&g_control_lock);
-				g_update = 1;
-				g_controls.throttle = 2*strtol(arg, NULL, 10);
-				pthread_mutex_unlock(&g_control_lock);
-			}
-			else {
-				printf("Invalid throttle value\n");
-			}
-		}
-		else if (strcmp(command, "trim_p") == 0) {
-			if (is_int(arg)) {
-				pthread_mutex_lock(&g_control_lock);
-				g_controls.pitch = strtol(arg, NULL, 10);
-				g_update = 1;
-				pthread_mutex_unlock(&g_control_lock);
-			}
-			else {
-				printf("Invalid trim value\n");
-			}
-		}
-		//Andy - Apply pitch trim value to control struct
-		else if (strcmp(command, "trim_r") == 0)	{
-			if(is_int(arg)){
-				pthread_mutex_lock(&g_control_lock);
-				g_controls.roll = strtol(arg, NULL, 10);
-				g_update = 1;
-				pthread_mutex_unlock(&g_control_lock);
-			}
-			else {
-				printf("Invalid trim value\n");
-			}
-		}
-		// Andy - Apply roll trim value to control struct
-		else {
-			printf("Invalid command\n");
-		}
 		memset(buffer, 0, 100);
 		memset(command, 0, 20);
 		memset(arg, 0, 20);
+		fgets(buffer, 100, stdin);
+		sscanf(buffer, "%20s %20s", command, arg);
+		process_command(command, arg);
 	}
 }
 
