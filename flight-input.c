@@ -38,13 +38,13 @@ void *start_inout()
 				printf("Invalid throttle value\n");
 			}
 		}
-		if (strcmp(command, "trim_p") == 0)
+		else if (strcmp(command, "trim_p") == 0)
 		{
 			pthread_mutex_lock(&g_control_lock);
 			g_controls.pitch = strtol(arg, NULL, 10);
 			pthread_mutex_unlock(&g_control_lock);
 		}
-		if (strcmp(command, "trim_r") == 0)
+		else if (strcmp(command, "trim_r") == 0)
 		{
 			pthread_mutex_lock(&g_control_lock);
 			g_controls.roll = strtol(arg, NULL, 10);
@@ -62,7 +62,9 @@ void *start_inout()
 void get_controls(Controls *controls)
 {
 	if (pthread_mutex_trylock(&g_control_lock) == 0) {
+		//printf("Mutex is unlocked\n");
 		memcpy(controls, &g_controls, sizeof(Controls));
 		pthread_mutex_unlock(&g_control_lock);
 	}
+	//else printf("Mutex is lockedi\n");
 }
