@@ -61,9 +61,16 @@ void recovery(double x, double y, int power, int *motors)
 	*/
 
 	int i;
-	for (i = 0; i < 4; i++) {
+	/*for (i = 0; i < 4; i++) {
 		motors[i] = power;
-	}
+	}*/
+		//Andy - No longer needed
+
+		motors[0] = power + controls.pitch - controls.roll;
+		motors[1] =	power + controls.pitch + controls.roll;
+		motors[2] =	power - controls.pitch - controls.roll;
+		motors[3] =	power - controls.pitch + controls.roll;
+		//Andy - set trim before correcting
 
 	if (x > 45) {
 		motors[0] += power*MAX_CORRECT;
@@ -104,12 +111,14 @@ void recovery(double x, double y, int power, int *motors)
 	}
 }
 
-void trim(int *current_motor_speed, const int *trim_amount){
+/*void trim(int *current_motor_speed, const int *trim_amount){
 	int i;
 	for(i = 0; i < 4; i++){
 		current_motor_speed[i] += trim_amount[i];
 	}
 }
+*/
+//Andy - Not in Use
 
 int main(int argc, char **argv)
 {

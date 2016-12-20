@@ -7,6 +7,19 @@ Controls g_controls;
 int g_update; /* 1 = needs update, 0 = no update needed */
 pthread_mutex_t g_control_lock;
 
+int is_int(char *check)
+{
+	char *c = check;
+	while (*c != 0) {
+		if (*c > 57 || *c < 48) {
+			c++
+		}
+		else return 0;
+	}
+	return 1;
+}
+//Andy - check if supplied parameter is an int
+
 void *start_inout()
 {
 	char buffer[100];
@@ -22,16 +35,7 @@ void *start_inout()
 		sscanf(buffer, "%20s %20s", &command, &arg);
 		printf("Input received: command=\"%s\" arg=\"%s\"\n", command, arg);
 		if (strcmp(command, "throttle") == 0) {
-			int is_int = 1;
-			char *c = arg;
-			while (*c != 0) {
-				if (*c > 57 || *c < 48) {
-					is_int = 0;
-					break;
-				}
-				c++;
-			}
-			if (is_int) {
+			if (is_int(arg)) {
 				pthread_mutex_lock(&g_control_lock);
 				g_update = 1;
 				g_controls.throttle = 2*strtol(arg, NULL, 10);
@@ -41,20 +45,30 @@ void *start_inout()
 				printf("Invalid throttle value\n");
 			}
 		}
-		else if (strcmp(command, "trim_p") == 0)
-		{
-			pthread_mutex_lock(&g_control_lock);
-			g_update = 1;
-			g_controls.pitch = strtol(arg, NULL, 10);
-			pthread_mutex_unlock(&g_control_lock);
+		else if (strcmp(command, "trim_p") == 0) {
+			if (is_int(arg)) {
+				pthread_mutex_lock(&g_control_lock);
+				g_controls.pitch = strtol(arg, NULL, 10);
+				g_update = 1;
+				pthread_mutex_unlock(&g_control_lock);
+			}
+			else {
+				printf("Invalid trim value\n");
+			}
 		}
-		else if (strcmp(command, "trim_r") == 0)
-		{
-			pthread_mutex_lock(&g_control_lock);
-			g_update = 1;
-			g_controls.roll = strtol(arg, NULL, 10);
-			pthread_mutex_unlock(&g_control_lock);
+		//Andy - Apply pitch trim value to control struct
+		else if (strcmp(command, "trim_r") == 0)	{
+			if(is_int(arg)){
+				pthread_mutex_lock(&g_control_lock);
+				g_controls.roll = strtol(arg, NULL, 10);
+				g_update = 1;
+				pthread_mutex_unlock(&g_control_lock);
+			}
+			else {
+				printf("Invalid trim value\n");
+			}
 		}
+		// Andy - Apply roll trim value to control struct
 		else {
 			printf("Invalid command\n");
 		}
