@@ -5,8 +5,8 @@
 #include <pthread.h>
 #include <string.h>
 
-Controls g_controls = {0, 0, 0};
-int g_update = 1; /* 1 = needs update, 0 = no update needed */
+static Controls g_controls = {0, 0, 0};
+static int g_update = 1; /* 1 = needs update, 0 = no update needed */
 pthread_mutex_t g_control_lock;
 
 int is_int(char *check)
@@ -48,7 +48,6 @@ void process_command(char *command, char *arg)
 			printf("Invalid trim value\n");
 		}
 	}
-	//Andy - Apply pitch trim value to control struct
 	else if (strcmp(command, "trim_r") == 0)	{
 		if(is_int(arg)){
 			pthread_mutex_lock(&g_control_lock);
@@ -60,7 +59,6 @@ void process_command(char *command, char *arg)
 			printf("Invalid trim value\n");
 		}
 	}
-	// Andy - Apply roll trim value to control struct
 	else {
 		printf("Invalid command\n");
 	}
