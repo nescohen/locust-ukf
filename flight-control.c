@@ -230,5 +230,7 @@ int main(int argc, char **argv)
 	accl_power_off();
 	comp_power_on();
 
+	log_complete();
+
 	return 0;
 }
