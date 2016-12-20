@@ -103,6 +103,7 @@ void recovery(double x, double y, int power, int *motors)
 		motors[3] += (int)((float)y/45.f*MAX_CORRECT*power);
 	}
 }
+
 void trim(int *current_motor_speed, const int *trim_amount){
 	int i;
 	for(i = 0; i < 4; i++){

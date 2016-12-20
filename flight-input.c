@@ -8,6 +8,7 @@ pthread_mutex_t g_control_lock;
 
 void *start_inout()
 {
+	char buffer[100];
 	char command[20];
 	char arg[20];
 
@@ -15,7 +16,9 @@ void *start_inout()
 	pthread_mutex_init(&g_control_lock, NULL);
 
 	while(1) {
-		scanf("%20s %20s\n", &command, &arg);
+		fgets(buffer, 100, stdin);
+		sscanf(buffer, "%20s %20s", &command, &arg);
+		printf("Input received: command=\"%s\" arg=\"%s\"\n", command, arg);
 		if (strcmp(command, "throttle") == 0) {
 			int is_int = 1;
 			char *c = arg;
@@ -28,7 +31,7 @@ void *start_inout()
 			}
 			if (is_int) {
 				pthread_mutex_lock(&g_control_lock);
-				g_controls.throttle = strtol(arg, NULL, 10);
+				g_controls.throttle = 2*strtol(arg, NULL, 10);
 				pthread_mutex_unlock(&g_control_lock);
 			}
 			else {
@@ -38,6 +41,9 @@ void *start_inout()
 		else {
 			printf("Invalid command\n");
 		}
+		memset(buffer, 0, 100);
+		memset(command, 0, 20);
+		memset(arg, 0, 20);
 	}
 }
 
