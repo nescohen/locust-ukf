@@ -123,13 +123,7 @@ void predict_step(State *current, State *future, Controls *controls, double delt
 
 int main()
 {
-	double t_vect[3] = {1, 2, 3};
-	double t_matr[9] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-	double result[3];
-
-	vector_by_matrix(t_vect, t_matr, result);
-	printf("Result = [%f, %f, %f]\n", result[0], result[1], result[2]);
-
+	
 	return 0;
 }
 
