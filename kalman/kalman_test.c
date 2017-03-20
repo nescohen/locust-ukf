@@ -9,23 +9,35 @@
 #include "quaternion_util.h"
 
 #define DRONE_MASS 1.0 // Mass of the drone in kilograms
-#define THROTTLE_FORCE 5.0 // Conversion between throttle and force in newtons per throttle step
+#define THROTTLE_FORCE 0.5 // Conversion between throttle and force in newtons per throttle step
 
 // motor_pos is a 4 cell array of 3-vectors, corrosponding to the position of each motor relative to the center of the drone
 const double motor_pos[4][3] = {{0.1, 0.1, 0}, {-0.1, 0.1, 0}, {0.1, -0.1, 0}, {-0.1, -0.1, 0}};
 
 typedef struct state
 {
-	double position[3]; // position in meters
-	double linear_velocity[3]; // linear velocity in meters per second
-	double angular_velocity[3]; // vector is the euler axis and its magnitude is angular velocity in radians per second
-	double orientation[4]; // represented as a unit quaternion
+	double position[3]; // Position in meters
+	double linear_velocity[3]; // Linear velocity in meters per second
+	double angular_velocity[3]; // Vector is the euler axis and its magnitude is angular velocity in radians per second
+	double orientation[4]; // Represented as a unit quaternion
 } State;
 
 typedef struct controls
 {
 	int motors[4]; // 0 = left front, 1 = right front, 2 = left rear, 3 = right rear
 } Controls;
+
+void initialize_state(State *state)
+{
+	double axis[3] = {1, 0, 0};
+	int i;
+	for (i = 0; i < 3; i++) {
+		state->position[i] = 0.0;
+		state->linear_velocity[i] = 0.0;
+		state->angular_velocity[i] = 0.0;
+	}
+	gen_quaternion(0.0, axis, state->orientation);
+}
 
 void predict_cycle(State *current, State *future, Controls *controls, double delta_t)
 {
@@ -49,6 +61,16 @@ void predict_cycle(State *current, State *future, Controls *controls, double del
 	double accel_g[3] = {0, 0, -9.8};
 	double net_accel[3];
 	add_vectors(accel_g, motor_accel_vector, net_accel); // add in acceleration due to gravity
+
+	// Determine and save final velocity from current acceleration and past velocity
+	double cycle_velocity[3];
+	vector_by_scalar(net_accel, delta_t, cycle_velocity);
+	add_vectors(cycle_velocity, current->linear_velocity, future->linear_velocity);
+	
+	// Determine and save final position from current velocity and past position
+	double delta_p[3];
+	vector_by_scalar(current->linear_velocity, delta_t, delta_p);
+	add_vectors(delta_p, current->position, future->position);
 }
 
 void predict_step(State *current, State *future, Controls *controls, double delta_t, double timestep)
@@ -65,5 +87,19 @@ void predict_step(State *current, State *future, Controls *controls, double delt
 
 int main()
 {
+	int i;
+	State starting;
+	State ending;
+	Controls controls;
+	
+	initialize_state(&starting);
+	for (i = 0; i < 4; i++) {
+		controls.motors[i] = 40;
+	}
+
+	predict_step(&starting, &ending, &controls, 1, 0.1);
+	
+	printf("position = {%f, %f, %f}\n", ending.position[0], ending.position[1], ending.position[2]);
+	
 	return 0;
 }
