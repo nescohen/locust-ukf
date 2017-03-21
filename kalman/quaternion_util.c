@@ -100,6 +100,6 @@ void normalize_vector(double vector[3], double result[3])
 	double magnitude = vector_magnitude(vector);
 	int i;
 	for (i = 0; i < 3; i++) {
-		vector[i] /= magnitude;
+		result[i] = vector[i] / magnitude;
 	}
 }

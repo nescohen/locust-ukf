@@ -85,7 +85,9 @@ void predict_cycle(State *current, State *future, Controls *controls, double del
 
 	// Second torque due to relative linear force between motors
 	double net_torque_ln[3]; // net torque vector due to linear force
-	memset(net_torque_ln, 0, sizeof(net_torque_ln));
+	for (i = 0; i < 3; i++) {
+		net_torque_ln[i] = 0.0;
+	}
 	for (i = 0; i < 4; i++) {
 		double v_mf[3]; // vector of motor force
 		double torque[3]; // vector of motor torque
