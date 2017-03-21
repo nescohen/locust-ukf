@@ -118,7 +118,7 @@ void predict_cycle(State *current, State *future, Controls *controls, double del
 	double theta = vector_magnitude(future->angular_velocity)*delta_t;
 	double rotation[4];
 	gen_quaternion(theta, e_axis, rotation);
-	mult_quaternion(rotation, current->orientation, future->orientation);
+	mult_quaternion(rotation, current->orientation, future->orientation); // Multiply the previous orientation by the new rotation to get the new orientation
 }
 
 void predict_step(State *current, State *future, Controls *controls, double delta_t, double timestep)
