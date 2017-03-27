@@ -41,6 +41,8 @@ void initialize_state(State *state)
 
 void predict_cycle(State *current, State *future, Controls *controls, double delta_t)
 {
+	// TODO: Split this function into smaller coherent functions
+
 	int i;
 	// unit vector representations for each axis
 	// double right[3] = {1, 0, 0}; // x axis
@@ -104,6 +106,7 @@ void predict_cycle(State *current, State *future, Controls *controls, double del
 	/* 
 	 * This calculation assumes the drone is a point-mass. In future a more complex
 	 * and accurate determination of the drone's moment of inertia may be used
+	 * TODO: replace with a more accurate calculation of moment of inertia
 	 */
 	double angular_velocity[3];
 	vector_by_scalar(angular_accel, delta_t, angular_velocity);
