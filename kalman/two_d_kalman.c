@@ -158,7 +158,7 @@ int main()
 {
 	double state[2] = {10, 4.5}; // x, 2-vector to represent current state with position(0) and velocity(1)
 	double state_covariance[4] = {500, 0, 0, 49}; // P, state covariance, 2x2 matrix
-	double process_noise[4] = {0, 0, 0, 0}; // Q, for now we have no process nois
+	double process_noise[4] = {0, 0, 0, 0}; // Q, for now we have no process noise
 	double m_function[2] = {1, 0}; // H, only measuring position
 	double m_covariance[1] = {5}; // R
 	double state_transition[4]; // F
@@ -167,6 +167,7 @@ int main()
 	double prior_covariance[4];
 	double posterior_covariance[4];
 	double measurements[10] = {10, 10.45, 11, 12, 13, 14, 16, 17, 19, 21.5};
+
 	generate_transform(0.1, state_transition);
 
 	int i;
