@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 
 #include "quaternion_util.h"
@@ -11,8 +12,8 @@
 #define DRONE_MASS 1.0 // Mass of the drone in kilograms
 #define THROTTLE_FORCE 0.05 // Conversion between throttle and force in newtons per throttle step
 
-// motor_pos is a 4 cell array of 3-vectors, corrosponding to the position of each motor relative to the center of the drone
-const double motor_pos[4][3] = {{0.1, 0.1, 0}, {-0.1, 0.1, 0}, {0.1, -0.1, 0}, {-0.1, -0.1, 0}};
+// motor_pos is a 4 cell array of 3-vectors, corrosponding to the position of each
+double motor_pos[4][3] = {{0.1, 0.1, 0}, {-0.1, 0.1, 0}, {0.1, -0.1, 0}, {-0.1, -0.1, 0}};
 
 typedef struct state
 {
@@ -86,14 +87,16 @@ void predict_cycle(State *current, State *future, Controls *controls, double del
 
 	// Second torque due to relative linear force between motors
 	double net_torque_ln[3]; // net torque vector due to linear force
-	memset(net_torque, 0, sizeof(net_torque));
+	for (i = 0; i < 3; i++) {
+		net_torque_ln[i] = 0.0;
+	}
 	for (i = 0; i < 4; i++) {
 		double v_mf[3]; // vector of motor force
 		double torque[3]; // vector of motor torque
 		
 		vector_by_scalar(drone_up, controls->motors[i]*THROTTLE_FORCE, v_mf); 
 		cross_product(v_mf, motor_pos[i], torque);
-		add_vectors(torque, net_torque, net_torque);
+		add_vectors(torque, net_torque_ln, net_torque_ln);
 	}
 
 	// Combine to find the net torque
@@ -118,7 +121,7 @@ void predict_cycle(State *current, State *future, Controls *controls, double del
 	double theta = vector_magnitude(future->angular_velocity)*delta_t;
 	double rotation[4];
 	gen_quaternion(theta, e_axis, rotation);
-	mult_quaternion(rotation, current->orientation, future->orientation);
+	mult_quaternion(rotation, current->orientation, future->orientation); // Multiply the previous orientation by the new rotation to get the new orientation
 }
 
 void predict_step(State *current, State *future, Controls *controls, double delta_t, double timestep)
@@ -135,19 +138,20 @@ void predict_step(State *current, State *future, Controls *controls, double delt
 
 int main()
 {
-	int i;
 	State starting;
 	State ending;
 	Controls controls;
 	
-	initialize_state(&starting);
-	for (i = 0; i < 4; i++) {
-		controls.motors[i] = 100;
-	}
+	controls.motors[0] = 100;
+	controls.motors[1] = 100;
+	controls.motors[2] = 50;
+	controls.motors[3] = 50;
 
+	initialize_state(&starting);
 	predict_step(&starting, &ending, &controls, 1, 0.1);
 	
 	printf("position = {%f, %f, %f}\n", ending.position[0], ending.position[1], ending.position[2]);
+	printf("orientation = {%f, %f, %f, %f}\n", ending.orientation[0], ending.orientation[1], ending.orientation[2], ending.orientation[3]);
 	
 	return 0;
 }
