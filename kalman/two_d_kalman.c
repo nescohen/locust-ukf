@@ -9,7 +9,7 @@
 void matrix_cross_vector(double *matrix, double *vector, double *result, int rows, int columns)
 // vector columns must equal matrix rows, result must be vector of with same number of rows of matrix
 {
-	size_t result_size = sizeof(double)*rows*columns;
+	size_t result_size = sizeof(double)*rows;
 	double *result_temp = alloca(result_size);
 	int i, j;
 	for (i = 0; i < rows; i++) {
@@ -121,7 +121,7 @@ void update(double *x, double *z, double *P, double *H, double *R, double *x_f, 
 	double *y = alloca(z_dim*sizeof(double));
 	double *temp_v = alloca(z_dim*sizeof(double));
 	matrix_cross_vector(H, x, temp_v, x_dim, z_dim);
-	matrix_plus_matrix(z, temp_v, y, z_dim, 1, 1);
+	matrix_plus_matrix(z, temp_v, y, z_dim, 1, 0);
 
 	// K = PH^t(HPH^t + R)^-1
 	double *K = alloca(x_dim*z_dim*sizeof(double));
