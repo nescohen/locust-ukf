@@ -78,15 +78,18 @@ void matrix_inverse(double *matrix, double *result, int size)
 // matrix and result must by 'size' by 'size' square matrices
 // I 'cheat' here and use a gsl, in future should probably use a faster, BLAS-based library 
 {
+	double *result_temp = alloca(size*size*sizeof(double));
 	int s;
 	gsl_matrix_view m = gsl_matrix_view_array(matrix, size, size);
-	gsl_matrix_view inv = gsl_matrix_view_array(result, size, size);
+	gsl_matrix_view inv = gsl_matrix_view_array(result_temp, size, size);
 
 	gsl_permutation *p = gsl_permutation_alloc(size);
 	gsl_linalg_LU_decomp(&m.matrix, p, &s);
 	gsl_linalg_LU_invert(&m.matrix, p, &inv.matrix);
 
 	gsl_permutation_free(p);
+
+	memcpy(result, result_temp, size*size*sizeof(double));
 }
 
 void matrix_identity(double *matrix, int size)
@@ -127,7 +130,7 @@ void update(double *x, double *z, double *P, double *H, double *R, double *x_f, 
 	double *K = alloca(x_dim*z_dim*sizeof(double));
 	double *temp_k = alloca(z_dim*z_dim*sizeof(double));
 	double *H_t = alloca(x_dim*z_dim*sizeof(double));
-	matrix_transpose(H, H_t, z_dim, z_dim);
+	matrix_transpose(H, H_t, x_dim, z_dim);
 	matrix_cross_matrix(H, P, K, z_dim, x_dim, x_dim);
 	matrix_cross_matrix(K, H_t, temp_k, z_dim, x_dim, z_dim); 
 	matrix_plus_matrix(temp_k, R, temp_k, z_dim, z_dim, 1);
@@ -141,6 +144,7 @@ void update(double *x, double *z, double *P, double *H, double *R, double *x_f, 
 
 	// P = (I - KH)P
 	double *identity = alloca(x_dim*x_dim*sizeof(double));
+	matrix_identity(identity, x_dim);
 	matrix_cross_matrix(K, H, P_f, x_dim, z_dim, x_dim);
 	matrix_plus_matrix(identity, P_f, P_f, x_dim, x_dim, 0);
 	matrix_cross_matrix(P_f, P, P_f, x_dim, x_dim, x_dim);
