@@ -1,9 +1,6 @@
 /* Nes Cohen */
 /* 6/28/2016 */
 
-#include "boardutil.h"
-#include "flight-input.h"
-#include "error_log.h"
 #include <time.h>
 #include <math.h>
 #include <stdio.h>
@@ -11,6 +8,10 @@
 #include <signal.h>
 #include <pthread.h>
 #include <unistd.h>
+#include "boardutil.h"
+#include "flight-input.h"
+#include "error_log.h"
+#include "pid/pid.h"
 
 #define SIGNED_16_MAX 0x7FFF
 
@@ -50,6 +51,30 @@ double angle_between(const double *array)
 	double mag = sqrt(array[0]*array[0] + array[1]*array[1]) * sqrt(array[2]*array[2] + array[3]*array[3]);
 	double cosine = dot/mag;
 	return acos(cosine)*180/M_PI;
+}
+
+void recovery_pid(double x, double y, Controls *controls, int *motors, Pidhist *hist_x, Pidhist *hist_y, double delta_t)
+{
+	double error_x = x - controls->roll;
+	double error_y = y - controls->pitch;
+
+	double correct_x = pid(hist_x, error_x, delta_t);
+	double correct_y = pid(hist_y, error_y, delta_t);
+
+	motors[0] = controls->throttle + (int)(0.5*correct_x) + (int)(0.5*correct_y);
+	motors[1] = controls->throttle + (int)(0.5*correct_x) + (int)(-0.5*correct_y);
+	motors[2] = controls->throttle + (int)(-0.5*correct_x) + (int)(0.5*correct_y);
+	motors[3] = controls->throttle + (int)(-0.5*correct_x) + (int)(-0.5*correct_y);
+
+	int i;
+	for (i = 0; i < 4; i++) {
+		if (motors[i] < 0) {
+			motors[i] = 0;
+		}
+		if (motors[i] > 200) {
+			motors[i] = 200;
+		}
+	}
 }
 
 void recovery(double x, double y, Controls *controls, int *motors)
@@ -150,6 +175,11 @@ int main(int argc, char **argv)
 	Vector3 init_north;
 	comp_poll(&init_north);
 
+	Pidhist hist_x;
+	Pidhist hist_y;
+	init_hist(&hist_x);
+	init_hist(&hist_y);
+
 	int motors[4] = {0,0,0,0};
 	long total = 0;
 	if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
@@ -167,9 +197,9 @@ int main(int argc, char **argv)
 		long elapsed = curr_clock.tv_nsec - last_clock.tv_nsec + (curr_clock.tv_sec - last_clock.tv_sec)*1000000000;
 		total += elapsed;
 
-		deg_x += (double)gyro.x/(double)SIGNED_16_MAX*GYRO_SENSATIVITY*elapsed/1000000000.f;
-		deg_y += (double)gyro.y/(double)SIGNED_16_MAX*GYRO_SENSATIVITY*elapsed/1000000000.f;
-		deg_z += (double)gyro.z/(double)SIGNED_16_MAX*GYRO_SENSATIVITY*elapsed/1000000000.f;
+		deg_x += (double)gyro.x/(double)SIGNED_16_MAX*GYRO_SENSATIVITY*elapsed/1e9;
+		deg_y += (double)gyro.y/(double)SIGNED_16_MAX*GYRO_SENSATIVITY*elapsed/1e9;
+		deg_z += (double)gyro.z/(double)SIGNED_16_MAX*GYRO_SENSATIVITY*elapsed/1e9;
 
 		grav.x =    ((double)(accel.x)/(double)SIGNED_16_MAX*ACCL_SENSATIVITY*GRAVITY)*0.3 + 0.7*last_grav.x;
 		grav.y = (-1*(double)(accel.y)/(double)SIGNED_16_MAX*ACCL_SENSATIVITY*GRAVITY)*0.3 + 0.7*last_grav.y;
@@ -197,8 +227,8 @@ int main(int argc, char **argv)
 			if (check_update()) {
 				get_controls(&controls);
 			}
-			recovery(deg_x, deg_y, &controls, motors);
-			update_motors(motors);
+			recovery_pid(deg_x, deg_y, &controls, motors, &hist_x, &hist_y, 0.01); // dt is one one-hundredth of a second
+			//update_motors(motors);
 			total = total % 10000000;
 		}
 		if (deg_x > 45 || deg_x < -45 || deg_y > 45 || deg_y < -45) {

@@ -6,6 +6,7 @@ typedef struct pidhist {
 	double error_sum;
 } Pidhist;
 
+void init_hist(Pidhist *history);
 double pid(Pidhist *history, double error, double delta_t);
 
 #endif
