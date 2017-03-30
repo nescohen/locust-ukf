@@ -61,6 +61,10 @@ void recovery_pid(double x, double y, Controls *controls, int *motors, Pidhist *
 	double correct_x = pid(hist_x, error_x, delta_t);
 	double correct_y = pid(hist_y, error_y, delta_t);
 
+	//char buffer[100];
+	//snprintf(buffer, 100, "correct_x = %f, correct_y = %f", correct_x, correct_y);
+	//log_error(buffer);
+
 	motors[0] = controls->throttle + (int)(0.5*correct_x) + (int)(0.5*correct_y);
 	motors[1] = controls->throttle + (int)(0.5*correct_x) + (int)(-0.5*correct_y);
 	motors[2] = controls->throttle + (int)(-0.5*correct_x) + (int)(0.5*correct_y);
@@ -228,7 +232,7 @@ int main(int argc, char **argv)
 				get_controls(&controls);
 			}
 			recovery_pid(deg_x, deg_y, &controls, motors, &hist_x, &hist_y, 0.01); // dt is one one-hundredth of a second
-			//update_motors(motors);
+			update_motors(motors);
 			total = total % 10000000;
 		}
 		if (deg_x > 45 || deg_x < -45 || deg_y > 45 || deg_y < -45) {
