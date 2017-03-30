@@ -157,7 +157,7 @@ int main(int argc, char **argv)
 	signal(SIGINT, inthand);
 	signal(SIGTSTP, inthand);
 
-	Controls controls = {0, 0, 0};
+	Controls controls = {100, 0, 0};
 	pthread_t inout_thread;
 
 	open_bus(DEVICE_FILE);
@@ -165,7 +165,7 @@ int main(int argc, char **argv)
 	accl_power_on();
 	comp_power_on();
 
-	pthread_create(&inout_thread, NULL, &start_inout, NULL);
+	//pthread_create(&inout_thread, NULL, &start_inout, NULL);
 	
 	double deg_x = 0;
 	double deg_y = 0;
@@ -228,9 +228,9 @@ int main(int argc, char **argv)
 		}
 
 		if (total > 10000000) {
-			if (check_update()) {
+			/*if (check_update()) {
 				get_controls(&controls);
-			}
+			}*/
 			recovery_pid(deg_x, deg_y, &controls, motors, &hist_x, &hist_y, 0.01); // dt is one one-hundredth of a second
 			update_motors(motors);
 			total = total % 10000000;
@@ -239,9 +239,9 @@ int main(int argc, char **argv)
 			stop = 1;
 		}
 
-		/* printf("\r%f|%f|%f(%f) ... %f|%f|%f[%f] ... %d|%d|%d| ... %d|%d|%d|%d     ", deg_x, deg_y, deg_z, angle, grav.x, grav.y, grav.z, accel_mag, north.x, north.y, north.z, motors[0], motors[1], motors[2], motors[3]); */
+		printf("\r%f|%f|%f(%f) ... %f|%f|%f[%f] ... %d|%d|%d| ... %d|%d|%d|%d     ", deg_x, deg_y, deg_z, angle, grav.x, grav.y, grav.z, accel_mag, north.x, north.y, north.z, motors[0], motors[1], motors[2], motors[3]);
 	}
-	/* printf("\n"); */
+	printf("\n");
 
 	int i;
 	for (i = 0; i < 4; i++)
