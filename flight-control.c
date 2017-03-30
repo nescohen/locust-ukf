@@ -201,9 +201,13 @@ int main(int argc, char **argv)
 		long elapsed = curr_clock.tv_nsec - last_clock.tv_nsec + (curr_clock.tv_sec - last_clock.tv_sec)*1000000000;
 		total += elapsed;
 
-		deg_x += (double)gyro.x/(double)SIGNED_16_MAX*GYRO_SENSATIVITY*elapsed/1e9;
-		deg_y += (double)gyro.y/(double)SIGNED_16_MAX*GYRO_SENSATIVITY*elapsed/1e9;
-		deg_z += (double)gyro.z/(double)SIGNED_16_MAX*GYRO_SENSATIVITY*elapsed/1e9;
+
+		double v_ang_x = (double)gyro.x/(double)SIGNED_16_MAX*GYRO_SENSATIVITY*elapsed/1e9;
+		double v_ang_y = (double)gyro.y/(double)SIGNED_16_MAX*GYRO_SENSATIVITY*elapsed/1e9;
+		double v_ang_z = (double)gyro.z/(double)SIGNED_16_MAX*GYRO_SENSATIVITY*elapsed/1e9;
+		deg_x += v_ang_x;
+		deg_y += v_ang_y;
+		deg_z += v_ang_z;
 
 		grav.x =    ((double)(accel.x)/(double)SIGNED_16_MAX*ACCL_SENSATIVITY*GRAVITY)*0.3 + 0.7*last_grav.x;
 		grav.y = (-1*(double)(accel.y)/(double)SIGNED_16_MAX*ACCL_SENSATIVITY*GRAVITY)*0.3 + 0.7*last_grav.y;
@@ -222,9 +226,9 @@ int main(int argc, char **argv)
 		double accel_mag = magnitude(&grav);
 		if( accel_mag < GRAVITY + EPSILON && accel_mag > GRAVITY - EPSILON ) {
 			double pitch = atan2(grav.y, grav.z) * 180 / M_PI;
-			deg_x = pitch*0.02 + deg_x*0.98;
+			deg_x = pitch*0.8 + deg_x*0.2;
 			double roll = atan2(grav.x, grav.z) * 180 / M_PI;
-			deg_y = roll*0.02 + deg_y*0.98;
+			deg_y = roll*0.8 + deg_y*0.2;
 		}
 
 		if (total > 10000000) {
@@ -239,7 +243,7 @@ int main(int argc, char **argv)
 			stop = 1;
 		}
 
-		printf("\r%f|%f|%f(%f) ... %f|%f|%f[%f] ... %d|%d|%d| ... %d|%d|%d|%d     ", deg_x, deg_y, deg_z, angle, grav.x, grav.y, grav.z, accel_mag, north.x, north.y, north.z, motors[0], motors[1], motors[2], motors[3]);
+		printf("\r%f|%f|%f(%f) ... %f|%f|%f[%f] ... %f|%f|%f| ... %d|%d|%d|%d     ", deg_x, deg_y, deg_z, angle, grav.x, grav.y, grav.z, accel_mag, v_ang_x, v_ang_y, v_ang_z, motors[0], motors[1], motors[2], motors[3]);
 	}
 	printf("\n");
 
