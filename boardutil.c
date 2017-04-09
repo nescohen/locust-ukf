@@ -12,7 +12,7 @@
 #define GYRO_ADDR 0x69
 #define ACCL_ADDR 0x19
 #define COMP_ADDR 0x1E
-#define GYRO_POWER_ON 0x8F
+#define GYRO_POWER_ON 0x0F
 #define GYRO_POWER_OFF 0x00
 #define GYRO_HIGH_PASS_SET 0x23
 #define GYRO_HIGH_PASS_ON 0x10
@@ -48,6 +48,7 @@ int open_bus(char *filename)
 
 int gyro_power_on()
 {
+	// TODO: try powering the gyro in self test mode and make corrections
 	if (ioctl(g_bus, I2C_SLAVE, GYRO_ADDR) < 0) {
 		return 2;
 	}
@@ -143,47 +144,61 @@ int gyro_poll(Vector3 *output)
 // only updates value if new data is available
 {
 	if (ioctl(g_bus, I2C_SLAVE, GYRO_ADDR) < 0) {
-		return 2;
+		return -1;
 	}
 	int32_t result;
 	int32_t status;
 
+	int16_t read_x;
+	int16_t read_y;
+	int16_t read_z;
+
+	int first = 1;
+	int count = 0;
 	status = i2c_smbus_read_byte_data(g_bus, 0x27);
-	if (status & (1 << STATUS_NEW_BIT_ALL))
-	{
-		if (status & (1 << STATUS_NEW_BIT_X))
-		{
-			result = i2c_smbus_read_byte_data(g_bus, 0x28);
-			if (result < 0) return 1;
-			output->x = (int16_t)result;
-			result = i2c_smbus_read_byte_data(g_bus, 0x29);
-			if (result < 0) return 1;
-			output->x |= (int16_t)result << 8;
-		}
+	if (status & (1 << STATUS_NEW_BIT_ALL)) {
+		output->x = 0;
+		output->y = 0;
+		output->z = 0;
+	}
+	while (status & (1 << STATUS_NEW_BIT_ALL)) {
+		result = i2c_smbus_read_byte_data(g_bus, 0x28);
+		if (result < 0) return -1;
+		read_x = (int16_t)result;
+		result = i2c_smbus_read_byte_data(g_bus, 0x29);
+		if (result < 0) return -1;
+		read_x |= (int16_t)result << 8;
 
-		if (status & (1 << STATUS_NEW_BIT_Y))
-		{
-			result = i2c_smbus_read_byte_data(g_bus, 0x2A);
-			if (result < 0) return 1;
-			output->y = (int16_t)result;
-			result = i2c_smbus_read_byte_data(g_bus, 0x2B);
-			if (result < 0) return 1;
-			output->y |= (int16_t)result << 8;
-		}
+		result = i2c_smbus_read_byte_data(g_bus, 0x2A);
+		if (result < 0) return -1;
+		read_y = (int16_t)result;
+		result = i2c_smbus_read_byte_data(g_bus, 0x2B);
+		if (result < 0) return -1;
+		read_y |= (int16_t)result << 8;
+		
+		result = i2c_smbus_read_byte_data(g_bus, 0x2C);
+		if (result < 0) return -1;
+		read_z = (int16_t)result;
+		result = i2c_smbus_read_byte_data(g_bus, 0x2D);
+		if (result < 0) return -1;
+		read_z |= (int16_t)result << 8;
 
-		if (status & (1 << STATUS_NEW_BIT_Z))
-		{
-			result = i2c_smbus_read_byte_data(g_bus, 0x2C);
-			if (result < 0) return 1;
-			output->z = (int16_t)result;
-			result = i2c_smbus_read_byte_data(g_bus, 0x2D);
-			if (result < 0) return 1;
-			output->z |= (int16_t)result << 8;
+		if (first) {
+			output->x = read_x;
+			output->y = read_y;
+			output->z = read_z;
+			first = 0;
 		}
-		return 1;
+		else {
+			output->x = (output->x + read_x) / 2;
+			output->y = (output->y + read_y) / 2;
+			output->z = (output->z + read_z) / 2;
+		}
+		status = i2c_smbus_read_byte_data(g_bus, 0x27);
+		count++;
 	}
 
-	return 0;
+	return count;
 }
 
 int accl_poll(Vector3 *output)
