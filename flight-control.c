@@ -157,7 +157,7 @@ int main(int argc, char **argv)
 	signal(SIGINT, inthand);
 	signal(SIGTSTP, inthand);
 
-	Controls controls = {100, 0, 0};
+	Controls controls = {25, 0, 0};
 	pthread_t inout_thread;
 
 	open_bus(DEVICE_FILE);
