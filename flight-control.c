@@ -204,12 +204,12 @@ int main(int argc, char **argv)
 		total += elapsed;
 
 
-		double v_ang_x = (double)gyro.x/(double)SIGNED_16_MAX*GYRO_SENSATIVITY*elapsed/1e9;
-		double v_ang_y = (double)gyro.y/(double)SIGNED_16_MAX*GYRO_SENSATIVITY*elapsed/1e9;
-		double v_ang_z = (double)gyro.z/(double)SIGNED_16_MAX*GYRO_SENSATIVITY*elapsed/1e9;
-		deg_x += v_ang_x;
-		deg_y += v_ang_y;
-		deg_z += v_ang_z;
+		double v_ang_x = ((double)gyro.x/(double)SIGNED_16_MAX) * (elapsed/1e9) * GYRO_SENSATIVITY;
+		double v_ang_y = ((double)gyro.y/(double)SIGNED_16_MAX) * (elapsed/1e9) * GYRO_SENSATIVITY;
+		double v_ang_z = ((double)gyro.z/(double)SIGNED_16_MAX) * (elapsed/1e9) * GYRO_SENSATIVITY;
+		deg_x += v_ang_x * (elapsed/1e9);
+		deg_y += v_ang_y * (elapsed/1e9);
+		deg_z += v_ang_z * (elapsed/1e9);
 
 		grav.x =    ((double)(accel.x)/(double)SIGNED_16_MAX*ACCL_SENSATIVITY*GRAVITY)*0.3 + 0.7*last_grav.x;
 		grav.y = (-1*(double)(accel.y)/(double)SIGNED_16_MAX*ACCL_SENSATIVITY*GRAVITY)*0.3 + 0.7*last_grav.y;

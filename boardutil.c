@@ -12,7 +12,7 @@
 #define GYRO_ADDR 0x69
 #define ACCL_ADDR 0x19
 #define COMP_ADDR 0x1E
-#define GYRO_POWER_ON 0x0F
+#define GYRO_POWER_ON 0x8F
 #define GYRO_POWER_OFF 0x00
 #define GYRO_HIGH_PASS_SET 0x23
 #define GYRO_HIGH_PASS_ON 0x10
