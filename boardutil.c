@@ -12,11 +12,11 @@
 #define GYRO_ADDR 0x69
 #define ACCL_ADDR 0x19
 #define COMP_ADDR 0x1E
-#define GYRO_POWER_ON 0xCF /* sets output rate to 800 hz and the low pass cut off to 30 */
+#define GYRO_POWER_ON 0x0F
 #define GYRO_POWER_OFF 0x00
-#define GYRO_HIGH_PASS_MAX 0x29
+#define GYRO_HIGH_PASS_SET 0x23
 #define GYRO_HIGH_PASS_ON 0x10
-#define GYRO_FULL_SCALE 0x30
+#define GYRO_FULL_SCALE 0x00
 #define ACCL_POWER_ON 0x57
 #define ACCL_POWER_OFF 0x07
 #define ACCL_HIGH_REZ 0x08
@@ -28,6 +28,11 @@
 #define REAR_CONTROL 0x45
 #define MOTOR_PORT 0x01
 #define MOTOR_STARBOARD 0x02
+
+#define STATUS_NEW_BIT_X 0
+#define STATUS_NEW_BIT_Y 1
+#define STATUS_NEW_BIT_Z 2
+#define STATUS_NEW_BIT_ALL 3
 
 static int g_bus = -1; /* used to store the i2c bus file descriptor */
 
@@ -50,12 +55,12 @@ int gyro_power_on()
 	if (error < 0) return 1;
 	error = i2c_smbus_write_byte_data(g_bus, 0x23, GYRO_FULL_SCALE);
 	if (error < 0) return 1;
-	/*
-	error = i2c_smbus_write_byte_data(g_bus, 0x21, GYRO_HIGH_PASS_MAX);
+	
+	error = i2c_smbus_write_byte_data(g_bus, 0x21, GYRO_HIGH_PASS_SET);
 	if (error < 0) return 1;
 	error = i2c_smbus_write_byte_data(g_bus, 0x24, GYRO_HIGH_PASS_ON);
 	if (error < 0) return 1;
-	*/
+	
 	return 0;
 }
 
@@ -135,32 +140,48 @@ int comp_power_off()
 }
 
 int gyro_poll(Vector3 *output)
+// only updates value if new data is available
 {
 	if (ioctl(g_bus, I2C_SLAVE, GYRO_ADDR) < 0) {
 		return 2;
 	}
 	int32_t result;
+	int32_t status;
 
-	result = i2c_smbus_read_byte_data(g_bus, 0x28);
-	if (result < 0) return 1;
-	output->x = (int16_t)result;
-	result = i2c_smbus_read_byte_data(g_bus, 0x29);
-	if (result < 0) return 1;
-	output->x |= (int16_t)result << 8;
+	status = i2c_smbus_read_byte_data(g_bus, 0x27);
+	if (status & (1 << STATUS_NEW_BIT_ALL))
+	{
+		if (status & (1 << STATUS_NEW_BIT_X))
+		{
+			result = i2c_smbus_read_byte_data(g_bus, 0x28);
+			if (result < 0) return 1;
+			output->x = (int16_t)result;
+			result = i2c_smbus_read_byte_data(g_bus, 0x29);
+			if (result < 0) return 1;
+			output->x |= (int16_t)result << 8;
+		}
 
-	result = i2c_smbus_read_byte_data(g_bus, 0x2A);
-	if (result < 0) return 1;
-	output->y = (int16_t)result;
-	result = i2c_smbus_read_byte_data(g_bus, 0x2B);
-	if (result < 0) return 1;
-	output->y |= (int16_t)result << 8;
+		if (status & (1 << STATUS_NEW_BIT_Y))
+		{
+			result = i2c_smbus_read_byte_data(g_bus, 0x2A);
+			if (result < 0) return 1;
+			output->y = (int16_t)result;
+			result = i2c_smbus_read_byte_data(g_bus, 0x2B);
+			if (result < 0) return 1;
+			output->y |= (int16_t)result << 8;
+		}
 
-	result = i2c_smbus_read_byte_data(g_bus, 0x2C);
-	if (result < 0) return 1;
-	output->z = (int16_t)result;
-	result = i2c_smbus_read_byte_data(g_bus, 0x2D);
-	if (result < 0) return 1;
-	output->z |= (int16_t)result << 8;
+		if (status & (1 << STATUS_NEW_BIT_Z))
+		{
+			result = i2c_smbus_read_byte_data(g_bus, 0x2C);
+			if (result < 0) return 1;
+			output->z = (int16_t)result;
+			result = i2c_smbus_read_byte_data(g_bus, 0x2D);
+			if (result < 0) return 1;
+			output->z |= (int16_t)result << 8;
+		}
+		return 1;
+	}
 
 	return 0;
 }
