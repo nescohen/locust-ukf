@@ -15,7 +15,7 @@
 
 #define SIGNED_16_MAX 0x7FFF
 
-#define GYRO_SENSATIVITY 2000.f
+#define GYRO_SENSATIVITY 250.f
 #define ACCL_SENSATIVITY 2.f
 #define GRAVITY 9.81f
 #define EPSILON 0.5f
@@ -29,7 +29,7 @@ typedef struct realvect3
 	double z;
 } Realvect3;
 
-int stop;
+volatile sig_atomic_t stop;
 struct timespec curr_clock;
 struct timespec last_clock;
 
@@ -186,16 +186,18 @@ int main(int argc, char **argv)
 
 	int motors[4] = {0,0,0,0};
 	long total = 0;
+	double percentage = 0;
+	Vector3 gyro;
+	Vector3 accel;
+	Vector3 north;
+	Realvect3 grav;
 	if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
 	while(!stop) {
-		Vector3 gyro;
-		Vector3 accel;
-		Vector3 north;
-		Realvect3 grav;
 
 		last_clock = curr_clock;
 		if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
-		gyro_poll(&gyro);
+		int status = gyro_poll(&gyro);
+		percentage = (percentage + status) / 2;
 		accl_poll(&accel);
 		comp_poll(&north);
 		long elapsed = curr_clock.tv_nsec - last_clock.tv_nsec + (curr_clock.tv_sec - last_clock.tv_sec)*1000000000;
@@ -226,9 +228,9 @@ int main(int argc, char **argv)
 		double accel_mag = magnitude(&grav);
 		if( accel_mag < GRAVITY + EPSILON && accel_mag > GRAVITY - EPSILON ) {
 			double pitch = atan2(grav.y, grav.z) * 180 / M_PI;
-			deg_x = pitch*0.8 + deg_x*0.2;
+			// deg_x = pitch*0.8 + deg_x*0.2;
 			double roll = atan2(grav.x, grav.z) * 180 / M_PI;
-			deg_y = roll*0.8 + deg_y*0.2;
+			// deg_y = roll*0.8 + deg_y*0.2;
 		}
 
 		if (total > 10000000) {
@@ -236,14 +238,15 @@ int main(int argc, char **argv)
 				get_controls(&controls);
 			}*/
 			recovery_pid(deg_x, deg_y, &controls, motors, &hist_x, &hist_y, 0.01); // dt is one one-hundredth of a second
-			update_motors(motors);
+			// update_motors(motors);
 			total = total % 10000000;
 		}
-		if (deg_x > 45 || deg_x < -45 || deg_y > 45 || deg_y < -45) {
+		/* if (deg_x > 45 || deg_x < -45 || deg_y > 45 || deg_y < -45) {
 			stop = 1;
-		}
+		}*/
 
-		printf("\r%f|%f|%f(%f) ... %f|%f|%f[%f] ... %f|%f|%f| ... %d|%d|%d|%d     ", deg_x, deg_y, deg_z, angle, grav.x, grav.y, grav.z, accel_mag, v_ang_x, v_ang_y, v_ang_z, motors[0], motors[1], motors[2], motors[3]);
+		//printf("\r%f|%f|%f(%f) ... %f|%f|%f[%f] ... %f|%f|%f| ... %d|%d|%d|%d     ", deg_x, deg_y, deg_z, angle, grav.x, grav.y, grav.z, accel_mag, v_ang_x, v_ang_y, v_ang_z, motors[0], motors[1], motors[2], motors[3]);
+		printf("\r%f|%f|%f || %f|%f|%f || %f         ", deg_x, deg_y, deg_z, v_ang_x, v_ang_y, v_ang_z, percentage);
 	}
 	printf("\n");
 
