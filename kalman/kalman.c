@@ -212,8 +212,40 @@ void vdm_scaled_weights(double *w_m, double *w_c, int n, double a, double b, dou
 	}
 }
 
-void ukf_predict()
+void ukf_predict(double *x, double *P, Ukf_process_model f, double *Q, double delta_t, double a, double b, double k, double *x_f, double *P_f, int n)
 {
+	// get sigma points and weights from van der merwe scaled points algorithm
+	double *chi = alloca(n*(2*n + 1)*sizeof(double));
+	double *weight_m = alloca((n + 1)*sizeof(double));
+	double *weight_c = alloca((n + 1)*sizeof(double));
+	vdm_scaled_points(x, P, chi, n, a, k);
+	vdm_scaled_weights(weight_m, weight_c, n, a, b, k);
+
+	double *gamma = alloca(n*(2*n + 1)*sizeof(double));
+	(*f)(chi, gamma, delta_t, n);
+
+	int i;
+	for (i = 0; i < n; i++) {
+		x_f = 0.f;
+	}
+	
+	// sum the scaled means 
+	double *temp_x = alloca(n*sizeof(double));
+	for (i = 0; i <= 2*n; i++) {
+		memcpy(temp_x, gamma + i*n, n*sizeof(double));
+		scale_matrix(temp_x, temp_x, weight_m[i], n, 1);
+		matrix_plus_matrix(temp_x, x_f, x_f, n, 1, 1);
+	}
+	// sum the scaled covariances
+	double *temp_P = alloca(n*sizeof(double));
+	for (i = 0; i <= 2*n; i++) {
+		memcpy(temp_P, gamma + i*n, n*sizeof(double));
+		matrix_plus_matrix(temp_P, x_f, temp_P, n, 1, 0);
+		matrix_transpose(temp_P, temp_x, n, 1);
+		scale_matrix(temp_P, temp_P, weight_c[i], n, 1);
+		matrix_cross_matrix(temp_P, temp_x, P_f, n, 1, n);
+	}
+	matrix_plus_matrix(P_f, Q, P_f, n, n, 1);
 }
 
 void ukf_update()
