@@ -212,16 +212,17 @@ void vdm_scaled_weights(double *w_m, double *w_c, int n, double a, double b, dou
 	}
 }
 
-void ukf_predict(double *x, double *P, Ukf_process_model f, double *Q, double delta_t, double a, double b, double k, double *x_f, double *P_f, int n)
+void vdm_get_all(double *x, double *P, int n, double a, double b, double k, double *chi, double *w_m, double *w_c)
+// chi - (n)x(2n+1)
+// w_m - (1)x(2n+1)
+// w_c - (1)x(2n+1)
 {
-	// get sigma points and weights from van der merwe scaled points algorithm
-	double *chi = alloca(n*(2*n + 1)*sizeof(double));
-	double *weight_m = alloca((n + 1)*sizeof(double));
-	double *weight_c = alloca((n + 1)*sizeof(double));
 	vdm_scaled_points(x, P, chi, n, a, k);
-	vdm_scaled_weights(weight_m, weight_c, n, a, b, k);
+	vdm_scaled_weights(w_m, w_c, n, a, b, k);
+}
 
-	double *gamma = alloca(n*(2*n + 1)*sizeof(double));
+void ukf_predict(double *x, double *P, Ukf_process_model f, double *Q, double delta_t, double *chi, double *gamma, double *weight_m, double *weight_c,  double *x_f, double *P_f, int n)
+{
 	(*f)(chi, gamma, delta_t, n);
 
 	int i;
@@ -248,6 +249,21 @@ void ukf_predict(double *x, double *P, Ukf_process_model f, double *Q, double de
 	matrix_plus_matrix(P_f, Q, P_f, n, n, 1);
 }
 
-void ukf_update()
+void ukf_update(double *x, double z, double *P, Ukf_measurement_f h, double *R, double *gamma, double *weight_m, double *weight_c, double *x_f, double *P_f, int n, int m);
+// n is the number of dimensions in state space, m is the number of dimensions in measurement space
 {
+	// Z = h(Y)
+	double *zeta = alloca(m*(2*n + 1)*sizeof(double));
+	(*h)(gamma, zeta, n, m);
+
+	// u_z = sum[ w_m*Z
+	double *u_z = alloca(m*sizeof(double));
+	double *temp = alloca(m*sizeof(double));
+	int i;
+	for (i = 0; i < m; i++) {
+		u_z[i] = 0;
+	}
+	for (i = 0; i <= 2*n; i++) {
+		memcpy( //TODO: finish this-
+	}
 }
