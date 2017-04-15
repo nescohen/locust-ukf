@@ -6,6 +6,8 @@
 #include <string.h>
 #include <gsl/gsl_linalg.h>
 
+#include "kalman.h"
+
 void scale_matrix(double *matrix, double *result, double factor, int rows, int columns)
 {
 	int i;
@@ -66,6 +68,7 @@ void matrix_quick_print(double *matrix, int rows, int columns)
 		}
 		printf("]\n");
 	}
+	printf("\n");
 }
 
 void matrix_transpose(double *matrix, double *result, int rows, int columns)
@@ -90,7 +93,7 @@ void matrix_sqrt(double *matrix, double *result, int size)
 	memcpy(temp, matrix, size*size*sizeof(double));
 
 	gsl_matrix_view m = gsl_matrix_view_array(temp, size, size);
-	gsl_linalg_cholesky_decomp1(m);
+	gsl_linalg_cholesky_decomp(&m.matrix);
 	
 	memcpy(result, temp, size*size*sizeof(double));
 }
@@ -206,7 +209,7 @@ void vdm_scaled_weights(double *w_m, double *w_c, int n, double a, double b, dou
 
 	double remaining = 1/(2*(n + sigma));
 	int i;
-	for (i = 1; i <= 2n; i++) {
+	for (i = 1; i <= 2*n; i++) {
 		w_m[i] = remaining;
 		w_c[i] = remaining;
 	}
@@ -229,7 +232,7 @@ void ukf_predict(double *x, double *P, Ukf_process_model f, double *Q, double de
 	}
 
 	for (i = 0; i < n; i++) {
-		x_f = 0.f;
+		x_f[i] = 0.f;
 	}
 	
 	// sum the scaled means 
@@ -251,7 +254,7 @@ void ukf_predict(double *x, double *P, Ukf_process_model f, double *Q, double de
 	matrix_plus_matrix(P_f, Q, P_f, n, n, 1);
 }
 
-void ukf_update(double *x, double z, double *P, Ukf_measurement_f h, double *R, double *gamma, double *weight_m, double *weight_c, double *x_f, double *P_f, int n, int m);
+void ukf_update(double *x, double *z, double *P, Ukf_measurement_f h, double *R, double *gamma, double *weight_m, double *weight_c, double *x_f, double *P_f, int n, int m)
 // n is the number of dimensions in state space, m is the number of dimensions in measurement space
 {
 	// Find maximum matrix size
@@ -321,6 +324,8 @@ void ukf_update(double *x, double z, double *P, Ukf_measurement_f h, double *R, 
 	matrix_plus_matrix(temp, x, x_f, n, 1, 1);
 
 	// P_f = P - K*P_z*K^t
-
-	// TODO: finish this part, then done (woohoo!)
+	matrix_cross_matrix(K, P_z, temp, n, m, m);
+	matrix_transpose(K, temp_t, n, m);
+	matrix_cross_matrix(temp, temp_t, temp, n, m, n);
+	matrix_plus_matrix(P, temp, P_f, n, n, 0);
 }
