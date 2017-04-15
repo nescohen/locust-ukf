@@ -69,7 +69,7 @@ void matrix_quick_print(double *matrix, int rows, int columns)
 }
 
 void matrix_transpose(double *matrix, double *result, int rows, int columns)
-// 'rows' and 'columns' refers to the rows and columns of the input, obviously the transpose will have opposite
+// 'rows' and 'columns' refers to the rows and columns of the input, the transpose will have opposite
 {
 	size_t result_size = sizeof(double)*rows*columns;
 	double *result_temp = alloca(result_size);
@@ -223,6 +223,7 @@ void vdm_get_all(double *x, double *P, int n, double a, double b, double k, doub
 
 void ukf_predict(double *x, double *P, Ukf_process_model f, double *Q, double delta_t, double *chi, double *gamma, double *weight_m, double *weight_c,  double *x_f, double *P_f, int n)
 {
+	// TODO: change the format of f() and h() such that each only does one point and is called multiple times here
 	(*f)(chi, gamma, delta_t, n);
 
 	int i;
@@ -256,7 +257,7 @@ void ukf_update(double *x, double z, double *P, Ukf_measurement_f h, double *R, 
 	double *zeta = alloca(m*(2*n + 1)*sizeof(double));
 	(*h)(gamma, zeta, n, m);
 
-	// u_z = sum[ w_m*Z
+	// u_z = sum[ w_m*Z .. Mean of the sigma points in measurement space
 	double *u_z = alloca(m*sizeof(double));
 	double *temp = alloca(m*sizeof(double));
 	int i;
@@ -264,6 +265,58 @@ void ukf_update(double *x, double z, double *P, Ukf_measurement_f h, double *R, 
 		u_z[i] = 0;
 	}
 	for (i = 0; i <= 2*n; i++) {
-		memcpy( //TODO: finish this-
+		memcpy(temp, zeta + i*m, m*sizeof(double));
+		scale_matrix(temp, temp, weight_m[i], m, 1);
+		matrix_plus_matrix(temp, u_z, u_z, m, 1, 1);
 	}
+
+	// y = z - u_z .. Residual
+	double *y = temp;
+	matrix_plus_matrix(z, u_z, y, m, 1, 0);
+
+	// P_z = sum[ w_c*(Z-u_z)(Z-u_z)^t ] + R .. Covariance of the sigma points in measurement space
+	double *P_z = alloca(m*m*sizeof(double));
+	double temp_t = alloca(m*sizeof(double));
+	temp = alloca(m*m*sizeof(double));
+	for (i = 0; i < m*m; i++) {
+		P_z[i] = 0.f;
+	}
+	for (i = 0; i <= 2*n; i++) {
+		matrix_plus_matrix(zeta + i*m, u_z, temp, m, 1, 0);
+		matrix_transpose(temp, temp_t, m, 1);
+		matrix_cross_matrix(temp, temp_t, temp, m, 1, m);
+		scale_matrix(temp, temp, weight_c[i], m, m);
+		matrix_plus_matrix(temp, P_z, P_z, m, m, 1);
+	}
+	matrix_plus_matrix(P_z, R, P_z, m, m, 1);
+
+	// P_xz = sum[ w_c*(Y - x)(Z - u_z)^t .. Cross covariance of state and measurements
+	double *P_xz = alloca(n*m*sizeof(double));
+	double *save = temp;
+	temp = alloca(n*m*sizeof(double));
+	for (i = 0; i < n*m; i++) {
+		P_xz[i] = 0.f;
+	}
+	for (i = 0; i <= 2*n; i++) {
+		matrix_plus_matrix(gamma + i*n, x, temp, n, 1, 0);
+		matrix_plus_matrix(zeta + i*m, u_z, temp_t, m, 1, 0);
+		matrix_transpose(temp_t, temp_t, m, 1);
+		matrix_cross_matrix(temp, temp_t, temp, n, 1, m);
+		scale_matrix(temp, temp, weight_c[i], n, m);
+		matrix_plus_matrix(temp, P_xz, P_xz, n, m, 1);
+	}
+	
+	// K = P_xz * P_z^-1
+	double *K = alloca(n*m*sizeof(double));
+	temp = save;
+	matrix_inverse(P_z, temp, m);
+	matrix_cross_matrix(P_xz, temp, K, n, m, m);
+
+	// x_f = x + K*y
+	temp = alloca(n*sizeof(double));
+	matrix_cross_matrix(K, y, temp, n, m, 1);
+	matrix_plus_matrix(temp, x, x_f, n, 1, 1);
+
+	// P_f = P - K*P_z*K^t
+	// TODO: finish this part, then done (woohoo!)
 }
