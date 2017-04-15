@@ -3,11 +3,11 @@
 
 // Header file implementing the Kalman filter
 
-typedef void (*Ukf_process_model)(double *chi, double *gamma, double delta_t, int n);
-// chi and gamma are both (n)x(2n+1) matrices comprised of the points before and after the process model transform
-typedef void (*Ukf_measurement_f)(double *gamma, double *zeta, int n, int m);
-// gamma - (n)x(2n+1)
-// zeta  - (m)x(2n+1)
+typedef void (*Ukf_process_model)(double *curr_state, double *next_state, double delta_t, int n);
+// curr_state and next_state are n x 1 matrices
+typedef void (*Ukf_measurement_f)(double *state, double *measurement, int n, int m);
+// gamma - (n)x(1)
+// zeta  - (m)x(1)
 
 void matrix_quick_print(double *matrix, int rows, int columns);
 void predict(double *x, double *P, double *F, double *Q, double *x_f, double *P_f, int x_dim);
