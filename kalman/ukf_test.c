@@ -4,21 +4,42 @@
 
 #include "kalman.h"
 #include "matrix_util.h"
+#include "quaternion_util.h"
 
 #define SIZE_STATE 7
 #define SIZE_MEASUREMENT 3
 
 void process_model(double *curr_state, double *next_state, double delta_t, int n)
 {
+	double orientation[4];
+	double rotation[4];
+	double omega[3]; // omega's magnitude is angular velocity in radians per second
+	double rotation_magnitude;
+	double axis[3];
+
+	memcpy(orientation, curr_state, sizeof(orientation));
+	memcpy(omega, curr_state + 4, sizeof(omega)); 
+	
+	rotation_magnitude = vector_magnitude(omega);
+	rotation_magnitude *= delta_t;
+	normalize_vector(omega, axis);
+	gen_quaternion(rotation_magnitude, axis, rotation);
+	mult_quaternion(orientation, rotation, orientation);
+
+	memcpy(next_state, orientation, sizeof(orientation));
+	memcpy(next_state + 4, omega, sizeof(omega));
 }
 
 void measurement(double *state, double *measurement, int n, int m)
 {
+	measurement[0] = state[4];
+	measurement[1] = state[5];
+	measurement[2] = state[6];
 }
 
 int main()
 {
-	double state[SIZE_STATE] = {0.0};
+	double state[SIZE_STATE] = {0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0};
 	double covariance[SIZE_STATE*SIZE_STATE] = {0.0};
 	double new_state[SIZE_STATE];
 	double new_covariance[SIZE_STATE*SIZE_STATE];
