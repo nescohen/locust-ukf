@@ -79,7 +79,7 @@ void matrix_transpose(double *matrix, double *result, int rows, int columns)
 	int i, j;
 	for (i = 0; i < columns; i++) {
 		for (j = 0; j < rows; j++) {
-			result_temp[i*rows + j] = matrix[j*columns+i];
+			result_temp[i*rows + j] = matrix[j*columns + i];
 		}
 	}
 	memcpy(result, result_temp, result_size);
@@ -176,7 +176,7 @@ void update(double *x, double *z, double *P, double *H, double *R, double *x_f, 
 
 void vdm_scaled_points(double *x, double *P, double *chi, int n, double a, double k)
 // My own implementation of Rudolph Van der Merwe's scaled sigma point algorithm, returns points
-// chi is an (n)x(2n+1) matrix and contains each sigma point
+// chi is an (2n+1)x(n) matrix and contains each sigma point
 {
 	memcpy(chi, x, n*sizeof(double)); // set the first sigma point (chi sub 0) to the mean
 
@@ -188,26 +188,26 @@ void vdm_scaled_points(double *x, double *P, double *chi, int n, double a, doubl
 	int i, j;
 	for (i = 1; i <= n; i++) {
 		for (j = 0; j < n; j++) {
-			chi[i*n + j] = x[j] + temp[i*n + j];
+			chi[i*n + j] = x[j] + temp[(i-1) + j*n];
 		}
 	}
 	for (i = n+1; i <= 2*n; i++) {
 		for (j = 0; j < n; j++) {
-			chi[i*n + j] = x[j] - temp[(i-n)*n + j];
+			chi[i*n + j] = x[j] - temp[(i-n-1) + j*n];
 		}
 	}
 }
 
 void vdm_scaled_weights(double *w_m, double *w_c, int n, double a, double b, double k)
 // My own implementation of Rudolph Van der Merwe's scaled sigma point algorithm
-// returns weights in two (1)x(2n+1) matrices, one for the means and one for the covariances
+// returns weights in two (2n+1)x(1) matrices, one for the means and one for the covariances
 {
-	double sigma = a*a*(n + k) - n;
+	double lambda = a*a*(n + k) - n;
 
-	w_m[0] = sigma/(n + sigma);
-	w_c[0] = sigma/(n + sigma) + 1 - a*a + b;
+	w_m[0] = lambda/(n + lambda);
+	w_c[0] = lambda/(n + lambda) + 1 - a*a + b;
 
-	double remaining = 1/(2*(n + sigma));
+	double remaining = 1/(2*(n + lambda));
 	int i;
 	for (i = 1; i <= 2*n; i++) {
 		w_m[i] = remaining;
@@ -216,9 +216,9 @@ void vdm_scaled_weights(double *w_m, double *w_c, int n, double a, double b, dou
 }
 
 void vdm_get_all(double *x, double *P, int n, double a, double b, double k, double *chi, double *w_m, double *w_c)
-// chi - (n)x(2n+1)
-// w_m - (1)x(2n+1)
-// w_c - (1)x(2n+1)
+// chi - (2n+1)x(n)
+// w_m - (2n+1)x(1)
+// w_c - (2n+1)x(1)
 {
 	vdm_scaled_points(x, P, chi, n, a, k);
 	vdm_scaled_weights(w_m, w_c, n, a, b, k);
@@ -243,13 +243,14 @@ void ukf_predict(double *x, double *P, Ukf_process_model f, double *Q, double de
 		matrix_plus_matrix(temp_x, x_f, x_f, n, 1, 1);
 	}
 	// sum the scaled covariances
-	double *temp_P = alloca(n*sizeof(double));
+	double *temp_P = alloca(n*n*sizeof(double));
 	for (i = 0; i <= 2*n; i++) {
 		memcpy(temp_P, gamma + i*n, n*sizeof(double));
 		matrix_plus_matrix(temp_P, x_f, temp_P, n, 1, 0);
 		matrix_transpose(temp_P, temp_x, n, 1);
 		scale_matrix(temp_P, temp_P, weight_c[i], n, 1);
-		matrix_cross_matrix(temp_P, temp_x, P_f, n, 1, n);
+		matrix_cross_matrix(temp_P, temp_x, temp_P, n, 1, n);
+		matrix_plus_matrix(temp_P, P_f, P_f, n, n, 1);
 	}
 	matrix_plus_matrix(P_f, Q, P_f, n, n, 1);
 }
@@ -282,10 +283,6 @@ void ukf_update(double *x, double *z, double *P, Ukf_measurement_f h, double *R,
 		matrix_plus_matrix(temp, u_z, u_z, m, 1, 1);
 	}
 
-	// y = z - u_z .. Residual
-	double *y = alloca(m*sizeof(double));
-	matrix_plus_matrix(z, u_z, y, m, 1, 0);
-
 	// P_z = sum[ w_c*(Z-u_z)(Z-u_z)^t ] + R .. Covariance of the sigma points in measurement space
 	double *P_z = alloca(m*m*sizeof(double));
 	for (i = 0; i < m*m; i++) {
@@ -299,6 +296,10 @@ void ukf_update(double *x, double *z, double *P, Ukf_measurement_f h, double *R,
 		matrix_plus_matrix(temp, P_z, P_z, m, m, 1);
 	}
 	matrix_plus_matrix(P_z, R, P_z, m, m, 1);
+
+	// y = z - u_z .. Residual
+	double *y = alloca(m*sizeof(double));
+	matrix_plus_matrix(z, u_z, y, m, 1, 0);
 
 	// P_xz = sum[ w_c*(Y - x)(Z - u_z)^t .. Cross covariance of state and measurements
 	double *P_xz = alloca(n*m*sizeof(double));
@@ -314,16 +315,16 @@ void ukf_update(double *x, double *z, double *P, Ukf_measurement_f h, double *R,
 		matrix_plus_matrix(temp, P_xz, P_xz, n, m, 1);
 	}
 	
-	// K = P_xz * P_z^-1
+	// K = P_xz * P_z^-1 .. Kalman Gain
 	double *K = alloca(n*m*sizeof(double));
 	matrix_inverse(P_z, temp, m);
 	matrix_cross_matrix(P_xz, temp, K, n, m, m);
 
-	// x_f = x + K*y
+	// x_f = x + K*y .. New state estimate
 	matrix_cross_matrix(K, y, temp, n, m, 1);
 	matrix_plus_matrix(temp, x, x_f, n, 1, 1);
 
-	// P_f = P - K*P_z*K^t
+	// P_f = P - K*P_z*K^t .. New covariance
 	matrix_cross_matrix(K, P_z, temp, n, m, m);
 	matrix_transpose(K, temp_t, n, m);
 	matrix_cross_matrix(temp, temp_t, temp, n, m, n);

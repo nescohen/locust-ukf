@@ -15,9 +15,9 @@ void predict(double *x, double *P, double *F, double *Q, double *x_f, double *P_
 void update(double *x, double *z, double *P, double *H, double *R, double *x_f, double *P_f, int x_dim, int z_dim);
 
 void vdm_get_all(double *x, double *P, int n, double a, double b, double k, double *chi, double *w_m, double *w_c);
-// chi - (n)x(2n+1)
-// w_m - (1)x(2n+1)
-// w_c - (1)x(2n+1)
+// chi - (2n+1)x(n)
+// w_m - (2n+1)x(1)
+// w_c - (2n+1)x(1)
 
 void ukf_predict(double *x, double *P, Ukf_process_model f, double *Q, double delta_t, double *chi, double *gamma, double *weight_m, double *weight_c,  double *x_f, double *P_f, int n);
 void ukf_update(double *x, double *z, double *P, Ukf_measurement_f h, double *R, double *gamma, double *weight_m, double *weight_c, double *x_f, double *P_f, int n, int m);
