@@ -9,8 +9,6 @@ typedef void (*Ukf_measurement_f)(double *state, double *measurement, int n, int
 // gamma - (n)x(1)
 // zeta  - (m)x(1)
 
-void matrix_quick_print(double *matrix, int rows, int columns);
-
 void predict(double *x, double *P, double *F, double *Q, double *x_f, double *P_f, int x_dim);
 void update(double *x, double *z, double *P, double *H, double *R, double *x_f, double *P_f, int x_dim, int z_dim);
 
