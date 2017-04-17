@@ -114,13 +114,17 @@ void matrix_inverse(double *matrix, double *result, int size)
 	memcpy(result, result_temp, size*size*sizeof(double));
 }
 
+void matrix_diagonal(double *matrix, double value, int size)
+// Initialize a square matrix with all zeroes and a diagonal of one value
+{
+	memset(matrix, 0.0, size*size*sizeof(double));
+	int i;
+	for (i = 0; i < size; i++) {
+		matrix[i*size + i] = value;
+	}
+}
+
 void matrix_identity(double *matrix, int size)
 {
-	int i, j;
-	for (i = 0; i < size; i++) {
-		for (j = 0; j < size; j++) {
-			if (i == j) matrix[i*size + j] = 1;
-			else matrix[i*size + j] = 0;
-		}
-	}
+	matrix_diagonal(matrix, 1.0, size);
 }

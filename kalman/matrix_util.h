@@ -10,5 +10,7 @@ void matrix_transpose(double *matrix, double *result, int rows, int columns);
 void matrix_sqrt(double *matrix, double *result, int size);
 void matrix_inverse(double *matrix, double *result, int size);
 void matrix_identity(double *matrix, int size);
+void matrix_diagonal(double *matrix, double value, int size);
+// Initialize a square matrix with all zeroes and a diagonal of one value
 
 #endif
