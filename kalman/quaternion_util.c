@@ -7,11 +7,19 @@
 void gen_quaternion(double theta, double vect[3], double result[4])
 // Generates the equivilent quaternion from a euler axis angle representation. All angles in radians
 {
-	double sin_theta = sin(theta / 2.0);
-	result[0] = cos(theta / 2.0);
-	result[1] = sin_theta*vect[0];
-	result[2] = sin_theta*vect[1];
-	result[3] = sin_theta*vect[2];
+	if (theta != 0) {
+		double sin_theta = sin(theta / 2.0);
+		result[0] = cos(theta / 2.0);
+		result[1] = sin_theta*vect[0];
+		result[2] = sin_theta*vect[1];
+		result[3] = sin_theta*vect[2];
+	}
+	else {
+		result[0] = 1;
+		result[1] = 0;
+		result[2] = 0;
+		result[3] = 0;
+	}
 }
 
 void mult_quaternion(double op_a[4], double op_b[4], double result[4])
@@ -98,6 +106,7 @@ double vector_magnitude(double vector[3])
 void normalize_vector(double vector[3], double result[3])
 {
 	double magnitude = vector_magnitude(vector);
+	if (magnitude == 0) return;
 	int i;
 	for (i = 0; i < 3; i++) {
 		result[i] = vector[i] / magnitude;

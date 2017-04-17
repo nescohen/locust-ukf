@@ -125,6 +125,16 @@ void matrix_diagonal(double *matrix, double value, int size)
 }
 
 void matrix_identity(double *matrix, int size)
+// Initialize a square matrix to the identity matrix
 {
 	matrix_diagonal(matrix, 1.0, size);
+}
+
+void matrix_init(double *matrix, double value, int rows, int columns)
+// Initialize a matrix with one value in all cells
+{
+	int i;
+	for (i = 0; i < rows*columns; i++) {
+		matrix[i] = value;
+	}
 }

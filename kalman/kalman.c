@@ -116,6 +116,9 @@ void ukf_predict(double *x, double *P, Ukf_process_model f, double *Q, double de
 	for (i = 0; i < n; i++) {
 		x_f[i] = 0.f;
 	}
+	for (i = 0; i < n*n; i++) {
+		P_f[i] = 0.f;
+	}
 	
 	// sum the scaled means 
 	double *temp_x = alloca(n*sizeof(double));
@@ -130,8 +133,8 @@ void ukf_predict(double *x, double *P, Ukf_process_model f, double *Q, double de
 		memcpy(temp_P, gamma + i*n, n*sizeof(double));
 		matrix_plus_matrix(temp_P, x_f, temp_P, n, 1, 0);
 		matrix_transpose(temp_P, temp_x, n, 1);
-		scale_matrix(temp_P, temp_P, weight_c[i], n, 1);
 		matrix_cross_matrix(temp_P, temp_x, temp_P, n, 1, n);
+		scale_matrix(temp_P, temp_P, weight_c[i], n, 1);
 		matrix_plus_matrix(temp_P, P_f, P_f, n, n, 1);
 	}
 	matrix_plus_matrix(P_f, Q, P_f, n, n, 1);

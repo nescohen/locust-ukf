@@ -3,6 +3,7 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
+#include <fenv.h>
 
 #include "kalman.h"
 #include "matrix_util.h"
@@ -24,10 +25,6 @@ void process_model(double *curr_state, double *next_state, double delta_t, int n
 	memcpy(omega, curr_state + 4, sizeof(omega)); 
 	
 	rotation_magnitude = vector_magnitude(omega);
-	if (rotation_magnitude == 0.0) {
-		memcpy(next_state, curr_state, SIZE_STATE*sizeof(double));
-		return;
-	}
 	rotation_magnitude *= delta_t;
 	normalize_vector(omega, axis);
 	gen_quaternion(rotation_magnitude, axis, rotation);
@@ -46,7 +43,7 @@ void measurement(double *state, double *measurement, int n, int m)
 
 int main()
 {
-	double state[SIZE_STATE] = {0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0};
+	double state[SIZE_STATE] = {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 	double covariance[SIZE_STATE*SIZE_STATE];
 	double new_state[SIZE_STATE];
 	double new_covariance[SIZE_STATE*SIZE_STATE];
@@ -55,7 +52,7 @@ int main()
 	double R[SIZE_MEASUREMENT*SIZE_MEASUREMENT];
 	double Q[SIZE_STATE*SIZE_STATE];
 	matrix_diagonal(R, SENSOR_VARIANCE, SIZE_MEASUREMENT);
-	matrix_identity(Q, SIZE_STATE);
+	matrix_diagonal(Q, 10.0, SIZE_STATE);
 
 	double chi[SIZE_STATE*(2*SIZE_STATE + 1)];
 	double gamma[SIZE_STATE*(2*SIZE_STATE + 1)];
@@ -72,11 +69,15 @@ int main()
 	}
 	printf("Random omega: [%f, %f, %f]\n", measurements[0], measurements[1], measurements[2]);
 
+#if defined(DEBUG) && defined(FE_DIVBYZERO) && defined(FE_INVALID) && defined(FE_UNDERFLOW) && defined(FE_OVERFLOW)
+	feenableexcept( FE_DIVBYZERO | FE_INVALID | FE_UNDERFLOW | FE_OVERFLOW );
+#endif
+
 	printf("INITIAL\n");
 	matrix_quick_print(state, SIZE_STATE, 1);
 	matrix_quick_print(covariance, SIZE_STATE, SIZE_STATE);
 	for (i = 0; i < 10; i++) {
-		vdm_get_all(state, covariance, SIZE_STATE, 0.1, 2.0, -1.0, chi, w_m, w_c);
+		vdm_get_all(state, covariance, SIZE_STATE, 0.1, 2.0, -4.0, chi, w_m, w_c);
 
 		ukf_predict(state, covariance, &process_model, Q, delta_t, chi, gamma, w_m, w_c, new_state, new_covariance, SIZE_STATE);
 		printf("PREDICT\n");
