@@ -9,32 +9,38 @@
 #include "matrix_util.h"
 #include "quaternion_util.h"
 
-#define SIZE_STATE 7
+#define SIZE_STATE 10
 #define SIZE_MEASUREMENT 3
 #define SENSOR_VARIANCE (double)11 + (double)1 / (double)9
 
-#define POWER_ITERATIONS 10
+#define POWER_ITERATIONS 100
 
 void process_model(double *curr_state, double *next_state, double delta_t, int n)
 {
 	double orientation[4];
 	double rotation[4];
 	double omega[3]; // omega's magnitude is angular velocity in radians per second
+	double alpha[3]; // angular acceleration vector radians per second per second
 	double rotation_magnitude;
 	double axis[3];
 
 	memcpy(orientation, curr_state, sizeof(orientation));
 	memcpy(omega, curr_state + 4, sizeof(omega)); 
+	memcpy(alpha, curr_state + 7, sizeof(alpha));
 	
+	double d_omega[3];
+	scale_matrix(alpha, d_omega, delta_t, 3, 1);
+	matrix_plus_matrix(d_omega, omega, omega, 3, 3, 1);
 	rotation_magnitude = vector_magnitude(omega);
 	rotation_magnitude *= delta_t;
 	normalize_vector(omega, axis);
 	gen_quaternion(rotation_magnitude, axis, rotation);
-	//normalize_quaternion(orientation, orientation);
+	// normalize_quaternion(orientation, orientation);
 	mult_quaternion(orientation, rotation, orientation);
 
 	memcpy(next_state, orientation, sizeof(orientation));
 	memcpy(next_state + 4, omega, sizeof(omega));
+	memcpy(next_state + 7, alpha, sizeof(alpha));
 }
 
 void measurement(double *state, double *measurement, int n, int m)
@@ -55,7 +61,9 @@ void mean_state(double *points, double *weights, double *mean, int size, int cou
 	}
 	matrix_transpose(Q, Q_t, 4, count);
 	matrix_cross_matrix(Q, Q_t, M, 4, count, 4);
+
 	// find the eigenvector with the greatest eigenvalue using the power iteration method
+	// in most cases this is equivilent to finding the mean quaternion
 	double b[4] = {1, 0, 0, 0};
 	for (i = 0; i < POWER_ITERATIONS; i++) {
 		matrix_cross_matrix(Q, b, b, 4, 4, 1);
@@ -63,32 +71,29 @@ void mean_state(double *points, double *weights, double *mean, int size, int cou
 	}
 	memcpy(mean, b, sizeof(b));
 
-	double avg[3] = {0, 0, 0};
+	double avg[6] = {0, 0, 0};
 	for (i = 0; i < count; i++) {
-		double temp[3];
-		scale_matrix(points + 4 + i*size, temp, weights[i], 3, 1);
-		matrix_plus_matrix(temp, avg, avg, 3, 1, 1);
+		double temp[6];
+		scale_matrix(points + 4 + i*size, temp, weights[i], 6, 1);
+		matrix_plus_matrix(temp, avg, avg, 6, 1, 1);
 	}
 	memcpy(mean + 4, avg, sizeof(avg));
 }
 
-void mean_measurements(double *points, double *weights, double *mean, int size, int count);
-
 int main()
 {
 	int i;
-	double state[SIZE_STATE] = {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+	double state[SIZE_STATE] = {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 	double covariance[SIZE_STATE*SIZE_STATE];
 	double new_state[SIZE_STATE];
 	double new_covariance[SIZE_STATE*SIZE_STATE];
-	matrix_diagonal(covariance, 100.0, SIZE_STATE);
+	matrix_diagonal(covariance, 1.0, SIZE_STATE);
 
 	double R[SIZE_MEASUREMENT*SIZE_MEASUREMENT];
 	double Q[SIZE_STATE*SIZE_STATE];
 	matrix_diagonal(R, SENSOR_VARIANCE, SIZE_MEASUREMENT);
-	// memset(Q, 0.0, SIZE_STATE*SIZE_STATE*sizeof(double));
-	matrix_diagonal(Q, 10.0, SIZE_STATE);
-	for (i = 4; i < 7; i++) {
+	memset(Q, 0.0, SIZE_STATE*SIZE_STATE*sizeof(double));
+	for (i = 4; i < SIZE_STATE; i++) {
 		Q[i*SIZE_STATE + i] = 30.0;
 	}
 
@@ -106,7 +111,7 @@ int main()
 	}
 	printf("Random omega: [%f, %f, %f]\n", measurements[0], measurements[1], measurements[2]);
 
-#if defined(DEBUG) && defined(FE_DIVBYZERO) && defined(FE_INVALID) && defined(FE_UNDERFLOW) && defined(FE_OVERFLOW)
+#if defined(FE_DIVBYZERO) && defined(FE_INVALID) && defined(FE_UNDERFLOW) && defined(FE_OVERFLOW)
 	feenableexcept( FE_DIVBYZERO | FE_INVALID | FE_UNDERFLOW | FE_OVERFLOW );
 #endif
 
@@ -114,7 +119,7 @@ int main()
 	matrix_quick_print(state, SIZE_STATE, 1);
 	matrix_quick_print(covariance, SIZE_STATE, SIZE_STATE);
 	for (i = 0; i < 10; i++) {
-		vdm_get_all(state, covariance, SIZE_STATE, 0.1, 2.0, -4.0, chi, w_m, w_c);
+		vdm_get_all(state, covariance, SIZE_STATE, 0.1, 2.0, 3 - SIZE_STATE, chi, w_m, w_c);
 
 		ukf_predict(state, covariance, &process_model, &mean_state, Q, delta_t, chi, gamma, w_m, w_c, new_state, new_covariance, SIZE_STATE);
 		printf("PREDICT\n");

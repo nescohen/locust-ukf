@@ -62,7 +62,7 @@ void matrix_quick_print(double *matrix, int rows, int columns)
 	for (i = 0; i < rows; i++) {
 		printf("[");
 		for (j = 0; j < columns; j++) {
-			printf("%f, ", matrix[i*columns + j]);
+			printf("% 010.4f, ", matrix[i*columns + j]);
 		}
 		printf("]\n");
 	}

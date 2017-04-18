@@ -213,8 +213,6 @@ void ukf_update
 	double *K = alloca(n*m*sizeof(double));
 	matrix_inverse(P_z, temp, m);
 	matrix_cross_matrix(P_xz, temp, K, n, m, m);
-	printf("Kalman Gain\n");
-	matrix_quick_print(K, n, m);
 
 	// x_f = x + K*y .. New state estimate
 	matrix_cross_matrix(K, y, temp, n, m, 1);
