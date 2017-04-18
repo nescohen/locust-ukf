@@ -138,8 +138,8 @@ void ukf_predict
 		memcpy(temp_P, gamma + i*n, n*sizeof(double));
 		matrix_plus_matrix(temp_P, x_f, temp_P, n, 1, 0);
 		matrix_transpose(temp_P, temp_x, n, 1);
-		matrix_cross_matrix(temp_P, temp_x, temp_P, n, 1, n);
 		scale_matrix(temp_P, temp_P, weight_c[i], n, 1);
+		matrix_cross_matrix(temp_P, temp_x, temp_P, n, 1, n);
 		matrix_plus_matrix(temp_P, P_f, P_f, n, n, 1);
 	}
 	matrix_plus_matrix(P_f, Q, P_f, n, n, 1);
@@ -185,8 +185,8 @@ void ukf_update
 	for (i = 0; i <= 2*n; i++) {
 		matrix_plus_matrix(zeta + i*m, u_z, temp, m, 1, 0);
 		matrix_transpose(temp, temp_t, m, 1);
-		matrix_cross_matrix(temp, temp_t, temp, m, 1, m);
 		scale_matrix(temp, temp, weight_c[i], m, m);
+		matrix_cross_matrix(temp, temp_t, temp, m, 1, m);
 		matrix_plus_matrix(temp, P_z, P_z, m, m, 1);
 	}
 	matrix_plus_matrix(P_z, R, P_z, m, m, 1);
@@ -204,8 +204,8 @@ void ukf_update
 		matrix_plus_matrix(gamma + i*n, x, temp, n, 1, 0);
 		matrix_plus_matrix(zeta + i*m, u_z, temp_t, m, 1, 0);
 		matrix_transpose(temp_t, temp_t, m, 1);
-		matrix_cross_matrix(temp, temp_t, temp, n, 1, m);
 		scale_matrix(temp, temp, weight_c[i], n, m);
+		matrix_cross_matrix(temp, temp_t, temp, n, 1, m);
 		matrix_plus_matrix(temp, P_xz, P_xz, n, m, 1);
 	}
 	

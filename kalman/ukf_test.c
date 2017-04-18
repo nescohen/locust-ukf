@@ -86,9 +86,10 @@ int main()
 	double R[SIZE_MEASUREMENT*SIZE_MEASUREMENT];
 	double Q[SIZE_STATE*SIZE_STATE];
 	matrix_diagonal(R, SENSOR_VARIANCE, SIZE_MEASUREMENT);
-	memset(Q, 0.0, SIZE_STATE*SIZE_STATE*sizeof(double));
+	// memset(Q, 0.0, SIZE_STATE*SIZE_STATE*sizeof(double));
+	matrix_diagonal(Q, 10.0, SIZE_STATE);
 	for (i = 4; i < 7; i++) {
-		Q[i*SIZE_STATE + i] = 10.0;
+		Q[i*SIZE_STATE + i] = 30.0;
 	}
 
 	double chi[SIZE_STATE*(2*SIZE_STATE + 1)];
