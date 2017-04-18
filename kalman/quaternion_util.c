@@ -112,3 +112,16 @@ void normalize_vector(double vector[3], double result[3])
 		result[i] = vector[i] / magnitude;
 	}
 }
+
+void normalize_quaternion(double q[4], double result[4])
+{
+	int i;
+	double sum = 0.0;
+	for (i = 0; i < 4; i++) {
+		sum += q[i]*q[i];
+	}
+	double norm = sqrt(sum);
+	for (i = 0; i < 4; i++) {
+		result[i] = q[i] / norm;
+	}
+}

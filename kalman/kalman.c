@@ -106,7 +106,8 @@ void vdm_get_all(double *x, double *P, int n, double a, double b, double k, doub
 	vdm_scaled_weights(w_m, w_c, n, a, b, k);
 }
 
-void ukf_predict(double *x, double *P, Ukf_process_model f, double *Q, double delta_t, double *chi, double *gamma, double *weight_m, double *weight_c,  double *x_f, double *P_f, int n)
+void ukf_predict
+(double *x, double *P, Ukf_process_model f, Ukf_state_mean mean, double *Q, double delta_t, double *chi, double *gamma, double *weight_m, double *weight_c,  double *x_f, double *P_f, int n)
 {
 	int i;
 	for (i = 0; i <= 2*n; i++) {
@@ -119,14 +120,18 @@ void ukf_predict(double *x, double *P, Ukf_process_model f, double *Q, double de
 	for (i = 0; i < n*n; i++) {
 		P_f[i] = 0.f;
 	}
-	
-	// sum the scaled means 
+
 	double *temp_x = alloca(n*sizeof(double));
-	for (i = 0; i <= 2*n; i++) {
-		memcpy(temp_x, gamma + i*n, n*sizeof(double));
-		scale_matrix(temp_x, temp_x, weight_m[i], n, 1);
-		matrix_plus_matrix(temp_x, x_f, x_f, n, 1, 1);
+	if (mean == NULL) {
+		// sum the scaled means 
+		for (i = 0; i <= 2*n; i++) {
+			memcpy(temp_x, gamma + i*n, n*sizeof(double));
+			scale_matrix(temp_x, temp_x, weight_m[i], n, 1);
+			matrix_plus_matrix(temp_x, x_f, x_f, n, 1, 1);
+		}
 	}
+	else (*mean)(gamma, weight_m, x_f, n, 2*n + 1);
+
 	// sum the scaled covariances
 	double *temp_P = alloca(n*n*sizeof(double));
 	for (i = 0; i <= 2*n; i++) {
@@ -140,7 +145,8 @@ void ukf_predict(double *x, double *P, Ukf_process_model f, double *Q, double de
 	matrix_plus_matrix(P_f, Q, P_f, n, n, 1);
 }
 
-void ukf_update(double *x, double *z, double *P, Ukf_measurement_f h, double *R, double *gamma, double *weight_m, double *weight_c, double *x_f, double *P_f, int n, int m)
+void ukf_update
+(double *x, double *z, double *P, Ukf_measurement_f h, Ukf_measurements_mean mean, double *R, double *gamma, double *weight_m, double *weight_c, double *x_f, double *P_f, int n, int m)
 // n is the number of dimensions in state space, m is the number of dimensions in measurement space
 {
 	// Find maximum matrix size
@@ -157,16 +163,19 @@ void ukf_update(double *x, double *z, double *P, Ukf_measurement_f h, double *R,
 		(*h)(gamma + i*n, zeta + i*m, n, m);
 	}
 
-	// u_z = sum[ w_m*Z .. Mean of the sigma points in measurement space
 	double *u_z = alloca(m*sizeof(double));
-	for (i = 0; i < m; i++) {
-		u_z[i] = 0;
+	// u_z = sum[ w_m*Z .. Mean of the sigma points in measurement space
+	if (mean == NULL) {
+			for (i = 0; i < m; i++) {
+			u_z[i] = 0;
+		}
+		for (i = 0; i <= 2*n; i++) {
+			memcpy(temp, zeta + i*m, m*sizeof(double));
+			scale_matrix(temp, temp, weight_m[i], m, 1);
+			matrix_plus_matrix(temp, u_z, u_z, m, 1, 1);
+		}
 	}
-	for (i = 0; i <= 2*n; i++) {
-		memcpy(temp, zeta + i*m, m*sizeof(double));
-		scale_matrix(temp, temp, weight_m[i], m, 1);
-		matrix_plus_matrix(temp, u_z, u_z, m, 1, 1);
-	}
+	else (*mean)(zeta, weight_m, u_z, m, 2*n + 1);
 
 	// P_z = sum[ w_c*(Z-u_z)(Z-u_z)^t ] + R .. Covariance of the sigma points in measurement space
 	double *P_z = alloca(m*m*sizeof(double));
@@ -204,6 +213,8 @@ void ukf_update(double *x, double *z, double *P, Ukf_measurement_f h, double *R,
 	double *K = alloca(n*m*sizeof(double));
 	matrix_inverse(P_z, temp, m);
 	matrix_cross_matrix(P_xz, temp, K, n, m, m);
+	printf("Kalman Gain\n");
+	matrix_quick_print(K, n, m);
 
 	// x_f = x + K*y .. New state estimate
 	matrix_cross_matrix(K, y, temp, n, m, 1);
