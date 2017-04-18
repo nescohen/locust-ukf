@@ -107,7 +107,7 @@ void vdm_get_all(double *x, double *P, int n, double a, double b, double k, doub
 }
 
 void ukf_predict
-(double *x, double *P, Ukf_process_model f, Ukf_state_mean mean, double *Q, double delta_t, double *chi, double *gamma, double *weight_m, double *weight_c,  double *x_f, double *P_f, int n)
+(double *x, double *P, Ukf_process_model f, Ukf_state_mean mean, Ukf_difference_state diff, double *Q, double delta_t, double *chi, double *gamma, double *weight_m, double *weight_c,  double *x_f, double *P_f, int n)
 {
 	int i;
 	for (i = 0; i <= 2*n; i++) {
@@ -136,7 +136,8 @@ void ukf_predict
 	double *temp_P = alloca(n*n*sizeof(double));
 	for (i = 0; i <= 2*n; i++) {
 		memcpy(temp_P, gamma + i*n, n*sizeof(double));
-		matrix_plus_matrix(temp_P, x_f, temp_P, n, 1, 0);
+		if (diff == NULL) matrix_plus_matrix(temp_P, x_f, temp_P, n, 1, 0);
+		else (*diff)(temp_P, x_f, temp_P, n);
 		matrix_transpose(temp_P, temp_x, n, 1);
 		scale_matrix(temp_P, temp_P, weight_c[i], n, 1);
 		matrix_cross_matrix(temp_P, temp_x, temp_P, n, 1, n);
@@ -146,7 +147,7 @@ void ukf_predict
 }
 
 void ukf_update
-(double *x, double *z, double *P, Ukf_measurement_f h, Ukf_measurements_mean mean, double *R, double *gamma, double *weight_m, double *weight_c, double *x_f, double *P_f, int n, int m)
+(double *x, double *z, double *P, Ukf_measurement_f h, Ukf_measurements_mean mean, Ukf_difference_state xdiff, Ukf_difference_measure zdiff, double *R, double *gamma, double *weight_m, double *weight_c, double *x_f, double *P_f, int n, int m)
 // n is the number of dimensions in state space, m is the number of dimensions in measurement space
 {
 	// Find maximum matrix size
@@ -183,7 +184,8 @@ void ukf_update
 		P_z[i] = 0.f;
 	}
 	for (i = 0; i <= 2*n; i++) {
-		matrix_plus_matrix(zeta + i*m, u_z, temp, m, 1, 0);
+		if (zdiff == NULL) matrix_plus_matrix(zeta + i*m, u_z, temp, m, 1, 0);
+		else (*zdiff)(zeta + i*m, u_z, temp, m);
 		matrix_transpose(temp, temp_t, m, 1);
 		scale_matrix(temp, temp, weight_c[i], m, m);
 		matrix_cross_matrix(temp, temp_t, temp, m, 1, m);
@@ -201,8 +203,10 @@ void ukf_update
 		P_xz[i] = 0.f;
 	}
 	for (i = 0; i <= 2*n; i++) {
-		matrix_plus_matrix(gamma + i*n, x, temp, n, 1, 0);
-		matrix_plus_matrix(zeta + i*m, u_z, temp_t, m, 1, 0);
+		if (xdiff == NULL) matrix_plus_matrix(gamma + i*n, x, temp, n, 1, 0);
+		else (*xdiff)(gamma + i*n, x, temp, n);
+		if (zdiff == NULL) matrix_plus_matrix(zeta + i*m, u_z, temp_t, m, 1, 0);
+		else (*zdiff)(zeta + i*m, u_z, temp_t, m);
 		matrix_transpose(temp_t, temp_t, m, 1);
 		scale_matrix(temp, temp, weight_c[i], n, m);
 		matrix_cross_matrix(temp, temp_t, temp, n, 1, m);
