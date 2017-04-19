@@ -6,6 +6,15 @@
 
 #include "matrix_util.h"
 
+void matrix_column(double *matrix, double *result, int rows, int columns, int column)
+// result must be at least the size of one matrix column
+{
+	int i; 
+	for (i = 0; i < rows; i++) {
+		result[i] = matrix[i*columns + column];
+	}
+}
+
 void scale_matrix(double *matrix, double *result, double factor, int rows, int columns)
 {
 	int i;

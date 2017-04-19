@@ -1,6 +1,7 @@
 #ifndef MATRIX_UTIL_H
 #define MATRIX_UTIL_H
 
+void matrix_column(double *matrix, double *result, int rows, int columns, int column);
 void scale_matrix(double *matrix, double *result, double factor, int rows, int columns);
 void matrix_cross_vector(double *matrix, double *vector, double *result, int rows, int columns);
 // vector columns must equal matrix rows, result must be vector of with same number of rows of matrix

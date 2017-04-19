@@ -132,11 +132,21 @@ void custom_scaled_points(double *x, double *P, double *chi, int n, double a, do
 		}
 		double angle;
 		double axis;
+		matrix_column(temp, axis, 3, n, i-1);
+		angle = vector_magnitude(axis);
+		normalize_vector(axis, axis);
+		gen_quaternion(angle, axis, chi + i*n);
 	}
 	for (i = n+1; i <= 2*n; i++) {
 		for (j = 4; j < n; j++) {
 			chi[i*n + j] = x[j] - temp[(i-n-1) + j*n];
 		}
+		double angle;
+		double axis;
+		matrix_column(temp, axis, 3, n, i-1);
+		angle = -1*vector_magnitude(axis);
+		normalize_vector(axis, axis);
+		gen_quaternion(angle, axis, chi + i*n);
 	}
 }
 
