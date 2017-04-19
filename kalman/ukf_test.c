@@ -13,6 +13,10 @@
 #define SIZE_MEASUREMENT 3
 #define SENSOR_VARIANCE (double)11 + (double)1 / (double)9
 
+#define ALPHA 0.1
+#define BETA 2.0
+#define KAPPA (double)(3 - SIZE_STATE)
+
 #define POWER_ITERATIONS 100
 
 void process_model(double *curr_state, double *next_state, double delta_t, int n)
@@ -124,14 +128,14 @@ void custom_scaled_points(double *x, double *P, double *chi, int n, double a, do
 		}
 	}
 	scale_matrix(temp, temp, scale, n-1 , n-1);
-	matrix_sqrt(temp, temp, n);
+	matrix_sqrt(temp, temp, n-1);
 
 	for (i = 1; i <= n; i++) {
 		for (j = 4; j < n; j++) {
 			chi[i*n + j] = x[j] + temp[(i-1) + j*n];
 		}
 		double angle;
-		double axis;
+		double axis[3];
 		matrix_column(temp, axis, 3, n, i-1);
 		angle = vector_magnitude(axis);
 		normalize_vector(axis, axis);
@@ -142,7 +146,7 @@ void custom_scaled_points(double *x, double *P, double *chi, int n, double a, do
 			chi[i*n + j] = x[j] - temp[(i-n-1) + j*n];
 		}
 		double angle;
-		double axis;
+		double axis[3];
 		matrix_column(temp, axis, 3, n, i-1);
 		angle = -1*vector_magnitude(axis);
 		normalize_vector(axis, axis);
@@ -192,7 +196,9 @@ int main()
 	matrix_quick_print(state, SIZE_STATE, 1);
 	matrix_quick_print(covariance, SIZE_STATE, SIZE_STATE);
 	for (i = 0; i < 10; i++) {
-		vdm_get_all(state, covariance, SIZE_STATE, 0.1, 2.0, 3 - SIZE_STATE, chi, w_m, w_c);
+		//vdm_get_all(state, covariance, SIZE_STATE, ALPHA, BETA, KAPPA, chi, w_m, w_c);
+		custom_scaled_points(state, covariance, chi, SIZE_STATE, ALPHA, KAPPA);
+		vdm_scaled_weights(w_m, w_c, SIZE_STATE, ALPHA, BETA, KAPPA);
 
 		ukf_predict(state, covariance, &process_model, &mean_state, NULL, Q, delta_t, chi, gamma, w_m, w_c, new_state, new_covariance, SIZE_STATE);
 		printf("PREDICT\n");

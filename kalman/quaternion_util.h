@@ -2,6 +2,7 @@
 #define QUATERNION_UTIL_H
 
 void gen_quaternion(double theta, double vect[3], double result[4]);
+void decomp_quaternion(double quat[4], double vect[3]);
 void mult_quaternion(double op_a[4], double op_b[4], double result[4]);
 void generate_matrix(double q[4], double matrix[9]);
 void vector_by_matrix(double v[3], double r[9], double result[3]);

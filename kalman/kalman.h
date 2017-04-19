@@ -14,8 +14,8 @@ typedef void (*Ukf_difference_measure)(double *point, double *mean, double *diff
 void predict(double *x, double *P, double *F, double *Q, double *x_f, double *P_f, int x_dim);
 void update(double *x, double *z, double *P, double *H, double *R, double *x_f, double *P_f, int x_dim, int z_dim);
 
-void vdm_scaled_points(double *x, double *P, double *chi, int n, double a, double k)
-void vdm_scaled_weights(double *w_m, double *w_c, int n, double a, double b, double k)
+void vdm_scaled_points(double *x, double *P, double *chi, int n, double a, double k);
+void vdm_scaled_weights(double *w_m, double *w_c, int n, double a, double b, double k);
 void vdm_get_all(double *x, double *P, int n, double a, double b, double k, double *chi, double *w_m, double *w_c);
 // chi - (2n+1)x(n)
 // w_m - (2n+1)x(1)
