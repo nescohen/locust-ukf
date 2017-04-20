@@ -1,15 +1,3517 @@
-==3121== Memcheck, a memory error detector
-==3121== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.
-==3121== Using Valgrind-3.10.0 and LibVEX; rerun with -h for copyright info
-==3121== Command: ./mrp.bin
-==3121== Parent PID: 3109
-==3121== 
-==3121== 
-==3121== HEAP SUMMARY:
-==3121==     in use at exit: 0 bytes in 0 blocks
-==3121==   total heap usage: 20 allocs, 20 frees, 400 bytes allocated
-==3121== 
-==3121== All heap blocks were freed -- no leaks are possible
-==3121== 
-==3121== For counts of detected and suppressed errors, rerun with: -v
-==3121== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==2022== Memcheck, a memory error detector
+==2022== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.
+==2022== Using Valgrind-3.10.0 and LibVEX; rerun with -h for copyright info
+==2022== Command: ./mrp.bin
+==2022== Parent PID: 2010
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57ED0C7: __printf_fp (printf_fp.c:378)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57ED1F7: __printf_fp (printf_fp.c:393)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E69A2: __mpn_extract_double (dbl2mpn.c:56)
+==2022==    by 0x57ED531: __printf_fp (printf_fp.c:409)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E69A7: __mpn_extract_double (dbl2mpn.c:60)
+==2022==    by 0x57ED531: __printf_fp (printf_fp.c:409)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57ED5A6: __printf_fp (printf_fp.c:462)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EDF43: __printf_fp (printf_fp.c:633)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57EE769: __printf_fp (printf_fp.c:641)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E56F8: __mpn_lshift (lshift.S:59)
+==2022==    by 0x57EE76D: __printf_fp (printf_fp.c:641)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E56FB: __mpn_lshift (lshift.S:60)
+==2022==    by 0x57EE76D: __printf_fp (printf_fp.c:641)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57EE7A3: __printf_fp (printf_fp.c:642)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EE7C8: __printf_fp (printf_fp.c:653)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EE92F: __printf_fp (printf_fp.c:764)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5947: __mpn_mul (mul.c:80)
+==2022==    by 0x57EE802: __printf_fp (printf_fp.c:661)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E594E: __mpn_mul (mul.c:81)
+==2022==    by 0x57EE802: __printf_fp (printf_fp.c:661)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5D60: __mpn_mul_1 (mul_1.S:90)
+==2022==    by 0x57E5960: __mpn_mul (mul.c:90)
+==2022==    by 0x57EE802: __printf_fp (printf_fp.c:661)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5DC2: __mpn_mul_1 (mul_1.S:117)
+==2022==    by 0x57E5960: __mpn_mul (mul.c:90)
+==2022==    by 0x57EE802: __printf_fp (printf_fp.c:661)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5971: __mpn_mul (mul.c:92)
+==2022==    by 0x57EE802: __printf_fp (printf_fp.c:661)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E59BD: __mpn_mul (mul.c:99)
+==2022==    by 0x57EE802: __printf_fp (printf_fp.c:661)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E59C5: __mpn_mul (mul.c:100)
+==2022==    by 0x57EE802: __printf_fp (printf_fp.c:661)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E59CC: __mpn_mul (mul.c:103)
+==2022==    by 0x57EE802: __printf_fp (printf_fp.c:661)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5013: __mpn_add_n (add_n.S:37)
+==2022==    by 0x57E59DF: __mpn_mul (mul.c:104)
+==2022==    by 0x57EE802: __printf_fp (printf_fp.c:661)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E59A7: __mpn_mul (mul.c:109)
+==2022==    by 0x57EE802: __printf_fp (printf_fp.c:661)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E59B7: __mpn_mul (mul.c:97)
+==2022==    by 0x57EE802: __printf_fp (printf_fp.c:661)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57EE833: __printf_fp (printf_fp.c:673)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EE85A: __printf_fp (printf_fp.c:682)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EE867: __printf_fp (printf_fp.c:704)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57EE87C: __printf_fp (printf_fp.c:721)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EE89B: __printf_fp (printf_fp.c:721)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57EE8B3: __printf_fp (printf_fp.c:721)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EE8CF: __printf_fp (printf_fp.c:721)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EE8D5: __printf_fp (printf_fp.c:722)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EEAA5: __printf_fp (printf_fp.c:742)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E57B5: __mpn_rshift (rshift.S:31)
+==2022==    by 0x57EE909: __printf_fp (printf_fp.c:754)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E57DC: __mpn_rshift (rshift.S:45)
+==2022==    by 0x57EE909: __printf_fp (printf_fp.c:754)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E5806: __mpn_rshift (rshift.S:61)
+==2022==    by 0x57EE909: __printf_fp (printf_fp.c:754)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E5859: __mpn_rshift (rshift.S:87)
+==2022==    by 0x57EE909: __printf_fp (printf_fp.c:754)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5868: __mpn_rshift (rshift.S:92)
+==2022==    by 0x57EE909: __printf_fp (printf_fp.c:754)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E589A: __mpn_rshift (rshift.S:105)
+==2022==    by 0x57EE909: __printf_fp (printf_fp.c:754)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EE7E8: __printf_fp (printf_fp.c:660)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5CC4: __mpn_mul_1 (mul_1.S:36)
+==2022==    by 0x57E5960: __mpn_mul (mul.c:90)
+==2022==    by 0x57EE997: __printf_fp (printf_fp.c:666)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E5CDA: __mpn_mul_1 (mul_1.S:45)
+==2022==    by 0x57E5960: __mpn_mul (mul.c:90)
+==2022==    by 0x57EE997: __printf_fp (printf_fp.c:666)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E5CDF: __mpn_mul_1 (mul_1.S:47)
+==2022==    by 0x57E5960: __mpn_mul (mul.c:90)
+==2022==    by 0x57EE997: __printf_fp (printf_fp.c:666)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E5CE1: __mpn_mul_1 (mul_1.S:48)
+==2022==    by 0x57E5960: __mpn_mul (mul.c:90)
+==2022==    by 0x57EE997: __printf_fp (printf_fp.c:666)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5D95: __mpn_mul_1 (mul_1.S:104)
+==2022==    by 0x57E5960: __mpn_mul (mul.c:90)
+==2022==    by 0x57EE997: __printf_fp (printf_fp.c:666)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5D9D: __mpn_mul_1 (mul_1.S:106)
+==2022==    by 0x57E5960: __mpn_mul (mul.c:90)
+==2022==    by 0x57EE997: __printf_fp (printf_fp.c:666)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E5DC0: __mpn_mul_1 (mul_1.S:115)
+==2022==    by 0x57E5960: __mpn_mul (mul.c:90)
+==2022==    by 0x57EE997: __printf_fp (printf_fp.c:666)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5D60: __mpn_mul_1 (mul_1.S:90)
+==2022==    by 0x57E5960: __mpn_mul (mul.c:90)
+==2022==    by 0x57EE997: __printf_fp (printf_fp.c:666)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5D67: __mpn_mul_1 (mul_1.S:92)
+==2022==    by 0x57E5960: __mpn_mul (mul.c:90)
+==2022==    by 0x57EE997: __printf_fp (printf_fp.c:666)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5DC2: __mpn_mul_1 (mul_1.S:117)
+==2022==    by 0x57E5960: __mpn_mul (mul.c:90)
+==2022==    by 0x57EE997: __printf_fp (printf_fp.c:666)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5971: __mpn_mul (mul.c:92)
+==2022==    by 0x57EE997: __printf_fp (printf_fp.c:666)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E50C8: __mpn_addmul_1 (addmul_1.S:40)
+==2022==    by 0xFFEFFE40F: ???
+==2022==    by 0x57EE997: __printf_fp (printf_fp.c:666)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E50CB: __mpn_addmul_1 (addmul_1.S:41)
+==2022==    by 0xFFEFFE40F: ???
+==2022==    by 0x57EE997: __printf_fp (printf_fp.c:666)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E50DE: __mpn_addmul_1 (addmul_1.S:48)
+==2022==    by 0xFFEFFE40F: ???
+==2022==    by 0x57EE997: __printf_fp (printf_fp.c:666)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E5108: __mpn_addmul_1 (addmul_1.S:63)
+==2022==    by 0xFFEFFE40F: ???
+==2022==    by 0x57EE997: __printf_fp (printf_fp.c:666)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5111: __mpn_addmul_1 (addmul_1.S:66)
+==2022==    by 0xFFEFFE40F: ???
+==2022==    by 0x57EE997: __printf_fp (printf_fp.c:666)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E5175: __mpn_addmul_1 (addmul_1.S:94)
+==2022==    by 0xFFEFFE40F: ???
+==2022==    by 0xFFEFFE4FF: ???
+==2022==    by 0x57E59A6: __mpn_mul (mul.c:107)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5139: __mpn_addmul_1 (addmul_1.S:78)
+==2022==    by 0xFFEFFE40F: ???
+==2022==    by 0xFFEFFE4FF: ???
+==2022==    by 0x57E59A6: __mpn_mul (mul.c:107)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5140: __mpn_addmul_1 (addmul_1.S:80)
+==2022==    by 0xFFEFFE40F: ???
+==2022==    by 0xFFEFFE4FF: ???
+==2022==    by 0x57E59A6: __mpn_mul (mul.c:107)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5180: __mpn_addmul_1 (addmul_1.S:99)
+==2022==    by 0xFFEFFE40F: ???
+==2022==    by 0xFFEFFE4FF: ???
+==2022==    by 0x57E59A6: __mpn_mul (mul.c:107)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E59A7: __mpn_mul (mul.c:109)
+==2022==    by 0x57EE997: __printf_fp (printf_fp.c:666)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E59B7: __mpn_mul (mul.c:97)
+==2022==    by 0x57EE997: __printf_fp (printf_fp.c:666)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EE8F3: __printf_fp (printf_fp.c:732)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E57B7: __mpn_rshift (rshift.S:33)
+==2022==    by 0x57EE909: __printf_fp (printf_fp.c:754)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E588A: __mpn_rshift (rshift.S:101)
+==2022==    by 0x57EE909: __printf_fp (printf_fp.c:754)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5D82: __mpn_mul_1 (mul_1.S:99)
+==2022==    by 0x57E5960: __mpn_mul (mul.c:90)
+==2022==    by 0x57EE997: __printf_fp (printf_fp.c:666)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5D8A: __mpn_mul_1 (mul_1.S:101)
+==2022==    by 0x57E5960: __mpn_mul (mul.c:90)
+==2022==    by 0x57EE997: __printf_fp (printf_fp.c:666)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E56AF: __mpn_lshift (lshift.S:34)
+==2022==    by 0x57EEE99: __printf_fp (printf_fp.c:738)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E56B1: __mpn_lshift (lshift.S:36)
+==2022==    by 0x57EEE99: __printf_fp (printf_fp.c:738)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E577A: __mpn_lshift (lshift.S:103)
+==2022==    by 0x57EEE99: __printf_fp (printf_fp.c:738)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E578A: __mpn_lshift (lshift.S:107)
+==2022==    by 0x57EEE99: __printf_fp (printf_fp.c:738)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5757: __mpn_lshift (lshift.S:94)
+==2022==    by 0x57EEE99: __printf_fp (printf_fp.c:738)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57EEEA6: __printf_fp (printf_fp.c:740)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E5CE6: __mpn_mul_1 (mul_1.S:51)
+==2022==    by 0x57E5960: __mpn_mul (mul.c:90)
+==2022==    by 0x57EE997: __printf_fp (printf_fp.c:666)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5D05: __mpn_mul_1 (mul_1.S:60)
+==2022==    by 0x57E5960: __mpn_mul (mul.c:90)
+==2022==    by 0x57EE997: __printf_fp (printf_fp.c:666)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5D77: __mpn_mul_1 (mul_1.S:96)
+==2022==    by 0x57E5960: __mpn_mul (mul.c:90)
+==2022==    by 0x57EE997: __printf_fp (printf_fp.c:666)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E57DE: __mpn_rshift (rshift.S:46)
+==2022==    by 0x57EE909: __printf_fp (printf_fp.c:754)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E57EB: __mpn_rshift (rshift.S:50)
+==2022==    by 0x57EE909: __printf_fp (printf_fp.c:754)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E57ED: __mpn_rshift (rshift.S:51)
+==2022==    by 0x57EE909: __printf_fp (printf_fp.c:754)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E587A: __mpn_rshift (rshift.S:97)
+==2022==    by 0x57EE909: __printf_fp (printf_fp.c:754)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E587E: __mpn_rshift (rshift.S:98)
+==2022==    by 0x57EE909: __printf_fp (printf_fp.c:754)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5864: __mpn_rshift (rshift.S:91)
+==2022==    by 0x57EE909: __printf_fp (printf_fp.c:754)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EEB74: __printf_fp (printf_fp.c:766)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5CC4: __mpn_mul_1 (mul_1.S:36)
+==2022==    by 0x57EEB8F: __printf_fp (printf_fp.c:770)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E5CDA: __mpn_mul_1 (mul_1.S:45)
+==2022==    by 0x57EEB8F: __printf_fp (printf_fp.c:770)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E5CDF: __mpn_mul_1 (mul_1.S:47)
+==2022==    by 0x57EEB8F: __printf_fp (printf_fp.c:770)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E5CE1: __mpn_mul_1 (mul_1.S:48)
+==2022==    by 0x57EEB8F: __printf_fp (printf_fp.c:770)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E5CE6: __mpn_mul_1 (mul_1.S:51)
+==2022==    by 0x57EEB8F: __printf_fp (printf_fp.c:770)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5D05: __mpn_mul_1 (mul_1.S:60)
+==2022==    by 0x57EEB8F: __printf_fp (printf_fp.c:770)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5D77: __mpn_mul_1 (mul_1.S:96)
+==2022==    by 0x57EEB8F: __printf_fp (printf_fp.c:770)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E5DC0: __mpn_mul_1 (mul_1.S:115)
+==2022==    by 0x57EEB8F: __printf_fp (printf_fp.c:770)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5D60: __mpn_mul_1 (mul_1.S:90)
+==2022==    by 0x57EEB8F: __printf_fp (printf_fp.c:770)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5D67: __mpn_mul_1 (mul_1.S:92)
+==2022==    by 0x57EEB8F: __printf_fp (printf_fp.c:770)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5DC2: __mpn_mul_1 (mul_1.S:117)
+==2022==    by 0x57EEB8F: __printf_fp (printf_fp.c:770)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57EEB9D: __printf_fp (printf_fp.c:774)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EEBAC: __printf_fp (printf_fp.c:775)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E57B5: __mpn_rshift (rshift.S:31)
+==2022==    by 0x57EEE5E: __printf_fp (printf_fp.c:783)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E57DC: __mpn_rshift (rshift.S:45)
+==2022==    by 0x57EEE5E: __printf_fp (printf_fp.c:783)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E57DE: __mpn_rshift (rshift.S:46)
+==2022==    by 0x57EEE5E: __printf_fp (printf_fp.c:783)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E57EB: __mpn_rshift (rshift.S:50)
+==2022==    by 0x57EEE5E: __printf_fp (printf_fp.c:783)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E57ED: __mpn_rshift (rshift.S:51)
+==2022==    by 0x57EEE5E: __printf_fp (printf_fp.c:783)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== 
+==2022== More than 100 errors detected.  Subsequent errors
+==2022== will still be recorded, but in less detail than before.
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E587A: __mpn_rshift (rshift.S:97)
+==2022==    by 0x57EEE5E: __printf_fp (printf_fp.c:783)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E587E: __mpn_rshift (rshift.S:98)
+==2022==    by 0x57EEE5E: __printf_fp (printf_fp.c:783)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E589A: __mpn_rshift (rshift.S:105)
+==2022==    by 0x57EEE5E: __printf_fp (printf_fp.c:783)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5864: __mpn_rshift (rshift.S:91)
+==2022==    by 0x57EEE5E: __printf_fp (printf_fp.c:783)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5868: __mpn_rshift (rshift.S:92)
+==2022==    by 0x57EEE5E: __printf_fp (printf_fp.c:783)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EDCF2: __printf_fp (printf_fp.c:958)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EDD0B: __printf_fp (printf_fp.c:966)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57EDD11: __printf_fp (printf_fp.c:966)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EDD17: __printf_fp (printf_fp.c:966)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EDE92: __printf_fp (printf_fp.c:1141)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EDF85: __printf_fp (printf_fp.c:1148)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EDC6E: __printf_fp (printf_fp.c:942)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EDCBC: __printf_fp (printf_fp.c:953)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EDCDD: __printf_fp (printf_fp.c:956)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EDCE8: __printf_fp (printf_fp.c:956)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EDD26: __printf_fp (printf_fp.c:966)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EE13C: round_away (rounding-mode.h:52)
+==2022==    by 0x57EE13C: __printf_fp (printf_fp.c:973)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EE111: __printf_fp (printf_fp.c:1202)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EE0F2: __printf_fp (printf_fp.c:1204)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016CC: main (ukf_mrp.c:136)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57ED5B5: __printf_fp (printf_fp.c:471)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57ED7FE: __printf_fp (printf_fp.c:479)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E56F8: __mpn_lshift (lshift.S:59)
+==2022==    by 0x57ED802: __printf_fp (printf_fp.c:479)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E56FB: __mpn_lshift (lshift.S:60)
+==2022==    by 0x57ED802: __printf_fp (printf_fp.c:479)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57ED823: __printf_fp (printf_fp.c:483)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57ED831: __printf_fp (printf_fp.c:484)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57ED5F3: __printf_fp (printf_fp.c:486)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57ED69E: __printf_fp (printf_fp.c:495)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4C2DD27: is_overlap (vg_replace_strmem.c:128)
+==2022==    by 0x4C2DD27: __GI_memcpy (vg_replace_strmem.c:917)
+==2022==    by 0x57ED662: __printf_fp (printf_fp.c:521)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4C2DEEC: __GI_memcpy (vg_replace_strmem.c:917)
+==2022==    by 0x57ED662: __printf_fp (printf_fp.c:521)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4C2DD91: is_overlap (vg_replace_strmem.c:119)
+==2022==    by 0x4C2DD91: __GI_memcpy (vg_replace_strmem.c:917)
+==2022==    by 0x57ED662: __printf_fp (printf_fp.c:521)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4C2DDA2: is_overlap (vg_replace_strmem.c:128)
+==2022==    by 0x4C2DDA2: __GI_memcpy (vg_replace_strmem.c:917)
+==2022==    by 0x57ED662: __printf_fp (printf_fp.c:521)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4C2DDB6: __GI_memcpy (vg_replace_strmem.c:917)
+==2022==    by 0x57ED662: __printf_fp (printf_fp.c:521)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x4C2DF63: __GI_memcpy (vg_replace_strmem.c:917)
+==2022==    by 0x57ED662: __printf_fp (printf_fp.c:521)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57ED667: __printf_fp (printf_fp.c:536)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57ED66D: __printf_fp (printf_fp.c:536)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E51CA: __mpn_cmp (cmp.c:44)
+==2022==    by 0x57ED84F: __printf_fp (printf_fp.c:536)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E51CE: __mpn_cmp (cmp.c:45)
+==2022==    by 0x57ED84F: __printf_fp (printf_fp.c:536)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E51D5: __mpn_cmp (cmp.c:46)
+==2022==    by 0x57ED84F: __printf_fp (printf_fp.c:536)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57ED852: __printf_fp (printf_fp.c:536)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4C2DD27: is_overlap (vg_replace_strmem.c:128)
+==2022==    by 0x4C2DD27: __GI_memcpy (vg_replace_strmem.c:917)
+==2022==    by 0x57ED878: __printf_fp (printf_fp.c:539)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4C2DD2D: is_overlap (vg_replace_strmem.c:131)
+==2022==    by 0x4C2DD2D: __GI_memcpy (vg_replace_strmem.c:917)
+==2022==    by 0x57ED878: __printf_fp (printf_fp.c:539)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4C2DD3B: __GI_memcpy (vg_replace_strmem.c:917)
+==2022==    by 0x57ED878: __printf_fp (printf_fp.c:539)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4C2DD91: is_overlap (vg_replace_strmem.c:119)
+==2022==    by 0x4C2DD91: __GI_memcpy (vg_replace_strmem.c:917)
+==2022==    by 0x57ED878: __printf_fp (printf_fp.c:539)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x4C2DF60: __GI_memcpy (vg_replace_strmem.c:917)
+==2022==    by 0x57ED878: __printf_fp (printf_fp.c:539)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x4C2DF63: __GI_memcpy (vg_replace_strmem.c:917)
+==2022==    by 0x57ED878: __printf_fp (printf_fp.c:539)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4C2DF6E: __GI_memcpy (vg_replace_strmem.c:917)
+==2022==    by 0x57ED878: __printf_fp (printf_fp.c:539)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57ED881: __printf_fp (printf_fp.c:540)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57ED8CD: __printf_fp (printf_fp.c:558)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57ED8DD: __printf_fp (printf_fp.c:558)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57ED8E1: __printf_fp (printf_fp.c:558)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57EE571: __printf_fp (printf_fp.c:562)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57EEAE3: __printf_fp (printf_fp.c:590)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57ED96D: __printf_fp (printf_fp.c:593)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5808: __mpn_rshift (rshift.S:62)
+==2022==    by 0x57ED98B: __printf_fp (printf_fp.c:609)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E582D: __mpn_rshift (rshift.S:73)
+==2022==    by 0x57ED98B: __printf_fp (printf_fp.c:609)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E57B5: __mpn_rshift (rshift.S:31)
+==2022==    by 0x57ED9B0: __printf_fp (printf_fp.c:625)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E57DC: __mpn_rshift (rshift.S:45)
+==2022==    by 0x57ED9B0: __printf_fp (printf_fp.c:625)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E5806: __mpn_rshift (rshift.S:61)
+==2022==    by 0x57ED9B0: __printf_fp (printf_fp.c:625)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5808: __mpn_rshift (rshift.S:62)
+==2022==    by 0x57ED9B0: __printf_fp (printf_fp.c:625)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E5819: __mpn_rshift (rshift.S:67)
+==2022==    by 0x57ED9B0: __printf_fp (printf_fp.c:625)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E582D: __mpn_rshift (rshift.S:73)
+==2022==    by 0x57ED9B0: __printf_fp (printf_fp.c:625)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57ED9C2: __printf_fp (printf_fp.c:628)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57ECD20: hack_digit.13629 (printf_fp.c:231)
+==2022==    by 0x57EDBA7: __printf_fp (printf_fp.c:917)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5571: __mpn_divrem (divrem.c:73)
+==2022==    by 0x57ECD74: hack_digit.13629 (printf_fp.c:235)
+==2022==    by 0x57EDBA7: __printf_fp (printf_fp.c:917)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5579: __mpn_divrem (divrem.c:72)
+==2022==    by 0x57ECD74: hack_digit.13629 (printf_fp.c:235)
+==2022==    by 0x57EDBA7: __printf_fp (printf_fp.c:917)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E557F: __mpn_divrem (divrem.c:75)
+==2022==    by 0x57ECD74: hack_digit.13629 (printf_fp.c:235)
+==2022==    by 0x57EDBA7: __printf_fp (printf_fp.c:917)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E559E: __mpn_divrem (divrem.c:82)
+==2022==    by 0x57ECD74: hack_digit.13629 (printf_fp.c:235)
+==2022==    by 0x57EDBA7: __printf_fp (printf_fp.c:917)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E55F4: __mpn_divrem (divrem.c:89)
+==2022==    by 0x57ECD74: hack_digit.13629 (printf_fp.c:235)
+==2022==    by 0x57EDBA7: __printf_fp (printf_fp.c:917)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57ECD87: hack_digit.13629 (printf_fp.c:236)
+==2022==    by 0x57EDBA7: __printf_fp (printf_fp.c:917)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57ECD8B: hack_digit.13629 (printf_fp.c:237)
+==2022==    by 0x57EDBA7: __printf_fp (printf_fp.c:917)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57ECD9C: hack_digit.13629 (printf_fp.c:240)
+==2022==    by 0x57EDBA7: __printf_fp (printf_fp.c:917)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57ECDA2: hack_digit.13629 (printf_fp.c:240)
+==2022==    by 0x57EDBA7: __printf_fp (printf_fp.c:917)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5CC4: __mpn_mul_1 (mul_1.S:36)
+==2022==    by 0x57ECD37: hack_digit.13629 (printf_fp.c:251)
+==2022==    by 0x57EDBA7: __printf_fp (printf_fp.c:917)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5CE8: __mpn_mul_1 (mul_1.S:52)
+==2022==    by 0x57ECD37: hack_digit.13629 (printf_fp.c:251)
+==2022==    by 0x57EDBA7: __printf_fp (printf_fp.c:917)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57ECD3B: hack_digit.13629 (printf_fp.c:252)
+==2022==    by 0x57EDBA7: __printf_fp (printf_fp.c:917)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57ECD4D: hack_digit.13629 (printf_fp.c:253)
+==2022==    by 0x57EDBA7: __printf_fp (printf_fp.c:917)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E55A8: __mpn_divrem (divrem.c:83)
+==2022==    by 0x57ECD74: hack_digit.13629 (printf_fp.c:235)
+==2022==    by 0x57EDC66: __printf_fp (printf_fp.c:941)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E55B7: __mpn_divrem (divrem.c:83)
+==2022==    by 0x57ECD74: hack_digit.13629 (printf_fp.c:235)
+==2022==    by 0x57EDC66: __printf_fp (printf_fp.c:941)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57ECD87: hack_digit.13629 (printf_fp.c:236)
+==2022==    by 0x57EDC66: __printf_fp (printf_fp.c:941)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57ECD8B: hack_digit.13629 (printf_fp.c:237)
+==2022==    by 0x57EDC66: __printf_fp (printf_fp.c:941)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57ECD9C: hack_digit.13629 (printf_fp.c:240)
+==2022==    by 0x57EDC66: __printf_fp (printf_fp.c:941)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57ECDA2: hack_digit.13629 (printf_fp.c:240)
+==2022==    by 0x57EDC66: __printf_fp (printf_fp.c:941)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57ECD3B: hack_digit.13629 (printf_fp.c:252)
+==2022==    by 0x57EDC66: __printf_fp (printf_fp.c:941)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57ECD4D: hack_digit.13629 (printf_fp.c:253)
+==2022==    by 0x57EDC66: __printf_fp (printf_fp.c:941)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57ECD87: hack_digit.13629 (printf_fp.c:236)
+==2022==    by 0x57EDCD3: __printf_fp (printf_fp.c:954)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57ECD8B: hack_digit.13629 (printf_fp.c:237)
+==2022==    by 0x57EDCD3: __printf_fp (printf_fp.c:954)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57ECD9C: hack_digit.13629 (printf_fp.c:240)
+==2022==    by 0x57EDCD3: __printf_fp (printf_fp.c:954)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57ECDA2: hack_digit.13629 (printf_fp.c:240)
+==2022==    by 0x57EDCD3: __printf_fp (printf_fp.c:954)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57ECD3B: hack_digit.13629 (printf_fp.c:252)
+==2022==    by 0x57EDCD3: __printf_fp (printf_fp.c:954)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57EE649: __printf_fp (printf_fp.c:958)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EE64D: __printf_fp (printf_fp.c:958)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EE16E: __printf_fp (printf_fp.c:983)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EE18E: __printf_fp (printf_fp.c:983)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EE1B5: __printf_fp (printf_fp.c:990)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EE1DA: __printf_fp (printf_fp.c:1003)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57EDF54: __printf_fp (printf_fp.c:800)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E56F8: __mpn_lshift (lshift.S:59)
+==2022==    by 0x57EDF58: __printf_fp (printf_fp.c:800)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E56FB: __mpn_lshift (lshift.S:60)
+==2022==    by 0x57EDF58: __printf_fp (printf_fp.c:800)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57EDF69: __printf_fp (printf_fp.c:801)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57ECDF9: hack_digit.13629 (printf_fp.c:226)
+==2022==    by 0x57EDBA7: __printf_fp (printf_fp.c:917)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5CC4: __mpn_mul_1 (mul_1.S:36)
+==2022==    by 0x57ECE00: hack_digit.13629 (printf_fp.c:227)
+==2022==    by 0x57EDBA7: __printf_fp (printf_fp.c:917)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5CE8: __mpn_mul_1 (mul_1.S:52)
+==2022==    by 0x57ECE00: hack_digit.13629 (printf_fp.c:227)
+==2022==    by 0x57EDBA7: __printf_fp (printf_fp.c:917)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57ECDF9: hack_digit.13629 (printf_fp.c:226)
+==2022==    by 0x57EDC66: __printf_fp (printf_fp.c:941)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57ECDF9: hack_digit.13629 (printf_fp.c:226)
+==2022==    by 0x57EDCD3: __printf_fp (printf_fp.c:954)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57EDD20: __printf_fp (printf_fp.c:966)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5D4F: __mpn_mul_1 (mul_1.S:85)
+==2022==    by 0x57E5960: __mpn_mul (mul.c:90)
+==2022==    by 0x57EE997: __printf_fp (printf_fp.c:666)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5808: __mpn_rshift (rshift.S:62)
+==2022==    by 0x57EE909: __printf_fp (printf_fp.c:754)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E5819: __mpn_rshift (rshift.S:67)
+==2022==    by 0x57EE909: __printf_fp (printf_fp.c:754)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E582D: __mpn_rshift (rshift.S:73)
+==2022==    by 0x57EE909: __printf_fp (printf_fp.c:754)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E5CDA: __mpn_mul_1 (mul_1.S:45)
+==2022==    by 0x57ECE00: hack_digit.13629 (printf_fp.c:227)
+==2022==    by 0x57EDC66: __printf_fp (printf_fp.c:941)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E5CDF: __mpn_mul_1 (mul_1.S:47)
+==2022==    by 0x57ECE00: hack_digit.13629 (printf_fp.c:227)
+==2022==    by 0x57EDC66: __printf_fp (printf_fp.c:941)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E5CE1: __mpn_mul_1 (mul_1.S:48)
+==2022==    by 0x57ECE00: hack_digit.13629 (printf_fp.c:227)
+==2022==    by 0x57EDC66: __printf_fp (printf_fp.c:941)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E5CE6: __mpn_mul_1 (mul_1.S:51)
+==2022==    by 0x57ECE00: hack_digit.13629 (printf_fp.c:227)
+==2022==    by 0x57EDC66: __printf_fp (printf_fp.c:941)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EDD30: __printf_fp (printf_fp.c:966)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5D4F: __mpn_mul_1 (mul_1.S:85)
+==2022==    by 0x57EEB8F: __printf_fp (printf_fp.c:770)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x40176E: main (ukf_mrp.c:141)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E5806: __mpn_rshift (rshift.S:61)
+==2022==    by 0x57EEE5E: __printf_fp (printf_fp.c:783)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x40176E: main (ukf_mrp.c:141)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5808: __mpn_rshift (rshift.S:62)
+==2022==    by 0x57EEE5E: __printf_fp (printf_fp.c:783)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x40176E: main (ukf_mrp.c:141)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E5819: __mpn_rshift (rshift.S:67)
+==2022==    by 0x57EEE5E: __printf_fp (printf_fp.c:783)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x40176E: main (ukf_mrp.c:141)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E582D: __mpn_rshift (rshift.S:73)
+==2022==    by 0x57EEE5E: __printf_fp (printf_fp.c:783)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x40176E: main (ukf_mrp.c:141)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EE189: __printf_fp (printf_fp.c:983)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x40176E: main (ukf_mrp.c:141)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57ECD4D: hack_digit.13629 (printf_fp.c:253)
+==2022==    by 0x57EDCD3: __printf_fp (printf_fp.c:954)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x401787: main (ukf_mrp.c:142)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4EE5C3E: gsl_linalg_cholesky_decomp (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4032BF: matrix_sqrt (matrix_util.c:103)
+==2022==    by 0x401D46: vdm_scaled_points (kalman.c:68)
+==2022==    by 0x402011: vdm_get_all (kalman.c:105)
+==2022==    by 0x40162F: main (ukf_mrp.c:132)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4EE5C48: gsl_linalg_cholesky_decomp (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4032BF: matrix_sqrt (matrix_util.c:103)
+==2022==    by 0x401D46: vdm_scaled_points (kalman.c:68)
+==2022==    by 0x402011: vdm_get_all (kalman.c:105)
+==2022==    by 0x40162F: main (ukf_mrp.c:132)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4EE5CAC: gsl_linalg_cholesky_decomp (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4032BF: matrix_sqrt (matrix_util.c:103)
+==2022==    by 0x401D46: vdm_scaled_points (kalman.c:68)
+==2022==    by 0x402011: vdm_get_all (kalman.c:105)
+==2022==    by 0x40162F: main (ukf_mrp.c:132)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4EE5CB6: gsl_linalg_cholesky_decomp (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4032BF: matrix_sqrt (matrix_util.c:103)
+==2022==    by 0x401D46: vdm_scaled_points (kalman.c:68)
+==2022==    by 0x402011: vdm_get_all (kalman.c:105)
+==2022==    by 0x40162F: main (ukf_mrp.c:132)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x526F0E2: cblas_dnrm2 (in /usr/lib/libgslcblas.so.0.0.0)
+==2022==    by 0x4EE5E38: gsl_linalg_cholesky_decomp (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4032BF: matrix_sqrt (matrix_util.c:103)
+==2022==    by 0x401D46: vdm_scaled_points (kalman.c:68)
+==2022==    by 0x402011: vdm_get_all (kalman.c:105)
+==2022==    by 0x40162F: main (ukf_mrp.c:132)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x526F0E8: cblas_dnrm2 (in /usr/lib/libgslcblas.so.0.0.0)
+==2022==    by 0x4EE5E38: gsl_linalg_cholesky_decomp (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4032BF: matrix_sqrt (matrix_util.c:103)
+==2022==    by 0x401D46: vdm_scaled_points (kalman.c:68)
+==2022==    by 0x402011: vdm_get_all (kalman.c:105)
+==2022==    by 0x40162F: main (ukf_mrp.c:132)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4EE5E57: gsl_linalg_cholesky_decomp (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4032BF: matrix_sqrt (matrix_util.c:103)
+==2022==    by 0x401D46: vdm_scaled_points (kalman.c:68)
+==2022==    by 0x402011: vdm_get_all (kalman.c:105)
+==2022==    by 0x40162F: main (ukf_mrp.c:132)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4EE5E61: gsl_linalg_cholesky_decomp (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4032BF: matrix_sqrt (matrix_util.c:103)
+==2022==    by 0x401D46: vdm_scaled_points (kalman.c:68)
+==2022==    by 0x402011: vdm_get_all (kalman.c:105)
+==2022==    by 0x40162F: main (ukf_mrp.c:132)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x526F0F2: cblas_dnrm2 (in /usr/lib/libgslcblas.so.0.0.0)
+==2022==    by 0x4EE5E38: gsl_linalg_cholesky_decomp (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4032BF: matrix_sqrt (matrix_util.c:103)
+==2022==    by 0x401D46: vdm_scaled_points (kalman.c:68)
+==2022==    by 0x402011: vdm_get_all (kalman.c:105)
+==2022==    by 0x40162F: main (ukf_mrp.c:132)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x526F112: cblas_dnrm2 (in /usr/lib/libgslcblas.so.0.0.0)
+==2022==    by 0x4EE5E38: gsl_linalg_cholesky_decomp (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4032BF: matrix_sqrt (matrix_util.c:103)
+==2022==    by 0x401D46: vdm_scaled_points (kalman.c:68)
+==2022==    by 0x402011: vdm_get_all (kalman.c:105)
+==2022==    by 0x40162F: main (ukf_mrp.c:132)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4EE5F0F: gsl_linalg_cholesky_decomp (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4032BF: matrix_sqrt (matrix_util.c:103)
+==2022==    by 0x401D46: vdm_scaled_points (kalman.c:68)
+==2022==    by 0x402011: vdm_get_all (kalman.c:105)
+==2022==    by 0x40162F: main (ukf_mrp.c:132)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x54C5D58: sqrt (w_sqrt.c:27)
+==2022==    by 0x403EF1: vector_magnitude (quaternion_util.c:124)
+==2022==    by 0x400E48: process_model (ukf_mrp.c:42)
+==2022==    by 0x4020C6: ukf_predict (kalman.c:114)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x54B4D85: __ieee754_pow_sse2 (e_pow.c:75)
+==2022==    by 0x54C5AAB: pow (w_pow.c:27)
+==2022==    by 0x400E66: process_model (ukf_mrp.c:42)
+==2022==    by 0x4020C6: ukf_predict (kalman.c:114)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x54B4D8B: __ieee754_pow_sse2 (e_pow.c:75)
+==2022==    by 0x54C5AAB: pow (w_pow.c:27)
+==2022==    by 0x400E66: process_model (ukf_mrp.c:42)
+==2022==    by 0x4020C6: ukf_predict (kalman.c:114)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x54C5AD6: pow (w_pow.c:28)
+==2022==    by 0x400E66: process_model (ukf_mrp.c:42)
+==2022==    by 0x4020C6: ukf_predict (kalman.c:114)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x54C5AE0: pow (w_pow.c:58)
+==2022==    by 0x400E66: process_model (ukf_mrp.c:42)
+==2022==    by 0x4020C6: ukf_predict (kalman.c:114)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x54C5B30: pow (w_pow.c:58)
+==2022==    by 0x400E66: process_model (ukf_mrp.c:42)
+==2022==    by 0x4020C6: ukf_predict (kalman.c:114)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x54FF0A4: __atan_avx (s_atan.c:77)
+==2022==    by 0x4011D6: mean_state (ukf_mrp.c:80)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x54FF0B6: __atan_avx (s_atan.c:82)
+==2022==    by 0x4011D6: mean_state (ukf_mrp.c:80)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x54FF0C8: __atan_avx (s_atan.c:83)
+==2022==    by 0x4011D6: mean_state (ukf_mrp.c:80)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x54FF0DA: __atan_avx (s_atan.c:85)
+==2022==    by 0x4011D6: mean_state (ukf_mrp.c:80)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5500646: __atan_avx (s_atan.c:131)
+==2022==    by 0x4011D6: mean_state (ukf_mrp.c:80)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55006A7: __atan_avx (s_atan.c:139)
+==2022==    by 0x4011D6: mean_state (ukf_mrp.c:80)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5500C1B: __atan_avx (s_atan.c:141)
+==2022==    by 0x4011D6: mean_state (ukf_mrp.c:80)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55006E1: __atan_avx (s_atan.c:153)
+==2022==    by 0x4011D6: mean_state (ukf_mrp.c:80)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5500C48: __atan_avx (s_atan.c:153)
+==2022==    by 0x4011D6: mean_state (ukf_mrp.c:80)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x403F30: normalize_vector (quaternion_util.c:130)
+==2022==    by 0x401208: mean_state (ukf_mrp.c:81)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x403F3B: normalize_vector (quaternion_util.c:130)
+==2022==    by 0x401208: mean_state (ukf_mrp.c:81)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55089DF: __cos_avx (s_sin.c:528)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55089EA: __cos_avx (s_sin.c:531)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5508B2D: __cos_avx (s_sin.c:540)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5508B3B: __cos_avx (s_sin.c:542)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5508B79: __cos_avx (s_sin.c:546)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5508BF3: __cos_avx (s_sin.c:549)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5508C0F: __cos_avx (s_sin.c:550)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5508C11: __cos_avx (s_sin.c:550)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5507028: __sin_avx (s_sin.c:296)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5507033: __sin_avx (s_sin.c:299)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55070E5: __sin_avx (s_sin.c:309)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5507205: __sin_avx (s_sin.c:329)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x550720D: __sin_avx (s_sin.c:332)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5507239: __sin_avx (s_sin.c:333)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5505EA2: do_cos.isra.2 (s_sin.c:160)
+==2022==    by 0x550727A: __sin_avx (s_sin.c:343)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5505EBC: do_cos.isra.2 (s_sin.c:161)
+==2022==    by 0x550727A: __sin_avx (s_sin.c:343)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5505EC5: do_cos.isra.2 (s_sin.c:161)
+==2022==    by 0x550727A: __sin_avx (s_sin.c:343)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5505ECE: do_cos.isra.2 (s_sin.c:161)
+==2022==    by 0x550727A: __sin_avx (s_sin.c:343)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55072A2: __sin_avx (s_sin.c:344)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55072A8: __sin_avx (s_sin.c:344)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55072B4: __sin_avx (s_sin.c:344)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55006BB: __atan_avx (s_atan.c:148)
+==2022==    by 0x4011D6: mean_state (ukf_mrp.c:80)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55090DA: __cos_avx (s_sin.c:554)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5506077: do_sin.isra.4 (s_sin.c:209)
+==2022==    by 0x550912C: __cos_avx (s_sin.c:566)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5506084: do_sin.isra.4 (s_sin.c:208)
+==2022==    by 0x550912C: __cos_avx (s_sin.c:566)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x55060C9: do_sin.isra.4 (s_sin.c:209)
+==2022==    by 0x550912C: __cos_avx (s_sin.c:566)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x55060CE: do_sin.isra.4 (s_sin.c:209)
+==2022==    by 0x550912C: __cos_avx (s_sin.c:566)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5509157: __cos_avx (s_sin.c:567)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5509173: __cos_avx (s_sin.c:569)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5509179: __cos_avx (s_sin.c:569)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x54C50A5: atan2 (w_atan2.c:30)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5501717: __ieee754_atan2_avx (e_atan2.c:88)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5501740: __ieee754_atan2_avx (e_atan2.c:96)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5501744: __ieee754_atan2_avx (e_atan2.c:103)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5501789: __ieee754_atan2_avx (e_atan2.c:113)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5501793: __ieee754_atan2_avx (e_atan2.c:125)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5501795: __ieee754_atan2_avx (e_atan2.c:125)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55017C6: __ieee754_atan2_avx (e_atan2.c:134)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55017D2: __ieee754_atan2_avx (e_atan2.c:157)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55017DE: __ieee754_atan2_avx (e_atan2.c:182)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55017EA: __ieee754_atan2_avx (e_atan2.c:187)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55017F8: __ieee754_atan2_avx (e_atan2.c:194)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5501806: __ieee754_atan2_avx (e_atan2.c:195)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5501814: __ieee754_atan2_avx (e_atan2.c:197)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55018B6: __ieee754_atan2_avx (e_atan2.c:201)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55018D1: __ieee754_atan2_avx (e_atan2.c:217)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55018D7: __ieee754_atan2_avx (e_atan2.c:217)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55018E5: __ieee754_atan2_avx (e_atan2.c:224)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55018EB: __ieee754_atan2_avx (e_atan2.c:224)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55018F9: __ieee754_atan2_avx (e_atan2.c:231)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5501996: __ieee754_atan2_avx (e_atan2.c:244)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55028AB: __ieee754_atan2_avx (e_atan2.c:412)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5503D84: __ieee754_atan2_avx (e_atan2.c:487)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x55045EF: __ieee754_atan2_avx (e_atan2.c:520)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5504660: __ieee754_atan2_avx (e_atan2.c:526)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5504685: __ieee754_atan2_avx (e_atan2.c:530)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5505A83: __ieee754_atan2_avx (e_atan2.c:530)
+==2022==    by 0x401369: mean_state (ukf_mrp.c:88)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x403F30: normalize_vector (quaternion_util.c:130)
+==2022==    by 0x401388: mean_state (ukf_mrp.c:89)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x403F3B: normalize_vector (quaternion_util.c:130)
+==2022==    by 0x401388: mean_state (ukf_mrp.c:89)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55099B8: __tan_avx (s_tan.c:81)
+==2022==    by 0x40139E: mean_state (ukf_mrp.c:90)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55099CA: __tan_avx (s_tan.c:89)
+==2022==    by 0x40139E: mean_state (ukf_mrp.c:90)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55099DC: __tan_avx (s_tan.c:92)
+==2022==    by 0x40139E: mean_state (ukf_mrp.c:90)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5509A0C: __tan_avx (s_tan.c:99)
+==2022==    by 0x40139E: mean_state (ukf_mrp.c:90)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5509A1E: __tan_avx (s_tan.c:150)
+==2022==    by 0x40139E: mean_state (ukf_mrp.c:90)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5509A54: __tan_avx (s_tan.c:154)
+==2022==    by 0x40139E: mean_state (ukf_mrp.c:90)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5509A65: __tan_avx (s_tan.c:156)
+==2022==    by 0x40139E: mean_state (ukf_mrp.c:90)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5509A9D: __tan_avx (s_tan.c:158)
+==2022==    by 0x40139E: mean_state (ukf_mrp.c:90)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5509AEA: __tan_avx (s_tan.c:161)
+==2022==    by 0x40139E: mean_state (ukf_mrp.c:90)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x550A860: __tan_avx (s_tan.c:161)
+==2022==    by 0x40139E: mean_state (ukf_mrp.c:90)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E55BF: __mpn_divrem (divrem.c:82)
+==2022==    by 0x57ECD74: hack_digit.13629 (printf_fp.c:235)
+==2022==    by 0x57EDBA7: __printf_fp (printf_fp.c:917)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EE9A0: __printf_fp (printf_fp.c:684)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EE957: __printf_fp (printf_fp.c:705)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57EE961: __printf_fp (printf_fp.c:705)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EE966: __printf_fp (printf_fp.c:705)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EE96C: __printf_fp (printf_fp.c:707)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x58164EB: _IO_file_overflow@@GLIBC_2.2.5 (fileops.c:859)
+==2022==    by 0x57EEC76: __printf_fp (printf_fp.c:1228)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Syscall param write(buf) points to uninitialised byte(s)
+==2022==    at 0x587CC00: __write_nocancel (syscall-template.S:81)
+==2022==    by 0x5815422: _IO_file_write@@GLIBC_2.2.5 (fileops.c:1253)
+==2022==    by 0x5814AE2: new_do_write (fileops.c:530)
+==2022==    by 0x5816254: _IO_do_write@@GLIBC_2.2.5 (fileops.c:503)
+==2022==    by 0x581667E: _IO_file_overflow@@GLIBC_2.2.5 (fileops.c:863)
+==2022==    by 0x57EEC76: __printf_fp (printf_fp.c:1228)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Address 0x40224d3 is not stack'd, malloc'd or (recently) free'd
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57EEC88: __printf_fp (printf_fp.c:1228)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x4016E5: main (ukf_mrp.c:137)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4ED9FDC: gsl_linalg_LU_decomp (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4033C0: matrix_inverse (matrix_util.c:118)
+==2022==    by 0x402B19: ukf_update (kalman.c:218)
+==2022==    by 0x40174A: main (ukf_mrp.c:139)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4EDA057: gsl_linalg_LU_decomp (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4033C0: matrix_inverse (matrix_util.c:118)
+==2022==    by 0x402B19: ukf_update (kalman.c:218)
+==2022==    by 0x40174A: main (ukf_mrp.c:139)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4EDA059: gsl_linalg_LU_decomp (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4033C0: matrix_inverse (matrix_util.c:118)
+==2022==    by 0x402B19: ukf_update (kalman.c:218)
+==2022==    by 0x40174A: main (ukf_mrp.c:139)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4EDA655: gsl_linalg_LU_invert (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4033D7: matrix_inverse (matrix_util.c:119)
+==2022==    by 0x402B19: ukf_update (kalman.c:218)
+==2022==    by 0x40174A: main (ukf_mrp.c:139)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4EDA657: gsl_linalg_LU_invert (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4033D7: matrix_inverse (matrix_util.c:119)
+==2022==    by 0x402B19: ukf_update (kalman.c:218)
+==2022==    by 0x40174A: main (ukf_mrp.c:139)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4EDA689: gsl_linalg_LU_invert (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4033D7: matrix_inverse (matrix_util.c:119)
+==2022==    by 0x402B19: ukf_update (kalman.c:218)
+==2022==    by 0x40174A: main (ukf_mrp.c:139)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4EDA691: gsl_linalg_LU_invert (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4033D7: matrix_inverse (matrix_util.c:119)
+==2022==    by 0x402B19: ukf_update (kalman.c:218)
+==2022==    by 0x40174A: main (ukf_mrp.c:139)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4EDA1AD: gsl_linalg_LU_svx (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4EDA6CD: gsl_linalg_LU_invert (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4033D7: matrix_inverse (matrix_util.c:119)
+==2022==    by 0x402B19: ukf_update (kalman.c:218)
+==2022==    by 0x40174A: main (ukf_mrp.c:139)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4EDA1AF: gsl_linalg_LU_svx (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4EDA6CD: gsl_linalg_LU_invert (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4033D7: matrix_inverse (matrix_util.c:119)
+==2022==    by 0x402B19: ukf_update (kalman.c:218)
+==2022==    by 0x40174A: main (ukf_mrp.c:139)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4EDA1D9: gsl_linalg_LU_svx (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4EDA6CD: gsl_linalg_LU_invert (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4033D7: matrix_inverse (matrix_util.c:119)
+==2022==    by 0x402B19: ukf_update (kalman.c:218)
+==2022==    by 0x40174A: main (ukf_mrp.c:139)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x4EDA1E1: gsl_linalg_LU_svx (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4EDA6CD: gsl_linalg_LU_invert (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4033D7: matrix_inverse (matrix_util.c:119)
+==2022==    by 0x402B19: ukf_update (kalman.c:218)
+==2022==    by 0x40174A: main (ukf_mrp.c:139)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55089F8: __cos_avx (s_sin.c:533)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5505EA2: do_cos.isra.2 (s_sin.c:160)
+==2022==    by 0x5508A3E: __cos_avx (s_sin.c:536)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5505EBC: do_cos.isra.2 (s_sin.c:161)
+==2022==    by 0x5508A3E: __cos_avx (s_sin.c:536)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5505EC5: do_cos.isra.2 (s_sin.c:161)
+==2022==    by 0x5508A3E: __cos_avx (s_sin.c:536)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5505ECE: do_cos.isra.2 (s_sin.c:161)
+==2022==    by 0x5508A3E: __cos_avx (s_sin.c:536)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5508A61: __cos_avx (s_sin.c:537)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5508A63: __cos_avx (s_sin.c:537)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55070F5: __sin_avx (s_sin.c:311)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x550714D: __sin_avx (s_sin.c:316)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5507164: __sin_avx (s_sin.c:316)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x550717B: __sin_avx (s_sin.c:316)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5507198: __sin_avx (s_sin.c:316)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x550719D: __sin_avx (s_sin.c:317)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55071E9: __sin_avx (s_sin.c:325)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55071EF: __sin_avx (s_sin.c:325)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55065B8: csloww (s_sin.c:1111)
+==2022==    by 0x5508C27: __cos_avx (s_sin.c:550)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55067E4: csloww (s_sin.c:1114)
+==2022==    by 0x5508C27: __cos_avx (s_sin.c:550)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55065E0: csloww (s_sin.c:1116)
+==2022==    by 0x5508C27: __cos_avx (s_sin.c:550)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55067D0: csloww (s_sin.c:1116)
+==2022==    by 0x5508C27: __cos_avx (s_sin.c:550)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5509AF8: __tan_avx (s_tan.c:166)
+==2022==    by 0x40139E: mean_state (ukf_mrp.c:90)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5509B2E: __tan_avx (s_tan.c:168)
+==2022==    by 0x40139E: mean_state (ukf_mrp.c:90)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5509B34: __tan_avx (s_tan.c:168)
+==2022==    by 0x40139E: mean_state (ukf_mrp.c:90)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E56D2: __mpn_lshift (lshift.S:47)
+==2022==    by 0x57EEE99: __printf_fp (printf_fp.c:738)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x401787: main (ukf_mrp.c:142)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E56FC: __mpn_lshift (lshift.S:63)
+==2022==    by 0x57EEE99: __printf_fp (printf_fp.c:738)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x401787: main (ukf_mrp.c:142)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E56FE: __mpn_lshift (lshift.S:64)
+==2022==    by 0x57EEE99: __printf_fp (printf_fp.c:738)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x401787: main (ukf_mrp.c:142)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E570F: __mpn_lshift (lshift.S:69)
+==2022==    by 0x57EEE99: __printf_fp (printf_fp.c:738)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x401787: main (ukf_mrp.c:142)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5723: __mpn_lshift (lshift.S:75)
+==2022==    by 0x57EEE99: __printf_fp (printf_fp.c:738)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x401787: main (ukf_mrp.c:142)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5508C35: __cos_avx (s_sin.c:575)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5508CB2: __cos_avx (s_sin.c:585)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5508CC8: __cos_avx (s_sin.c:587)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5508CD2: __cos_avx (s_sin.c:587)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5508CDC: __cos_avx (s_sin.c:626)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5505EA2: do_cos.isra.2 (s_sin.c:160)
+==2022==    by 0x5508D48: __cos_avx (s_sin.c:633)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5505EBC: do_cos.isra.2 (s_sin.c:161)
+==2022==    by 0x5508D48: __cos_avx (s_sin.c:633)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5505EC5: do_cos.isra.2 (s_sin.c:161)
+==2022==    by 0x5508D48: __cos_avx (s_sin.c:633)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5505ECE: do_cos.isra.2 (s_sin.c:161)
+==2022==    by 0x5508D48: __cos_avx (s_sin.c:633)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5508D85: __cos_avx (s_sin.c:634)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5508D9D: __cos_avx (s_sin.c:636)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5508DA3: __cos_avx (s_sin.c:636)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5508DAC: __cos_avx (s_sin.c:709)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55073ED: __sin_avx (s_sin.c:348)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5507470: __sin_avx (s_sin.c:358)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5507485: __sin_avx (s_sin.c:360)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x550748E: __sin_avx (s_sin.c:360)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x550749E: __sin_avx (s_sin.c:365)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x55074BD: __sin_avx (s_sin.c:370)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5507DAE: __sin_avx (s_sin.c:379)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5506077: do_sin.isra.4 (s_sin.c:209)
+==2022==    by 0x5507E1B: __sin_avx (s_sin.c:389)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5506084: do_sin.isra.4 (s_sin.c:208)
+==2022==    by 0x5507E1B: __sin_avx (s_sin.c:389)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x55060C9: do_sin.isra.4 (s_sin.c:209)
+==2022==    by 0x5507E1B: __sin_avx (s_sin.c:389)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x55060CE: do_sin.isra.4 (s_sin.c:209)
+==2022==    by 0x5507E1B: __sin_avx (s_sin.c:389)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5507E57: __sin_avx (s_sin.c:390)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5507E70: __sin_avx (s_sin.c:392)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5507E76: __sin_avx (s_sin.c:392)
+==2022==    by 0x401286: mean_state (ukf_mrp.c:83)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5506E42: csloww1 (s_sin.c:1178)
+==2022==    by 0x5509323: __cos_avx (s_sin.c:569)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5506131: do_sin_slow.isra.5 (s_sin.c:226)
+==2022==    by 0x5506E73: csloww1 (s_sin.c:1178)
+==2022==    by 0x5509323: __cos_avx (s_sin.c:569)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5506148: do_sin_slow.isra.5 (s_sin.c:226)
+==2022==    by 0x5506E73: csloww1 (s_sin.c:1178)
+==2022==    by 0x5509323: __cos_avx (s_sin.c:569)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5506165: do_sin_slow.isra.5 (s_sin.c:226)
+==2022==    by 0x5506E73: csloww1 (s_sin.c:1178)
+==2022==    by 0x5509323: __cos_avx (s_sin.c:569)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x5506197: do_sin_slow.isra.5 (s_sin.c:231)
+==2022==    by 0x5506E73: csloww1 (s_sin.c:1178)
+==2022==    by 0x5509323: __cos_avx (s_sin.c:569)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5506234: do_sin_slow.isra.5 (s_sin.c:236)
+==2022==    by 0x5506E73: csloww1 (s_sin.c:1178)
+==2022==    by 0x5509323: __cos_avx (s_sin.c:569)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5506E98: csloww1 (s_sin.c:1180)
+==2022==    by 0x5509323: __cos_avx (s_sin.c:569)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x5506E9A: csloww1 (s_sin.c:1180)
+==2022==    by 0x5509323: __cos_avx (s_sin.c:569)
+==2022==    by 0x40122D: mean_state (ukf_mrp.c:82)
+==2022==    by 0x402252: ukf_predict (kalman.c:133)
+==2022==    by 0x4016A5: main (ukf_mrp.c:134)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5D95: __mpn_mul_1 (mul_1.S:104)
+==2022==    by 0x57EEB8F: __printf_fp (printf_fp.c:770)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x401787: main (ukf_mrp.c:142)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5D9D: __mpn_mul_1 (mul_1.S:106)
+==2022==    by 0x57EEB8F: __printf_fp (printf_fp.c:770)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x401787: main (ukf_mrp.c:142)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E5840: __mpn_rshift (rshift.S:80)
+==2022==    by 0x57EEE5E: __printf_fp (printf_fp.c:783)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x401787: main (ukf_mrp.c:142)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x57E5859: __mpn_rshift (rshift.S:87)
+==2022==    by 0x57EEE5E: __printf_fp (printf_fp.c:783)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x401787: main (ukf_mrp.c:142)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Use of uninitialised value of size 8
+==2022==    at 0x57E58A0: __mpn_rshift (rshift.S:108)
+==2022==    by 0x57EEE5E: __printf_fp (printf_fp.c:783)
+==2022==    by 0x57EB95C: vfprintf (vfprintf.c:1641)
+==2022==    by 0x57F1D88: printf (printf.c:33)
+==2022==    by 0x4030FF: matrix_quick_print (matrix_util.c:74)
+==2022==    by 0x401787: main (ukf_mrp.c:142)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== Conditional jump or move depends on uninitialised value(s)
+==2022==    at 0x54C5D58: sqrt (w_sqrt.c:27)
+==2022==    by 0x526F14B: cblas_dnrm2 (in /usr/lib/libgslcblas.so.0.0.0)
+==2022==    by 0x4EE5E38: gsl_linalg_cholesky_decomp (in /usr/lib/libgsl.so.0.17.0)
+==2022==    by 0x4032BF: matrix_sqrt (matrix_util.c:103)
+==2022==    by 0x401D46: vdm_scaled_points (kalman.c:68)
+==2022==    by 0x402011: vdm_get_all (kalman.c:105)
+==2022==    by 0x40162F: main (ukf_mrp.c:132)
+==2022==  Uninitialised value was created by a stack allocation
+==2022==    at 0x40107D: mean_state (ukf_mrp.c:66)
+==2022== 
+==2022== 
+==2022== HEAP SUMMARY:
+==2022==     in use at exit: 0 bytes in 0 blocks
+==2022==   total heap usage: 8 allocs, 8 frees, 160 bytes allocated
+==2022== 
+==2022== All heap blocks were freed -- no leaks are possible
+==2022== 
+==2022== For counts of detected and suppressed errors, rerun with: -v
+==2022== ERROR SUMMARY: 58308 errors from 406 contexts (suppressed: 0 from 0)

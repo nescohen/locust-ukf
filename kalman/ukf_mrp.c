@@ -64,7 +64,33 @@ void measurement(double *state, double *measurement, int n, int m)
 void mean_state(double *points, double *weights, double *mean, int size, int count)
 // compute weighted mean of state points, specifically the modified rodrigues parameter component
 {
-	
+	double sum_mrp_angle[2] = {0.0}; // format: { cos(a), sin(a) }
+	double sum_mrp_vector[3] = {0.0};
+	double sum_state[6] = {0.0};
+	int i;
+	for (i = 0; i < count; i++) {
+		double mrp[3];
+		double angle;
+		double rest_state[6];
+		memcpy(rest_state, points + i*size + 3, sizeof(rest_state));
+		scale_matrix(rest_state, rest_state, weights[i], 6, 1);
+
+		memcpy(mrp, points + i*size, sizeof(mrp));
+		angle = vector_magnitude(mrp);
+		angle = atan(angle)*4;
+		normalize_vector(mrp, mrp);
+		sum_mrp_angle[0] += cos(angle)*weights[i];
+		sum_mrp_angle[1] += sin(angle)*weights[i];
+		scale_matrix(mrp, mrp, weights[i], 3, 1);
+		matrix_plus_matrix(mrp, sum_mrp_vector, sum_mrp_vector, 3, 1, MATRIX_ADD);
+	}
+	double mean_mrp[3];
+	double mean_angle = atan2(sum_mrp_angle[1], sum_mrp_angle[0]);
+	normalize_vector(sum_mrp_vector, mean_mrp);
+	scale_matrix(mean_mrp, mean_mrp, tan(mean_angle/4), 3, 1);
+
+	memcpy(mean, mean_mrp, sizeof(mean_mrp));
+	memcpy(mean + 6, sum_state, sizeof(sum_state));
 }
 
 int main()
@@ -105,7 +131,7 @@ int main()
 	for (i = 0; i < 10; i++) {
 		vdm_get_all(state, covariance, SIZE_STATE, ALPHA, BETA, KAPPA, chi, w_m, w_c);
 
-		ukf_predict(state, covariance, &process_model, NULL, NULL, Q, delta_t, chi, gamma, w_m, w_c, new_state, new_covariance, SIZE_STATE);
+		ukf_predict(state, covariance, &process_model, &mean_state, NULL, Q, delta_t, chi, gamma, w_m, w_c, new_state, new_covariance, SIZE_STATE);
 		printf("PREDICT\n");
 		matrix_quick_print(new_state, SIZE_STATE, 1);
 		matrix_quick_print(new_covariance, SIZE_STATE, SIZE_STATE);
