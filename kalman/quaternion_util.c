@@ -93,6 +93,17 @@ void cross_product(double v_a[3], double v_b[3], double result[3])
 	result[2] = a_copy[0]*b_copy[1] - a_copy[1]*b_copy[0];
 }
 
+double dot_product(double v_a[3], double v_b[3])
+{
+	int i;
+	double result = 0;
+	for (i = 0; i < 3; i++) {
+		result += v_a[i]*v_b[i];
+	}
+
+	return result;
+}
+
 void add_vectors(double v_a[3], double v_b[3], double result[3])
 {
 	int i;
