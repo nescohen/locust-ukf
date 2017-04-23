@@ -74,6 +74,7 @@ void mean_state(double *points, double *weights, double *mean, int size, int cou
 		double rest_state[6];
 		memcpy(rest_state, points + i*size + 3, sizeof(rest_state));
 		scale_matrix(rest_state, rest_state, weights[i], 6, 1);
+		matrix_plus_matrix(rest_state, sum_state, sum_state, 6, 1, MATRIX_ADD);
 
 		memcpy(mrp, points + i*size, sizeof(mrp));
 		angle = vector_magnitude(mrp);
@@ -90,7 +91,7 @@ void mean_state(double *points, double *weights, double *mean, int size, int cou
 	scale_matrix(mean_mrp, mean_mrp, tan(mean_angle/4), 3, 1);
 
 	memcpy(mean, mean_mrp, sizeof(mean_mrp));
-	memcpy(mean + 6, sum_state, sizeof(sum_state));
+	memcpy(mean + 3, sum_state, sizeof(sum_state));
 }
 
 int main()
@@ -122,7 +123,7 @@ int main()
 	printf("Random omega: [%f, %f, %f]\n", measurements[0], measurements[1], measurements[2]);
 
 #if defined(FE_DIVBYZERO) && defined(FE_INVALID)
-	feenableexcept( FE_DIVBYZERO | FE_INVALID | FE_UNDERFLOW | FE_OVERFLOW );
+	feenableexcept( FE_DIVBYZERO | FE_INVALID);
 #endif
 
 	printf("INITIAL\n");
