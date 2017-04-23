@@ -20,6 +20,21 @@
 
 #define POWER_ITERATIONS 100
 
+void rotate_mrp(double orientation[3], double rotation[3], double result[3])
+{
+	// equation from NASA paper "Attitude Estimation Using Modified Rodrigues Parameters"
+	double temp[3];
+	double factor = 1 - pow(vector_magnitude(orientation), 2);
+	scale_matrix(rotation, result, factor, 3, 1);
+	scale_matrix(rotation, temp, 2, 3, 1);
+	cross_product(temp, orientation, temp);
+	matrix_plus_matrix(temp, result, result, 3, 1, 1);
+	factor = dot_product(rotation, orientation);
+	scale_matrix(orientation, temp, factor, 3, 1);
+	matrix_plus_matrix(temp, result, result, 3, 1, 1);
+	scale_matrix(result, result, 0.25, 3, 1);
+}
+
 void process_model(double *curr_state, double *next_state, double delta_t, int n)
 {
 	assert(n == SIZE_STATE);
@@ -28,30 +43,21 @@ void process_model(double *curr_state, double *next_state, double delta_t, int n
 	double omega[3];
 	double alpha[3];
 
-	double temp[3];
 	double result_mrp[3];
 
 	memcpy(mrp, curr_state, sizeof(mrp));
 	memcpy(omega, curr_state + 3, sizeof(omega));
 	memcpy(alpha, curr_state + 6, sizeof(alpha));
+	memcpy(next_state + 6, alpha, sizeof(alpha));
 
 	scale_matrix(alpha, alpha, delta_t, 3, 1);
-	matrix_plus_matrix(alpha, omega, omega, 3, 1, 1);
+	matrix_plus_matrix(alpha, omega, omega, 3, 1, MATRIX_ADD);
+	scale_matrix(omega, omega, delta_t, 3, 1);
 
-	// equation from NASA paper "Attitude Estimation Using Modified Rodrigues Parameters"
-	double factor = 1 - pow(vector_magnitude(mrp), 2);
-	scale_matrix(omega, result_mrp, factor, 3, 1);
-	scale_matrix(omega, temp, 2, 3, 1);
-	cross_product(temp, mrp, temp);
-	matrix_plus_matrix(temp, result_mrp, result_mrp, 3, 1, 1);
-	factor = dot_product(omega, mrp);
-	scale_matrix(mrp, temp, factor, 3, 1);
-	matrix_plus_matrix(temp, result_mrp, result_mrp, 3, 1, 1);
-	scale_matrix(result_mrp, result_mrp, 0.25, 3, 1);
+	rotate_mrp(mrp, omega, result_mrp);
 	
 	memcpy(next_state, result_mrp, sizeof(result_mrp));
 	memcpy(next_state + 3, omega, sizeof(omega));
-	memcpy(next_state + 6, alpha, sizeof(alpha));
 }
 
 void measurement(double *state, double *measurement, int n, int m)
@@ -94,6 +100,39 @@ void mean_state(double *points, double *weights, double *mean, int size, int cou
 	memcpy(mean + 3, sum_state, sizeof(sum_state));
 }
 
+void custom_scaled_points(double *x, double *P, double *chi, int n, double a, double k)
+// modified scaled points algorithm for use with MRPs
+{
+	memcpy(chi, x, n*sizeof(double)); // set the first sigma point (chi sub 0) to the mean
+
+	double scale = a*a*(n + k);
+	double *temp = alloca(n * n * sizeof(double));
+	scale_matrix(P, temp, scale, n, n);
+	matrix_sqrt(temp, temp, n);
+
+	int i, j;
+	for (i = 1; i <= n; i++) {
+		double point_rotation[3];
+		for (j = 0; j < 3; j++) {
+			point_rotation[j] = temp[(i-1) + j*n];
+		}
+		rotate_mrp(x, point_rotation, chi + i*n);
+		for (j = 3; j < n; j++) {
+			chi[i*n + j] = x[j] + temp[(i-1) + j*n];
+		}
+	}
+	for (i = n+1; i <= 2*n; i++) {
+		double point_rotation[3];
+		for (j = 0; j < 3; j++) {
+			point_rotation[j] = -1*temp[(i-1) + j*n];
+		}
+		rotate_mrp(x, point_rotation, chi + i*n);
+		for (j = 3; j < n; j++) {
+			chi[i*n + j] = x[j] - temp[(i-n-1) + j*n];
+		}
+	}
+}
+
 int main()
 {
 	int i;
@@ -130,7 +169,9 @@ int main()
 	matrix_quick_print(state, SIZE_STATE, 1);
 	matrix_quick_print(covariance, SIZE_STATE, SIZE_STATE);
 	for (i = 0; i < 10; i++) {
-		vdm_get_all(state, covariance, SIZE_STATE, ALPHA, BETA, KAPPA, chi, w_m, w_c);
+		// vdm_get_all(state, covariance, SIZE_STATE, ALPHA, BETA, KAPPA, chi, w_m, w_c);
+		custom_scaled_points(state, covariance, chi, SIZE_STATE, ALPHA, KAPPA);
+		vdm_scaled_weights(w_m, w_c, SIZE_STATE, ALPHA, BETA, KAPPA);
 
 		ukf_predict(state, covariance, &process_model, &mean_state, NULL, Q, delta_t, chi, gamma, w_m, w_c, new_state, new_covariance, SIZE_STATE);
 		printf("PREDICT\n");
