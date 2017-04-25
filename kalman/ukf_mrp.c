@@ -3,8 +3,8 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
-#include <fenv.h>
 #include <assert.h>
+#include <fenv.h>
 
 #include "kalman.h"
 #include "matrix_util.h"
@@ -23,16 +23,46 @@
 void rotate_mrp(double orientation[3], double rotation[3], double result[3])
 {
 	// equation from NASA paper "Attitude Estimation Using Modified Rodrigues Parameters"
+	// 1/4{(1 - |P|^2)w - 2w x P + 2(w*P)P
 	double temp[3];
+
+	// (1 - |P|^2)w
 	double factor = 1 - pow(vector_magnitude(orientation), 2);
 	scale_matrix(rotation, result, factor, 3, 1);
+
+	// -2w x P
 	scale_matrix(rotation, temp, 2, 3, 1);
 	cross_product(temp, orientation, temp);
-	matrix_plus_matrix(temp, result, result, 3, 1, 1);
+	matrix_plus_matrix(temp, result, result, 3, 1, MATRIX_SUBTRACT);
+
+	// 2(w*P)P
 	factor = dot_product(rotation, orientation);
 	scale_matrix(orientation, temp, factor, 3, 1);
-	matrix_plus_matrix(temp, result, result, 3, 1, 1);
+	matrix_plus_matrix(temp, result, result, 3, 1, MATRIX_ADD);
+
+	// 1/4{ .. }
 	scale_matrix(result, result, 0.25, 3, 1);
+}
+
+void alt_rotate_mrp(double orientation[3], double rotation[3], double result[3])
+{
+	double angle;
+	double axis[3];
+	double qo[4];
+	double qr[4];
+	
+	normalize_vector(orientation, axis);
+	angle = vector_magnitude(orientation);
+	gen_quaternion(angle, axis, qo);
+	normalize_vector(rotation, axis);
+	angle = vector_magnitude(rotation);
+	gen_quaternion(angle, axis, qr);
+
+	mult_quaternion(qo, qr, qo);
+	decomp_quaternion(qo, axis);
+	normalize_vector(axis, result);
+	angle = vector_magnitude(axis);
+	vector_by_scalar(result, tan(angle)/4, result);
 }
 
 void process_model(double *curr_state, double *next_state, double delta_t, int n)
@@ -52,19 +82,18 @@ void process_model(double *curr_state, double *next_state, double delta_t, int n
 
 	scale_matrix(alpha, alpha, delta_t, 3, 1);
 	matrix_plus_matrix(alpha, omega, omega, 3, 1, MATRIX_ADD);
-	scale_matrix(omega, omega, delta_t, 3, 1);
-
-	rotate_mrp(mrp, omega, result_mrp);
-	
-	memcpy(next_state, result_mrp, sizeof(result_mrp));
 	memcpy(next_state + 3, omega, sizeof(omega));
+
+	scale_matrix(omega, omega, delta_t, 3, 1);
+	rotate_mrp(mrp, omega, result_mrp);
+	memcpy(next_state, result_mrp, sizeof(result_mrp));
 }
 
 void measurement(double *state, double *measurement, int n, int m)
 {
-	measurement[0] = state[4];
-	measurement[1] = state[5];
-	measurement[2] = state[6];
+	measurement[0] = state[3];
+	measurement[1] = state[4];
+	measurement[2] = state[5];
 }
 
 void mean_state(double *points, double *weights, double *mean, int size, int count)
@@ -154,12 +183,12 @@ int main()
 	
 	double delta_t = 0.1;
 
-	double measurements[SIZE_MEASUREMENT];
-	srand(1);
-	for (i = 0; i < 3; i++) {
-		measurements[i] = (double)rand() / (double)RAND_MAX * 10 - 5.0;
-	}
-	printf("Random omega: [%f, %f, %f]\n", measurements[0], measurements[1], measurements[2]);
+	double measurements[SIZE_MEASUREMENT] = {1.0, 0.0, 0.0};
+	// srand(2);
+	// for (i = 0; i < 3; i++) {
+	// 	measurements[i] = (double)rand() / (double)RAND_MAX * 2.0 - 1.0;
+	// }
+	// printf("Random omega: [%f, %f, %f]\n", measurements[0], measurements[1], measurements[2]);
 
 #if defined(FE_DIVBYZERO) && defined(FE_INVALID)
 	feenableexcept( FE_DIVBYZERO | FE_INVALID);
@@ -168,7 +197,9 @@ int main()
 	printf("INITIAL\n");
 	matrix_quick_print(state, SIZE_STATE, 1);
 	matrix_quick_print(covariance, SIZE_STATE, SIZE_STATE);
-	for (i = 0; i < 10; i++) {
+	for (i = 0; i < 100; i++) {
+		printf("Time Elapsed: %fs\n", (i+1)*delta_t);
+
 		// vdm_get_all(state, covariance, SIZE_STATE, ALPHA, BETA, KAPPA, chi, w_m, w_c);
 		custom_scaled_points(state, covariance, chi, SIZE_STATE, ALPHA, KAPPA);
 		vdm_scaled_weights(w_m, w_c, SIZE_STATE, ALPHA, BETA, KAPPA);

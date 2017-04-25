@@ -25,11 +25,16 @@ void gen_quaternion(double theta, double vect[3], double result[4])
 void decomp_quaternion(double quat[4], double vect[3])
 {
 	double value = sqrt(1 - quat[0]*quat[0]);
-	int i;
-	for (i = 0; i < 3; i++) {
-		vect[i] = quat[i + 1] / value;
+	if (value != 0) {
+		int i;
+		for (i = 0; i < 3; i++) {
+			vect[i] = quat[i + 1] / value;
+		}
+		vector_by_scalar(vect, 2*acos(quat[0]), vect);
 	}
-	vector_by_scalar(vect, 2*acos(quat[0]), vect);
+	else {
+		memset(vect, 0, 3*sizeof(double));
+	}
 }
 
 void mult_quaternion(double op_a[4], double op_b[4], double result[4])
