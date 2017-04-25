@@ -132,7 +132,11 @@ double vector_magnitude(double vector[3])
 void normalize_vector(double vector[3], double result[3])
 {
 	double magnitude = vector_magnitude(vector);
-	if (magnitude == 0) return;
+	if (magnitude == 0) {
+		// zero length vector
+		memset(result, 0, 3*sizeof(double));
+		return;
+	}
 	int i;
 	for (i = 0; i < 3; i++) {
 		result[i] = vector[i] / magnitude;

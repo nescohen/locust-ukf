@@ -22,6 +22,7 @@
 
 void rotate_mrp(double orientation[3], double rotation[3], double result[3])
 {
+	//TODO: fix this routine, it does not work
 	double temp[3];
 	// equation from NASA paper "Attitude Estimation Using Modified Rodrigues Parameters"
 	// 1/4{(1 - |P|^2)w - 2w x P + 2(w*P)P
@@ -223,12 +224,12 @@ int main()
 	
 	double delta_t = 0.1;
 
-	double measurements[SIZE_MEASUREMENT] = {1.0, 0.0, 0.0};
-	// srand(2);
-	// for (i = 0; i < 3; i++) {
-	// 	measurements[i] = (double)rand() / (double)RAND_MAX * 2.0 - 1.0;
-	// }
-	// printf("Random omega: [%f, %f, %f]\n", measurements[0], measurements[1], measurements[2]);
+	double measurements[SIZE_MEASUREMENT];
+	srand(2);
+	for (i = 0; i < 3; i++) {
+		measurements[i] = (double)rand() / (double)RAND_MAX * 2.0 - 1.0;
+	}
+	printf("Random omega: [%f, %f, %f]\n", measurements[0], measurements[1], measurements[2]);
 
 #if defined(FE_DIVBYZERO) && defined(FE_INVALID)
 	feenableexcept( FE_DIVBYZERO | FE_INVALID);
