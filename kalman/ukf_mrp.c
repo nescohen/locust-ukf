@@ -22,18 +22,18 @@
 
 void rotate_mrp(double orientation[3], double rotation[3], double result[3])
 {
+	double temp[3];
 	// equation from NASA paper "Attitude Estimation Using Modified Rodrigues Parameters"
 	// 1/4{(1 - |P|^2)w - 2w x P + 2(w*P)P
-	double temp[3];
 
 	// (1 - |P|^2)w
 	double factor = 1 - pow(vector_magnitude(orientation), 2);
 	scale_matrix(rotation, result, factor, 3, 1);
 
 	// -2w x P
-	scale_matrix(rotation, temp, 2, 3, 1);
+	scale_matrix(rotation, temp, -2, 3, 1);
 	cross_product(temp, orientation, temp);
-	matrix_plus_matrix(temp, result, result, 3, 1, MATRIX_SUBTRACT);
+	matrix_plus_matrix(temp, result, result, 3, 1, MATRIX_ADD);
 
 	// 2(w*P)P
 	factor = dot_product(rotation, orientation);
@@ -52,10 +52,10 @@ void alt_rotate_mrp(double orientation[3], double rotation[3], double result[3])
 	double qr[4];
 	
 	normalize_vector(orientation, axis);
-	angle = vector_magnitude(orientation);
+	angle = 4*atan(vector_magnitude(orientation));
 	gen_quaternion(angle, axis, qo);
 	normalize_vector(rotation, axis);
-	angle = vector_magnitude(rotation);
+	angle = 4*atan(vector_magnitude(rotation));
 	gen_quaternion(angle, axis, qr);
 
 	mult_quaternion(qo, qr, qo);
@@ -85,7 +85,7 @@ void process_model(double *curr_state, double *next_state, double delta_t, int n
 	memcpy(next_state + 3, omega, sizeof(omega));
 
 	scale_matrix(omega, omega, delta_t, 3, 1);
-	rotate_mrp(mrp, omega, result_mrp);
+	alt_rotate_mrp(mrp, omega, result_mrp);
 	memcpy(next_state, result_mrp, sizeof(result_mrp));
 }
 
@@ -129,6 +129,36 @@ void mean_state(double *points, double *weights, double *mean, int size, int cou
 	memcpy(mean + 3, sum_state, sizeof(sum_state));
 }
 
+void state_error(double *point, double *mean, double *error, int n)
+{
+	assert(n == SIZE_STATE);
+	// preform naive difference for angular velocity and acceleration
+	matrix_plus_matrix(point + 3, mean + 3, error + 3, 6, 1, MATRIX_SUBTRACT);
+
+	double angle;
+	double axis[3];
+	double point_q[4];
+	double mean_q[4];
+	double final_q[4];
+	angle = 4*atan(vector_magnitude(point));
+	normalize_vector(point, axis);
+	gen_quaternion(angle, axis, point_q);
+	angle = 4*atan(vector_magnitude(mean));
+	normalize_vector(mean, axis);
+	gen_quaternion(angle, axis, mean_q);
+	
+	int i;
+	for (i = 1; i < 4; i++) {
+		mean_q[i] *= -1;
+	}
+	mult_quaternion(point_q, mean_q, final_q);
+
+	decomp_quaternion(final_q, axis);
+	angle = vector_magnitude(axis);
+	normalize_vector(axis, axis);
+	scale_matrix(axis, error, tan(angle/4), 3, 1);
+}
+
 void custom_scaled_points(double *x, double *P, double *chi, int n, double a, double k)
 // modified scaled points algorithm for use with MRPs
 {
@@ -164,6 +194,16 @@ void custom_scaled_points(double *x, double *P, double *chi, int n, double a, do
 
 int main()
 {
+	// double start[3] = {1, 0, 0};
+	// double rotation[3] = {1, 0, 0};
+	// double result[3];
+	// double alt_result[3];
+
+	// rotate_mrp(start, rotation, result);
+	// alt_rotate_mrp(start, rotation, alt_result);
+	// printf("Reg - {%f, %f, %f}\n", result[0], result[1], result[2]);
+	// printf("Alt - {%f, %f, %f}\n", alt_result[0], alt_result[1], alt_result[2]);
+	// return 0;
 	int i;
 	double state[SIZE_STATE] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 	double covariance[SIZE_STATE*SIZE_STATE];
@@ -204,12 +244,12 @@ int main()
 		custom_scaled_points(state, covariance, chi, SIZE_STATE, ALPHA, KAPPA);
 		vdm_scaled_weights(w_m, w_c, SIZE_STATE, ALPHA, BETA, KAPPA);
 
-		ukf_predict(state, covariance, &process_model, &mean_state, NULL, Q, delta_t, chi, gamma, w_m, w_c, new_state, new_covariance, SIZE_STATE);
+		ukf_predict(state, covariance, &process_model, &mean_state, &state_error, Q, delta_t, chi, gamma, w_m, w_c, new_state, new_covariance, SIZE_STATE);
 		printf("PREDICT\n");
 		matrix_quick_print(new_state, SIZE_STATE, 1);
 		matrix_quick_print(new_covariance, SIZE_STATE, SIZE_STATE);
 		
-		ukf_update(new_state, measurements, new_covariance, &measurement, NULL, NULL, NULL, R, gamma, w_m, w_c, state, covariance, SIZE_STATE, SIZE_MEASUREMENT);
+		ukf_update(new_state, measurements, new_covariance, &measurement, NULL, &state_error, NULL, R, gamma, w_m, w_c, state, covariance, SIZE_STATE, SIZE_MEASUREMENT);
 		printf("UPDATE\n");
 		matrix_quick_print(state, SIZE_STATE, 1);
 		matrix_quick_print(covariance, SIZE_STATE, SIZE_STATE);
