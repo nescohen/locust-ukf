@@ -10,7 +10,7 @@
 #include "matrix_util.h"
 #include "quaternion_util.h"
 
-#define SIZE_STATE 9
+#define SIZE_STATE 6
 #define SIZE_MEASUREMENT 3
 #define SENSOR_VARIANCE (double)11 + (double)1 / (double)9
 
@@ -22,7 +22,6 @@
 
 void rotate_mrp(double orientation[3], double rotation[3], double result[3])
 {
-	//TODO: fix this routine, it does not work
 	double temp[3];
 	// equation from NASA paper "Attitude Estimation Using Modified Rodrigues Parameters"
 	// 1/4{(1 - |P|^2)w - 2w x P + 2(w*P)P
@@ -72,21 +71,15 @@ void process_model(double *curr_state, double *next_state, double delta_t, int n
 
 	double mrp[3];
 	double omega[3];
-	double alpha[3];
 
 	double result_mrp[3];
 
 	memcpy(mrp, curr_state, sizeof(mrp));
 	memcpy(omega, curr_state + 3, sizeof(omega));
-	memcpy(alpha, curr_state + 6, sizeof(alpha));
-	memcpy(next_state + 6, alpha, sizeof(alpha));
-
-	scale_matrix(alpha, alpha, delta_t, 3, 1);
-	matrix_plus_matrix(alpha, omega, omega, 3, 1, MATRIX_ADD);
 	memcpy(next_state + 3, omega, sizeof(omega));
 
 	scale_matrix(omega, omega, delta_t, 3, 1);
-	alt_rotate_mrp(mrp, omega, result_mrp);
+	rotate_mrp(mrp, omega, result_mrp);
 	memcpy(next_state, result_mrp, sizeof(result_mrp));
 }
 
@@ -102,15 +95,15 @@ void mean_state(double *points, double *weights, double *mean, int size, int cou
 {
 	double sum_mrp_angle[2] = {0.0}; // format: { cos(a), sin(a) }
 	double sum_mrp_vector[3] = {0.0};
-	double sum_state[6] = {0.0};
+	double sum_state[3] = {0.0};
 	int i;
 	for (i = 0; i < count; i++) {
 		double mrp[3];
 		double angle;
-		double rest_state[6];
+		double rest_state[3];
 		memcpy(rest_state, points + i*size + 3, sizeof(rest_state));
-		scale_matrix(rest_state, rest_state, weights[i], 6, 1);
-		matrix_plus_matrix(rest_state, sum_state, sum_state, 6, 1, MATRIX_ADD);
+		scale_matrix(rest_state, rest_state, weights[i], 3, 1);
+		matrix_plus_matrix(rest_state, sum_state, sum_state, 3, 1, MATRIX_ADD);
 
 		memcpy(mrp, points + i*size, sizeof(mrp));
 		angle = vector_magnitude(mrp);
@@ -134,7 +127,7 @@ void state_error(double *point, double *mean, double *error, int n)
 {
 	assert(n == SIZE_STATE);
 	// preform naive difference for angular velocity and acceleration
-	matrix_plus_matrix(point + 3, mean + 3, error + 3, 6, 1, MATRIX_SUBTRACT);
+	matrix_plus_matrix(point + 3, mean + 3, error + 3, 3, 1, MATRIX_SUBTRACT);
 
 	double angle;
 	double axis[3];
@@ -163,6 +156,7 @@ void state_error(double *point, double *mean, double *error, int n)
 void custom_scaled_points(double *x, double *P, double *chi, int n, double a, double k)
 // modified scaled points algorithm for use with MRPs
 {
+	int i, j;
 	memcpy(chi, x, n*sizeof(double)); // set the first sigma point (chi sub 0) to the mean
 
 	double scale = a*a*(n + k);
@@ -170,7 +164,6 @@ void custom_scaled_points(double *x, double *P, double *chi, int n, double a, do
 	scale_matrix(P, temp, scale, n, n);
 	matrix_sqrt(temp, temp, n);
 
-	int i, j;
 	for (i = 1; i <= n; i++) {
 		double point_rotation[3];
 		for (j = 0; j < 3; j++) {
@@ -195,18 +188,8 @@ void custom_scaled_points(double *x, double *P, double *chi, int n, double a, do
 
 int main()
 {
-	// double start[3] = {1, 0, 0};
-	// double rotation[3] = {1, 0, 0};
-	// double result[3];
-	// double alt_result[3];
-
-	// rotate_mrp(start, rotation, result);
-	// alt_rotate_mrp(start, rotation, alt_result);
-	// printf("Reg - {%f, %f, %f}\n", result[0], result[1], result[2]);
-	// printf("Alt - {%f, %f, %f}\n", alt_result[0], alt_result[1], alt_result[2]);
-	// return 0;
 	int i;
-	double state[SIZE_STATE] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+	double state[SIZE_STATE] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 	double covariance[SIZE_STATE*SIZE_STATE];
 	double new_state[SIZE_STATE];
 	double new_covariance[SIZE_STATE*SIZE_STATE];
@@ -224,12 +207,12 @@ int main()
 	
 	double delta_t = 0.1;
 
-	double measurements[SIZE_MEASUREMENT];
-	srand(2);
-	for (i = 0; i < 3; i++) {
-		measurements[i] = (double)rand() / (double)RAND_MAX * 2.0 - 1.0;
-	}
-	printf("Random omega: [%f, %f, %f]\n", measurements[0], measurements[1], measurements[2]);
+	double measurements[SIZE_MEASUREMENT] = {1.0, 0.0, 0.0};
+	// srand(1);
+	// for (i = 0; i < 3; i++) {
+	// 	measurements[i] = (double)rand() / (double)RAND_MAX * 10.0 - 5.0;
+	// }
+	// printf("Random omega: [%f, %f, %f]\n", measurements[0], measurements[1], measurements[2]);
 
 #if defined(FE_DIVBYZERO) && defined(FE_INVALID)
 	feenableexcept( FE_DIVBYZERO | FE_INVALID);
@@ -255,12 +238,12 @@ int main()
 		matrix_quick_print(state, SIZE_STATE, 1);
 		matrix_quick_print(covariance, SIZE_STATE, SIZE_STATE);
 		// WARNING - hack
-		//double *temp = alloca(SIZE_STATE*SIZE_STATE*sizeof(double));
-		//scale_matrix(covariance, covariance, 0.5, SIZE_STATE, SIZE_STATE);
-		//matrix_transpose(covariance, temp, SIZE_STATE, SIZE_STATE);
-		//matrix_plus_matrix(covariance, temp, covariance, SIZE_STATE, SIZE_STATE, 1);
-		//matrix_diagonal(temp, 0.01, SIZE_STATE);
-		//matrix_plus_matrix(covariance, temp, covariance, SIZE_STATE, SIZE_STATE, 1);
+		// double *temp = alloca(SIZE_STATE*SIZE_STATE*sizeof(double));
+		// scale_matrix(covariance, covariance, 0.5, SIZE_STATE, SIZE_STATE);
+		// matrix_transpose(covariance, temp, SIZE_STATE, SIZE_STATE);
+		// matrix_plus_matrix(covariance, temp, covariance, SIZE_STATE, SIZE_STATE, 1);
+		// matrix_diagonal(temp, 0.01, SIZE_STATE);
+		// matrix_plus_matrix(covariance, temp, covariance, SIZE_STATE, SIZE_STATE, 1);
 		// hack over
 	}
 
