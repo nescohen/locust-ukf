@@ -12,15 +12,38 @@
 
 #define SIZE_STATE 6
 #define SIZE_MEASUREMENT 3
-#define SENSOR_VARIANCE (double)11 + (double)1 / (double)9
+#define SENSOR_VARIANCE 0.193825 // 11.111... degress in radians
 
-#define ALPHA 0.1
+#define ALPHA 0.5
 #define BETA 2.0
 #define KAPPA (double)(3 - SIZE_STATE)
 
 #define POWER_ITERATIONS 100
 
-void rotate_mrp(double orientation[3], double rotation[3], double result[3])
+void compose_mrp(double mrp_a[3], double mrp_b[3], double mrp_f[3])
+// equation from Journal of Astronautical Sciences paper "A Survey of Attitude Representations"
+// P" = ((1 - |P|^2)P' + (1 - |P'|^2)P - 2P'xP) / (1 + |P'|^2 * |P|^2 - 2P'*P)
+{
+	double mag2_a = pow(vector_magnitude(mrp_a), 2);
+	double mag2_b = pow(vector_magnitude(mrp_b), 2);
+	double denominator;
+	denominator = 1;
+	denominator += mag2_b * mag2_a;
+	denominator -= 2 * dot_product(mrp_b, mrp_a);
+
+	double numerator[3];
+	double temp[3];
+	scale_matrix(mrp_b, numerator, 1 - mag2_a, 3, 1);
+	scale_matrix(mrp_a, temp, 1 - mag2_b, 3, 1);
+	matrix_plus_matrix(temp, numerator, numerator, 3, 1, MATRIX_ADD);
+	scale_matrix(mrp_b, temp, 2, 3, 1);
+	cross_product(temp, mrp_a, temp);
+	matrix_plus_matrix(numerator, temp, numerator, 3, 1, MATRIX_SUBTRACT);
+	
+	scale_matrix(numerator, mrp_f, 1/denominator, 3, 1);
+}
+
+void rotate_mrp(double orientation[3], double omega[3], double result[3], double dt)
 {
 	double temp[3];
 	// equation from NASA paper "Attitude Estimation Using Modified Rodrigues Parameters"
@@ -28,41 +51,21 @@ void rotate_mrp(double orientation[3], double rotation[3], double result[3])
 
 	// (1 - |P|^2)w
 	double factor = 1 - pow(vector_magnitude(orientation), 2);
-	scale_matrix(rotation, result, factor, 3, 1);
+	scale_matrix(omega, result, factor, 3, 1);
 
 	// -2w x P
-	scale_matrix(rotation, temp, -2, 3, 1);
+	scale_matrix(omega, temp, -2, 3, 1);
 	cross_product(temp, orientation, temp);
 	matrix_plus_matrix(temp, result, result, 3, 1, MATRIX_ADD);
 
 	// 2(w*P)P
-	factor = dot_product(rotation, orientation);
+	factor = dot_product(omega, orientation);
 	scale_matrix(orientation, temp, factor, 3, 1);
 	matrix_plus_matrix(temp, result, result, 3, 1, MATRIX_ADD);
 
 	// 1/4{ .. }
-	scale_matrix(result, result, 0.25, 3, 1);
-}
-
-void alt_rotate_mrp(double orientation[3], double rotation[3], double result[3])
-{
-	double angle;
-	double axis[3];
-	double qo[4];
-	double qr[4];
-	
-	normalize_vector(orientation, axis);
-	angle = 4*atan(vector_magnitude(orientation));
-	gen_quaternion(angle, axis, qo);
-	normalize_vector(rotation, axis);
-	angle = 4*atan(vector_magnitude(rotation));
-	gen_quaternion(angle, axis, qr);
-
-	mult_quaternion(qo, qr, qo);
-	decomp_quaternion(qo, axis);
-	normalize_vector(axis, result);
-	angle = vector_magnitude(axis);
-	vector_by_scalar(result, tan(angle)/4, result);
+	scale_matrix(result, result, 0.25*dt, 3, 1);
+	matrix_plus_matrix(orientation, result, result, 3, 1, MATRIX_ADD);
 }
 
 void process_model(double *curr_state, double *next_state, double delta_t, int n)
@@ -78,8 +81,11 @@ void process_model(double *curr_state, double *next_state, double delta_t, int n
 	memcpy(omega, curr_state + 3, sizeof(omega));
 	memcpy(next_state + 3, omega, sizeof(omega));
 
-	scale_matrix(omega, omega, delta_t, 3, 1);
-	rotate_mrp(mrp, omega, result_mrp);
+	rotate_mrp(mrp, omega, result_mrp, delta_t);
+	// double angle = vector_magnitude(omega) / delta_t;
+	// normalize_vector(omega, omega);
+	// scale_matrix(omega, omega, tan(angle/4), 3, 1);
+	// compose_mrp(mrp, omega, result_mrp);
 	memcpy(next_state, result_mrp, sizeof(result_mrp));
 }
 
@@ -169,7 +175,10 @@ void custom_scaled_points(double *x, double *P, double *chi, int n, double a, do
 		for (j = 0; j < 3; j++) {
 			point_rotation[j] = temp[(i-1) + j*n];
 		}
-		rotate_mrp(x, point_rotation, chi + i*n);
+		double angle = vector_magnitude(point_rotation);
+		normalize_vector(point_rotation, point_rotation);
+		scale_matrix(point_rotation, point_rotation, tan(angle/4), 3, 1);
+		compose_mrp(x, point_rotation, chi + i*n);
 		for (j = 3; j < n; j++) {
 			chi[i*n + j] = x[j] + temp[(i-1) + j*n];
 		}
@@ -177,28 +186,44 @@ void custom_scaled_points(double *x, double *P, double *chi, int n, double a, do
 	for (i = n+1; i <= 2*n; i++) {
 		double point_rotation[3];
 		for (j = 0; j < 3; j++) {
-			point_rotation[j] = -1*temp[(i-1) + j*n];
+			point_rotation[j] = temp[(i-n-1) + j*n];
 		}
-		rotate_mrp(x, point_rotation, chi + i*n);
+		double angle = -1*vector_magnitude(point_rotation);
+		normalize_vector(point_rotation, point_rotation);
+		scale_matrix(point_rotation, point_rotation, tan(angle/4), 3, 1);
+		compose_mrp(x, point_rotation, chi + i*n);
 		for (j = 3; j < n; j++) {
 			chi[i*n + j] = x[j] - temp[(i-n-1) + j*n];
 		}
 	}
 }
 
+void process_noise(double *Q, double dt, double scale)
+// calculates the process noise for a given time increment
+{
+	int i;
+	memset(Q, 0, SIZE_STATE*SIZE_STATE*sizeof(double));
+	for (i = 0; i < 3; i++) {
+		Q[i + i*SIZE_STATE] = pow(dt, 4) / 4;
+		Q[i+3 + (i+3)*SIZE_STATE] = pow(dt, 2);
+		Q[i+3 + i*SIZE_STATE] = pow(dt, 3) / 2;
+		Q[i + (i+3)*SIZE_STATE] = pow(dt, 3) / 2;
+	}
+	scale_matrix(Q, Q, scale, SIZE_STATE, SIZE_STATE);
+}
+
 int main()
 {
 	int i;
-	double state[SIZE_STATE] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+	double state[SIZE_STATE] = {0.0, 0.0, 0.0, 1.0, 0.0, 0.0};
 	double covariance[SIZE_STATE*SIZE_STATE];
 	double new_state[SIZE_STATE];
 	double new_covariance[SIZE_STATE*SIZE_STATE];
-	matrix_diagonal(covariance, 10, SIZE_STATE);
+	matrix_diagonal(covariance, 0.001, SIZE_STATE);
 
 	double R[SIZE_MEASUREMENT*SIZE_MEASUREMENT];
 	double Q[SIZE_STATE*SIZE_STATE];
 	matrix_diagonal(R, SENSOR_VARIANCE, SIZE_MEASUREMENT);
-	matrix_diagonal(Q, 10, SIZE_STATE);
 
 	double chi[SIZE_STATE*(2*SIZE_STATE + 1)];
 	double gamma[SIZE_STATE*(2*SIZE_STATE + 1)];
@@ -228,15 +253,18 @@ int main()
 		custom_scaled_points(state, covariance, chi, SIZE_STATE, ALPHA, KAPPA);
 		vdm_scaled_weights(w_m, w_c, SIZE_STATE, ALPHA, BETA, KAPPA);
 
+		process_noise(Q, delta_t, 0.01);
 		ukf_predict(state, covariance, &process_model, &mean_state, &state_error, Q, delta_t, chi, gamma, w_m, w_c, new_state, new_covariance, SIZE_STATE);
 		printf("PREDICT\n");
+		printf("Rotation = %f radians\n", 4*atan(vector_magnitude(new_state)));
 		matrix_quick_print(new_state, SIZE_STATE, 1);
-		matrix_quick_print(new_covariance, SIZE_STATE, SIZE_STATE);
+		//matrix_quick_print(new_covariance, SIZE_STATE, SIZE_STATE);
 		
 		ukf_update(new_state, measurements, new_covariance, &measurement, NULL, &state_error, NULL, R, gamma, w_m, w_c, state, covariance, SIZE_STATE, SIZE_MEASUREMENT);
 		printf("UPDATE\n");
 		matrix_quick_print(state, SIZE_STATE, 1);
-		matrix_quick_print(covariance, SIZE_STATE, SIZE_STATE);
+		//matrix_quick_print(covariance, SIZE_STATE, SIZE_STATE);
+
 		// WARNING - hack
 		// double *temp = alloca(SIZE_STATE*SIZE_STATE*sizeof(double));
 		// scale_matrix(covariance, covariance, 0.5, SIZE_STATE, SIZE_STATE);
