@@ -14,7 +14,7 @@
 #define SIZE_MEASUREMENT 3
 #define SENSOR_VARIANCE 0.193825 // 11.111... degress in radians
 
-#define ALPHA 0.5
+#define ALPHA 0.9
 #define BETA 2.0
 #define KAPPA (double)(3 - SIZE_STATE)
 
@@ -82,10 +82,6 @@ void process_model(double *curr_state, double *next_state, double delta_t, int n
 	memcpy(next_state + 3, omega, sizeof(omega));
 
 	rotate_mrp(mrp, omega, result_mrp, delta_t);
-	// double angle = vector_magnitude(omega) / delta_t;
-	// normalize_vector(omega, omega);
-	// scale_matrix(omega, omega, tan(angle/4), 3, 1);
-	// compose_mrp(mrp, omega, result_mrp);
 	memcpy(next_state, result_mrp, sizeof(result_mrp));
 }
 
@@ -253,7 +249,7 @@ int main()
 		custom_scaled_points(state, covariance, chi, SIZE_STATE, ALPHA, KAPPA);
 		vdm_scaled_weights(w_m, w_c, SIZE_STATE, ALPHA, BETA, KAPPA);
 
-		process_noise(Q, delta_t, 0.01);
+		process_noise(Q, delta_t, 0.1);
 		ukf_predict(state, covariance, &process_model, &mean_state, &state_error, Q, delta_t, chi, gamma, w_m, w_c, new_state, new_covariance, SIZE_STATE);
 		printf("PREDICT\n");
 		printf("Rotation = %f radians\n", 4*atan(vector_magnitude(new_state)));
