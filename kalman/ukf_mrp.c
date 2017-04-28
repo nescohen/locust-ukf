@@ -11,8 +11,9 @@
 #include "quaternion_util.h"
 
 #define SIZE_STATE 6
-#define SIZE_MEASUREMENT 3
-#define SENSOR_VARIANCE 0.193825 // 11.111... degress in radians
+#define SIZE_MEASUREMENT 9
+#define GYRO_VARIANCE 0.193825 // 11.111... degress in radians
+#define POSITION_VARIANCE 0.5
 
 #define ALPHA 0.9
 #define BETA 2.0
@@ -208,6 +209,13 @@ void process_noise(double *Q, double dt, double scale)
 	scale_matrix(Q, Q, scale, SIZE_STATE, SIZE_STATE);
 }
 
+void generate_measurements(double *z, double *omega, double *down_vect, double *north_vect)
+{
+	memcpy(z, down_vect, 3*sizeof(double));
+	memcpy(z + 3, north_vect, 3*sizeof(double));
+	memcpy(z + 6, omega, 3*sizeof(double));
+}
+
 int main()
 {
 	int i;
@@ -219,7 +227,13 @@ int main()
 
 	double R[SIZE_MEASUREMENT*SIZE_MEASUREMENT];
 	double Q[SIZE_STATE*SIZE_STATE];
-	matrix_diagonal(R, SENSOR_VARIANCE, SIZE_MEASUREMENT);
+	matrix_init(R, 0, SIZE_MEASUREMENT, SIZE_MEASUREMENT);
+	for (i = 0; i < 6; i++) {
+		R[i + i*SIZE_MEASUREMENT] = POSITION_VARIANCE;
+	}
+	for (i = 6; i < 9; i++) {
+		R[i + i*SIZE_MEASUREMENT] = GYRO_VARIANCE;
+	}
 
 	double chi[SIZE_STATE*(2*SIZE_STATE + 1)];
 	double gamma[SIZE_STATE*(2*SIZE_STATE + 1)];
@@ -228,12 +242,10 @@ int main()
 	
 	double delta_t = 0.1;
 
-	double measurements[SIZE_MEASUREMENT] = {1.0, 0.0, 0.0};
-	// srand(1);
-	// for (i = 0; i < 3; i++) {
-	// 	measurements[i] = (double)rand() / (double)RAND_MAX * 10.0 - 5.0;
-	// }
-	// printf("Random omega: [%f, %f, %f]\n", measurements[0], measurements[1], measurements[2]);
+	double measurements[SIZE_MEASUREMENT] = {0.0};
+	double true_orientation[3] = {0.0};
+	double true_omega[3] = {0.0};
+	//TODO: update measurement function (h) to use new measurement size
 
 #if defined(FE_DIVBYZERO) && defined(FE_INVALID)
 	feenableexcept( FE_DIVBYZERO | FE_INVALID);
