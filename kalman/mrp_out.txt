@@ -14,8 +14,9 @@ INITIAL
 [ 0000.0000,  0000.0000,  0000.0000,  0000.0000,  0000.0000,  0000.0010, ]
 
 Time Elapsed: 0.100000s
+True rotation: 0.099979 radians
 PREDICT
-Rotation = 0.109540 radians
+Prediction rotation = 0.109540 radians
 [ 0000.0274, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -31,9 +32,11 @@ UPDATE
 [ 0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 0.109540 radians
 Time Elapsed: 0.200000s
+True rotation: 0.199834 radians
 PREDICT
-Rotation = 0.210637 radians
+Prediction rotation = 0.210637 radians
 [ 0000.0527, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -49,9 +52,11 @@ UPDATE
 [ 0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 0.210637 radians
 Time Elapsed: 0.300000s
+True rotation: 0.299439 radians
 PREDICT
-Rotation = 0.318962 radians
+Prediction rotation = 0.318962 radians
 [ 0000.0799, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -67,9 +72,11 @@ UPDATE
 [ 0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 0.318962 radians
 Time Elapsed: 0.400000s
+True rotation: 0.398675 radians
 PREDICT
-Rotation = 0.422047 radians
+Prediction rotation = 0.422047 radians
 [ 0000.1059, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -85,9 +92,11 @@ UPDATE
 [ 0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 0.422047 radians
 Time Elapsed: 0.500000s
+True rotation: 0.497420 radians
 PREDICT
-Rotation = 0.529122 radians
+Prediction rotation = 0.529122 radians
 [ 0000.1331, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -103,9 +112,11 @@ UPDATE
 [ 0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 0.529122 radians
 Time Elapsed: 0.600000s
+True rotation: 0.595560 radians
 PREDICT
-Rotation = 0.630191 radians
+Prediction rotation = 0.630191 radians
 [ 0000.1589, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -121,9 +132,11 @@ UPDATE
 [ 0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 0.630191 radians
 Time Elapsed: 0.700000s
+True rotation: 0.692983 radians
 PREDICT
-Rotation = 0.734333 radians
+Prediction rotation = 0.734333 radians
 [ 0000.1857, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -139,9 +152,11 @@ UPDATE
 [ 0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 0.734333 radians
 Time Elapsed: 0.800000s
+True rotation: 0.789582 radians
 PREDICT
-Rotation = 0.831994 radians
+Prediction rotation = 0.831994 radians
 [ 0000.2111, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -157,9 +172,11 @@ UPDATE
 [ 0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 0.831994 radians
 Time Elapsed: 0.900000s
+True rotation: 0.885258 radians
 PREDICT
-Rotation = 0.932299 radians
+Prediction rotation = 0.932299 radians
 [ 0000.2374, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -175,9 +192,11 @@ UPDATE
 [ 0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 0.932299 radians
 Time Elapsed: 1.000000s
+True rotation: 0.979915 radians
 PREDICT
-Rotation = 1.026327 radians
+Prediction rotation = 1.026327 radians
 [ 0000.2624, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -193,9 +212,11 @@ UPDATE
 [ 0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 1.026327 radians
 Time Elapsed: 1.100000s
+True rotation: 1.073465 radians
 PREDICT
-Rotation = 1.123752 radians
+Prediction rotation = 1.123752 radians
 [ 0000.2886, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -211,9 +232,11 @@ UPDATE
 [ 0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 1.123752 radians
 Time Elapsed: 1.200000s
+True rotation: 1.165827 radians
 PREDICT
-Rotation = 1.215939 radians
+Prediction rotation = 1.215939 radians
 [ 0000.3137, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -229,9 +252,11 @@ UPDATE
 [ 0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 1.215939 radians
 Time Elapsed: 1.300000s
+True rotation: 1.256928 radians
 PREDICT
-Rotation = 1.312298 radians
+Prediction rotation = 1.312298 radians
 [ 0000.3404, ]
 [ 0000.0000, ]
 [-0000.0000, ]
@@ -247,9 +272,11 @@ UPDATE
 [ 0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 1.312298 radians
 Time Elapsed: 1.400000s
+True rotation: 1.346699 radians
 PREDICT
-Rotation = 1.400415 radians
+Prediction rotation = 1.400415 radians
 [ 0000.3651, ]
 [ 0000.0000, ]
 [-0000.0000, ]
@@ -265,9 +292,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 1.400415 radians
 Time Elapsed: 1.500000s
+True rotation: 1.435083 radians
 PREDICT
-Rotation = 1.491392 radians
+Prediction rotation = 1.491392 radians
 [ 0000.3911, ]
 [ 0000.0000, ]
 [-0000.0000, ]
@@ -283,9 +312,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 1.491392 radians
 Time Elapsed: 1.600000s
+True rotation: 1.522026 radians
 PREDICT
-Rotation = 1.576037 radians
+Prediction rotation = 1.576037 radians
 [ 0000.4157, ]
 [ 0000.0000, ]
 [-0000.0000, ]
@@ -301,9 +332,11 @@ UPDATE
 [ 0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 1.576037 radians
 Time Elapsed: 1.700000s
+True rotation: 1.607483 radians
 PREDICT
-Rotation = 1.664766 radians
+Prediction rotation = 1.664766 radians
 [ 0000.4420, ]
 [-0000.0000, ]
 [ 0000.0000, ]
@@ -319,9 +352,11 @@ UPDATE
 [ 0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 1.664766 radians
 Time Elapsed: 1.800000s
+True rotation: 1.691416 radians
 PREDICT
-Rotation = 1.746466 radians
+Prediction rotation = 1.746466 radians
 [ 0000.4667, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -337,9 +372,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 1.746466 radians
 Time Elapsed: 1.900000s
+True rotation: 1.773793 radians
 PREDICT
-Rotation = 1.830320 radians
+Prediction rotation = 1.830320 radians
 [ 0000.4924, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -355,9 +392,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 1.830320 radians
 Time Elapsed: 2.000000s
+True rotation: 1.854590 radians
 PREDICT
-Rotation = 1.908360 radians
+Prediction rotation = 1.908360 radians
 [ 0000.5169, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -373,9 +412,11 @@ UPDATE
 [-0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 1.908360 radians
 Time Elapsed: 2.100000s
+True rotation: 1.933788 radians
 PREDICT
-Rotation = 1.989581 radians
+Prediction rotation = 1.989581 radians
 [ 0000.5429, ]
 [-0000.0000, ]
 [ 0000.0000, ]
@@ -391,9 +432,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 1.989581 radians
 Time Elapsed: 2.200000s
+True rotation: 2.011373 radians
 PREDICT
-Rotation = 2.063974 radians
+Prediction rotation = 2.063974 radians
 [ 0000.5673, ]
 [-0000.0000, ]
 [ 0000.0000, ]
@@ -409,9 +452,11 @@ UPDATE
 [ 0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 2.063974 radians
 Time Elapsed: 2.300000s
+True rotation: 2.087337 radians
 PREDICT
-Rotation = 2.140271 radians
+Prediction rotation = 2.140271 radians
 [ 0000.5927, ]
 [-0000.0000, ]
 [ 0000.0000, ]
@@ -427,9 +472,11 @@ UPDATE
 [-0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 2.140271 radians
 Time Elapsed: 2.400000s
+True rotation: 2.161678 radians
 PREDICT
-Rotation = 2.212335 radians
+Prediction rotation = 2.212335 radians
 [ 0000.6174, ]
 [-0000.0000, ]
 [ 0000.0000, ]
@@ -445,9 +492,11 @@ UPDATE
 [-0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 2.212335 radians
 Time Elapsed: 2.500000s
+True rotation: 2.234397 radians
 PREDICT
-Rotation = 2.285487 radians
+Prediction rotation = 2.285487 radians
 [ 0000.6429, ]
 [-0000.0000, ]
 [ 0000.0000, ]
@@ -463,9 +512,11 @@ UPDATE
 [ 0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 2.285487 radians
 Time Elapsed: 2.600000s
+True rotation: 2.305501 radians
 PREDICT
-Rotation = 2.353517 radians
+Prediction rotation = 2.353517 radians
 [ 0000.6672, ]
 [-0000.0000, ]
 [ 0000.0000, ]
@@ -481,9 +532,11 @@ UPDATE
 [ 0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 2.353517 radians
 Time Elapsed: 2.700000s
+True rotation: 2.374999 radians
 PREDICT
-Rotation = 2.423453 radians
+Prediction rotation = 2.423453 radians
 [ 0000.6928, ]
 [-0000.0000, ]
 [ 0000.0000, ]
@@ -499,9 +552,11 @@ UPDATE
 [-0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 2.423453 radians
 Time Elapsed: 2.800000s
+True rotation: 2.442904 radians
 PREDICT
-Rotation = 2.488238 radians
+Prediction rotation = 2.488238 radians
 [ 0000.7170, ]
 [-0000.0000, ]
 [ 0000.0000, ]
@@ -517,9 +572,11 @@ UPDATE
 [-0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 2.488238 radians
 Time Elapsed: 2.900000s
+True rotation: 2.509233 radians
 PREDICT
-Rotation = 2.554421 radians
+Prediction rotation = 2.554421 radians
 [ 0000.7424, ]
 [ 0000.0000, ]
 [-0000.0000, ]
@@ -535,9 +592,11 @@ UPDATE
 [ 0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 2.554421 radians
 Time Elapsed: 3.000000s
+True rotation: 2.574004 radians
 PREDICT
-Rotation = 2.616576 radians
+Prediction rotation = 2.616576 radians
 [ 0000.7668, ]
 [ 0000.0000, ]
 [-0000.0000, ]
@@ -553,9 +612,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 2.616576 radians
 Time Elapsed: 3.100000s
+True rotation: 2.637240 radians
 PREDICT
-Rotation = 2.679008 radians
+Prediction rotation = 2.679008 radians
 [ 0000.7919, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -571,9 +632,11 @@ UPDATE
 [ 0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 2.679008 radians
 Time Elapsed: 3.200000s
+True rotation: 2.698964 radians
 PREDICT
-Rotation = 2.738536 radians
+Prediction rotation = 2.738536 radians
 [ 0000.8164, ]
 [ 0000.0000, ]
 [-0000.0000, ]
@@ -589,9 +652,11 @@ UPDATE
 [ 0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 2.738536 radians
 Time Elapsed: 3.300000s
+True rotation: 2.759200 radians
 PREDICT
-Rotation = 2.797723 radians
+Prediction rotation = 2.797723 radians
 [ 0000.8413, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -607,9 +672,11 @@ UPDATE
 [ 0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 2.797723 radians
 Time Elapsed: 3.400000s
+True rotation: 2.817976 radians
 PREDICT
-Rotation = 2.854358 radians
+Prediction rotation = 2.854358 radians
 [ 0000.8658, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -625,9 +692,11 @@ UPDATE
 [-0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 2.854358 radians
 Time Elapsed: 3.500000s
+True rotation: 2.875320 radians
 PREDICT
-Rotation = 2.910612 radians
+Prediction rotation = 2.910612 radians
 [ 0000.8907, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -643,9 +712,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 2.910612 radians
 Time Elapsed: 3.600000s
+True rotation: 2.931260 radians
 PREDICT
-Rotation = 2.964380 radians
+Prediction rotation = 2.964380 radians
 [ 0000.9151, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -661,9 +732,11 @@ UPDATE
 [-0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 2.964380 radians
 Time Elapsed: 3.700000s
+True rotation: 2.985827 radians
 PREDICT
-Rotation = 3.017778 radians
+Prediction rotation = 3.017778 radians
 [ 0000.9399, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -679,9 +752,11 @@ UPDATE
 [-0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 3.017778 radians
 Time Elapsed: 3.800000s
+True rotation: 3.039051 radians
 PREDICT
-Rotation = 3.068892 radians
+Prediction rotation = 3.068892 radians
 [ 0000.9643, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -697,9 +772,11 @@ UPDATE
 [ 0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 3.068892 radians
 Time Elapsed: 3.900000s
+True rotation: 3.090962 radians
 PREDICT
-Rotation = 3.119536 radians
+Prediction rotation = 3.119536 radians
 [ 0000.9890, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -715,9 +792,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 3.119536 radians
 Time Elapsed: 4.000000s
+True rotation: 3.141593 radians
 PREDICT
-Rotation = 3.115005 radians
+Prediction rotation = 3.115005 radians
 [-0000.9868, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -733,9 +812,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 3.115005 radians
 Time Elapsed: 4.100000s
+True rotation: 3.190973 radians
 PREDICT
-Rotation = 2.957628 radians
+Prediction rotation = 2.957628 radians
 [-0000.9120, ]
 [ 0000.0000, ]
 [-0000.0000, ]
@@ -751,9 +832,11 @@ UPDATE
 [-0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 2.957628 radians
 Time Elapsed: 4.200000s
+True rotation: 3.239134 radians
 PREDICT
-Rotation = 3.083289 radians
+Prediction rotation = 3.083289 radians
 [ 0000.9713, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -769,9 +852,11 @@ UPDATE
 [-0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 3.083289 radians
 Time Elapsed: 4.300000s
+True rotation: 3.286108 radians
 PREDICT
-Rotation = 1.367518 radians
+Prediction rotation = 1.367518 radians
 [-0000.3559, ]
 [ 0000.0000, ]
 [-0000.0000, ]
@@ -787,9 +872,11 @@ UPDATE
 [-0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 1.367518 radians
 Time Elapsed: 4.400000s
+True rotation: 3.331925 radians
 PREDICT
-Rotation = 0.884209 radians
+Prediction rotation = 0.884209 radians
 [-0000.2247, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -805,9 +892,11 @@ UPDATE
 [ 0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 0.884209 radians
 Time Elapsed: 4.500000s
+True rotation: 3.376616 radians
 PREDICT
-Rotation = 2.519244 radians
+Prediction rotation = 2.519244 radians
 [-0000.7288, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -823,9 +912,11 @@ UPDATE
 [ 0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 2.519244 radians
 Time Elapsed: 4.600000s
+True rotation: 3.420211 radians
 PREDICT
-Rotation = 1.596668 radians
+Prediction rotation = 1.596668 radians
 [-0000.4218, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -841,9 +932,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 1.596668 radians
 Time Elapsed: 4.700000s
+True rotation: 3.462740 radians
 PREDICT
-Rotation = 2.913994 radians
+Prediction rotation = 2.913994 radians
 [-0000.8922, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -859,9 +952,11 @@ UPDATE
 [ 0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 2.913994 radians
 Time Elapsed: 4.800000s
+True rotation: 3.504232 radians
 PREDICT
-Rotation = 2.833306 radians
+Prediction rotation = 2.833306 radians
 [-0000.8566, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -877,9 +972,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 2.833306 radians
 Time Elapsed: 4.900000s
+True rotation: 3.544717 radians
 PREDICT
-Rotation = 2.775215 radians
+Prediction rotation = 2.775215 radians
 [-0000.8318, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -895,9 +992,11 @@ UPDATE
 [ 0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 2.775215 radians
 Time Elapsed: 5.000000s
+True rotation: 3.584222 radians
 PREDICT
-Rotation = 2.716397 radians
+Prediction rotation = 2.716397 radians
 [-0000.8072, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -913,9 +1012,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 2.716397 radians
 Time Elapsed: 5.100000s
+True rotation: 3.622775 radians
 PREDICT
-Rotation = 2.655483 radians
+Prediction rotation = 2.655483 radians
 [-0000.7823, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -931,9 +1032,11 @@ UPDATE
 [ 0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 2.655483 radians
 Time Elapsed: 5.200000s
+True rotation: 3.660403 radians
 PREDICT
-Rotation = 2.594362 radians
+Prediction rotation = 2.594362 radians
 [-0000.7580, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -949,9 +1052,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 2.594362 radians
 Time Elapsed: 5.300000s
+True rotation: 3.697133 radians
 PREDICT
-Rotation = 2.531315 radians
+Prediction rotation = 2.531315 radians
 [-0000.7335, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -967,9 +1072,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 2.531315 radians
 Time Elapsed: 5.400000s
+True rotation: 3.732990 radians
 PREDICT
-Rotation = 2.469286 radians
+Prediction rotation = 2.469286 radians
 [-0000.7099, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -985,9 +1092,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 2.469286 radians
 Time Elapsed: 5.500000s
+True rotation: 3.768000 radians
 PREDICT
-Rotation = 2.404910 radians
+Prediction rotation = 2.404910 radians
 [-0000.6859, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -1003,9 +1112,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 2.404910 radians
 Time Elapsed: 5.600000s
+True rotation: 3.802187 radians
 PREDICT
-Rotation = 2.341888 radians
+Prediction rotation = 2.341888 radians
 [-0000.6630, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -1021,9 +1132,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 2.341888 radians
 Time Elapsed: 5.700000s
+True rotation: 3.835576 radians
 PREDICT
-Rotation = 2.277216 radians
+Prediction rotation = 2.277216 radians
 [-0000.6400, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -1039,9 +1152,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 2.277216 radians
 Time Elapsed: 5.800000s
+True rotation: 3.868188 radians
 PREDICT
-Rotation = 2.213174 radians
+Prediction rotation = 2.213174 radians
 [-0000.6176, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -1057,9 +1172,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 2.213174 radians
 Time Elapsed: 5.900000s
+True rotation: 3.900047 radians
 PREDICT
-Rotation = 2.148673 radians
+Prediction rotation = 2.148673 radians
 [-0000.5956, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -1075,9 +1192,11 @@ UPDATE
 [ 0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 2.148673 radians
 Time Elapsed: 6.000000s
+True rotation: 3.931175 radians
 PREDICT
-Rotation = 2.084977 radians
+Prediction rotation = 2.084977 radians
 [-0000.5742, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -1093,9 +1212,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 2.084977 radians
 Time Elapsed: 6.100000s
+True rotation: 3.961593 radians
 PREDICT
-Rotation = 2.020108 radians
+Prediction rotation = 2.020108 radians
 [-0000.5528, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -1111,9 +1232,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 2.020108 radians
 Time Elapsed: 6.200000s
+True rotation: 3.991321 radians
 PREDICT
-Rotation = 1.956810 radians
+Prediction rotation = 1.956810 radians
 [-0000.5324, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -1129,9 +1252,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 1.956810 radians
 Time Elapsed: 6.300000s
+True rotation: 4.020379 radians
 PREDICT
-Rotation = 1.893608 radians
+Prediction rotation = 1.893608 radians
 [-0000.5123, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -1147,9 +1272,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 1.893608 radians
 Time Elapsed: 6.400000s
+True rotation: 4.048788 radians
 PREDICT
-Rotation = 1.829250 radians
+Prediction rotation = 1.829250 radians
 [-0000.4921, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -1165,9 +1292,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 1.829250 radians
 Time Elapsed: 6.500000s
+True rotation: 4.076565 radians
 PREDICT
-Rotation = 1.768554 radians
+Prediction rotation = 1.768554 radians
 [-0000.4734, ]
 [ 0000.0000, ]
 [-0000.0000, ]
@@ -1183,9 +1312,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 1.768554 radians
 Time Elapsed: 6.600000s
+True rotation: 4.103730 radians
 PREDICT
-Rotation = 1.704864 radians
+Prediction rotation = 1.704864 radians
 [-0000.4540, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -1201,9 +1332,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 1.704864 radians
 Time Elapsed: 6.700000s
+True rotation: 4.130299 radians
 PREDICT
-Rotation = 1.646324 radians
+Prediction rotation = 1.646324 radians
 [-0000.4365, ]
 [-0000.0000, ]
 [ 0000.0000, ]
@@ -1219,9 +1352,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 1.646324 radians
 Time Elapsed: 6.800000s
+True rotation: 4.156289 radians
 PREDICT
-Rotation = 1.581254 radians
+Prediction rotation = 1.581254 radians
 [-0000.4173, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -1237,9 +1372,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 1.581254 radians
 Time Elapsed: 6.900000s
+True rotation: 4.181718 radians
 PREDICT
-Rotation = 1.527187 radians
+Prediction rotation = 1.527187 radians
 [-0000.4015, ]
 [ 0000.0000, ]
 [-0000.0000, ]
@@ -1255,9 +1392,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 1.527187 radians
 Time Elapsed: 7.000000s
+True rotation: 4.206601 radians
 PREDICT
-Rotation = 1.461416 radians
+Prediction rotation = 1.461416 radians
 [-0000.3825, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -1273,9 +1412,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 1.461416 radians
 Time Elapsed: 7.100000s
+True rotation: 4.230954 radians
 PREDICT
-Rotation = 1.409088 radians
+Prediction rotation = 1.409088 radians
 [-0000.3676, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -1291,9 +1432,11 @@ UPDATE
 [-0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 1.409088 radians
 Time Elapsed: 7.200000s
+True rotation: 4.254791 radians
 PREDICT
-Rotation = 1.343469 radians
+Prediction rotation = 1.343469 radians
 [-0000.3491, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -1309,9 +1452,11 @@ UPDATE
 [-0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 1.343469 radians
 Time Elapsed: 7.300000s
+True rotation: 4.278128 radians
 PREDICT
-Rotation = 1.295385 radians
+Prediction rotation = 1.295385 radians
 [-0000.3357, ]
 [ 0000.0000, ]
 [-0000.0000, ]
@@ -1327,9 +1472,11 @@ UPDATE
 [ 0000.0000, ]
 [ 0000.0000, ]
 
+Update rotation = 1.295385 radians
 Time Elapsed: 7.400000s
+True rotation: 4.300979 radians
 PREDICT
-Rotation = 1.232097 radians
+Prediction rotation = 1.232097 radians
 [-0000.3182, ]
 [ 0000.0000, ]
 [-0000.0000, ]
@@ -1345,9 +1492,11 @@ UPDATE
 [-0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 1.232097 radians
 Time Elapsed: 7.500000s
+True rotation: 4.323356 radians
 PREDICT
-Rotation = 1.186783 radians
+Prediction rotation = 1.186783 radians
 [-0000.3057, ]
 [ 0000.0000, ]
 [-0000.0000, ]
@@ -1363,9 +1512,11 @@ UPDATE
 [-0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 1.186783 radians
 Time Elapsed: 7.600000s
+True rotation: 4.345274 radians
 PREDICT
-Rotation = 1.123214 radians
+Prediction rotation = 1.123214 radians
 [-0000.2884, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -1381,9 +1532,11 @@ UPDATE
 [-0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 1.123214 radians
 Time Elapsed: 7.700000s
+True rotation: 4.366744 radians
 PREDICT
-Rotation = 1.081364 radians
+Prediction rotation = 1.081364 radians
 [-0000.2771, ]
 [ 0000.0000, ]
 [-0000.0000, ]
@@ -1399,9 +1552,11 @@ UPDATE
 [-0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 1.081364 radians
 Time Elapsed: 7.800000s
+True rotation: 4.387780 radians
 PREDICT
-Rotation = 1.019089 radians
+Prediction rotation = 1.019089 radians
 [-0000.2604, ]
 [ 0000.0000, ]
 [ 0000.0000, ]
@@ -1417,9 +1572,11 @@ UPDATE
 [-0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 1.019089 radians
 Time Elapsed: 7.900000s
+True rotation: 4.408393 radians
 PREDICT
-Rotation = 0.981052 radians
+Prediction rotation = 0.981052 radians
 [-0000.2503, ]
 [-0000.0000, ]
 [ 0000.0000, ]
@@ -1435,9 +1592,11 @@ UPDATE
 [-0000.0000, ]
 [-0000.0000, ]
 
+Update rotation = 0.981052 radians
 Time Elapsed: 8.000000s
+True rotation: 4.428595 radians
 PREDICT
-Rotation = 0.924530 radians
+Prediction rotation = 0.924530 radians
 [-0000.2353, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -1453,9 +1612,11 @@ UPDATE
 [-0000.0000, ]
 [-0000.0001, ]
 
+Update rotation = 0.924530 radians
 Time Elapsed: 8.100000s
+True rotation: 4.448397 radians
 PREDICT
-Rotation = 0.892069 radians
+Prediction rotation = 0.892069 radians
 [-0000.2268, ]
 [-0000.0000, ]
 [ 0000.0000, ]
@@ -1471,9 +1632,11 @@ UPDATE
 [-0000.0000, ]
 [-0000.0001, ]
 
+Update rotation = 0.892069 radians
 Time Elapsed: 8.200000s
+True rotation: 4.467809 radians
 PREDICT
-Rotation = 0.831801 radians
+Prediction rotation = 0.831801 radians
 [-0000.2110, ]
 [-0000.0000, ]
 [ 0000.0000, ]
@@ -1489,9 +1652,11 @@ UPDATE
 [-0000.0001, ]
 [-0000.0001, ]
 
+Update rotation = 0.831801 radians
 Time Elapsed: 8.300000s
+True rotation: 4.486843 radians
 PREDICT
-Rotation = 0.804551 radians
+Prediction rotation = 0.804551 radians
 [-0000.2039, ]
 [-0000.0000, ]
 [-0000.0000, ]
@@ -1507,9 +1672,11 @@ UPDATE
 [-0000.0001, ]
 [-0000.0000, ]
 
+Update rotation = 0.804551 radians
 Time Elapsed: 8.400000s
+True rotation: 4.505508 radians
 PREDICT
-Rotation = 0.746032 radians
+Prediction rotation = 0.746032 radians
 [-0000.1887, ]
 [-0000.0000, ]
 [ 0000.0000, ]
@@ -1525,9 +1692,11 @@ UPDATE
 [-0000.0002, ]
 [-0000.0001, ]
 
+Update rotation = 0.746032 radians
 Time Elapsed: 8.500000s
+True rotation: 4.523815 radians
 PREDICT
-Rotation = 0.719554 radians
+Prediction rotation = 0.719554 radians
 [-0000.1819, ]
 [-0000.0000, ]
 [-0000.0001, ]
@@ -1543,9 +1712,11 @@ UPDATE
 [-0000.0001, ]
 [-0000.0002, ]
 
+Update rotation = 0.719554 radians
 Time Elapsed: 8.600000s
+True rotation: 4.541772 radians
 PREDICT
-Rotation = 0.663955 radians
+Prediction rotation = 0.663955 radians
 [-0000.1675, ]
 [ 0000.0001, ]
 [-0000.0000, ]
@@ -1561,9 +1732,11 @@ UPDATE
 [-0000.0005, ]
 [-0000.0005, ]
 
+Update rotation = 0.663955 radians
 Time Elapsed: 8.700000s
+True rotation: 4.559389 radians
 PREDICT
-Rotation = 0.636692 radians
+Prediction rotation = 0.636692 radians
 [-0000.1605, ]
 [-0000.0002, ]
 [ 0000.0001, ]
@@ -1579,9 +1752,11 @@ UPDATE
 [-0000.0006, ]
 [-0000.0005, ]
 
+Update rotation = 0.636692 radians
 Time Elapsed: 8.800000s
+True rotation: 4.576675 radians
 PREDICT
-Rotation = 0.587732 radians
+Prediction rotation = 0.587732 radians
 [-0000.1480, ]
 [ 0000.0001, ]
 [-0000.0002, ]
@@ -1597,9 +1772,11 @@ UPDATE
 [-0000.0018, ]
 [-0000.0016, ]
 
+Update rotation = 0.587732 radians
 Time Elapsed: 8.900000s
+True rotation: 4.593639 radians
 PREDICT
-Rotation = 0.567230 radians
+Prediction rotation = 0.567230 radians
 [-0000.1428, ]
 [-0000.0001, ]
 [ 0000.0006, ]
@@ -1615,9 +1792,11 @@ UPDATE
 [-0000.0020, ]
 [-0000.0003, ]
 
+Update rotation = 0.567230 radians
 Time Elapsed: 9.000000s
+True rotation: 4.610288 radians
 PREDICT
-Rotation = 0.522409 radians
+Prediction rotation = 0.522409 radians
 [-0000.1313, ]
 [-0000.0008, ]
 [-0000.0008, ]
@@ -1633,9 +1812,11 @@ UPDATE
 [-0000.0039, ]
 [-0000.0007, ]
 
+Update rotation = 0.522409 radians
 Time Elapsed: 9.100000s
+True rotation: 4.626631 radians
 PREDICT
-Rotation = 0.498448 radians
+Prediction rotation = 0.498448 radians
 [-0000.1253, ]
 [ 0000.0001, ]
 [-0000.0014, ]
@@ -1651,9 +1832,11 @@ UPDATE
 [-0000.0055, ]
 [-0000.0028, ]
 
+Update rotation = 0.498448 radians
 Time Elapsed: 9.200000s
+True rotation: 4.642676 radians
 PREDICT
-Rotation = 0.467559 radians
+Prediction rotation = 0.467559 radians
 [-0000.1174, ]
 [-0000.0008, ]
 [-0000.0018, ]
@@ -1669,9 +1852,11 @@ UPDATE
 [-0000.0107, ]
 [-0000.0046, ]
 
+Update rotation = 0.467559 radians
 Time Elapsed: 9.300000s
+True rotation: 4.658430 radians
 PREDICT
-Rotation = 0.448106 radians
+Prediction rotation = 0.448106 radians
 [-0000.1125, ]
 [ 0000.0006, ]
 [-0000.0009, ]
@@ -1687,9 +1872,11 @@ UPDATE
 [-0000.0138, ]
 [-0000.0102, ]
 
+Update rotation = 0.448106 radians
 Time Elapsed: 9.400000s
+True rotation: 4.673901 radians
 PREDICT
-Rotation = 0.421649 radians
+Prediction rotation = 0.421649 radians
 [-0000.1058, ]
 [-0000.0021, ]
 [-0000.0016, ]
@@ -1705,9 +1892,11 @@ UPDATE
 [-0000.0214, ]
 [-0000.0132, ]
 
+Update rotation = 0.421649 radians
 Time Elapsed: 9.500000s
+True rotation: 4.689096 radians
 PREDICT
-Rotation = 0.407069 radians
+Prediction rotation = 0.407069 radians
 [-0000.1021, ]
 [-0000.0002, ]
 [ 0000.0006, ]
@@ -1723,9 +1912,11 @@ UPDATE
 [-0000.0238, ]
 [-0000.0169, ]
 
+Update rotation = 0.407069 radians
 Time Elapsed: 9.600000s
+True rotation: 4.704021 radians
 PREDICT
-Rotation = 0.374381 radians
+Prediction rotation = 0.374381 radians
 [-0000.0937, ]
 [-0000.0052, ]
 [ 0000.0006, ]
@@ -1741,9 +1932,11 @@ UPDATE
 [-0000.0334, ]
 [-0000.0216, ]
 
+Update rotation = 0.374381 radians
 Time Elapsed: 9.700000s
+True rotation: 4.718684 radians
 PREDICT
-Rotation = 0.362829 radians
+Prediction rotation = 0.362829 radians
 [-0000.0909, ]
 [-0000.0032, ]
 [-0000.0029, ]
@@ -1759,9 +1952,11 @@ UPDATE
 [-0000.0362, ]
 [-0000.0206, ]
 
+Update rotation = 0.362829 radians
 Time Elapsed: 9.800000s
+True rotation: 4.733090 radians
 PREDICT
-Rotation = 0.345894 radians
+Prediction rotation = 0.345894 radians
 [-0000.0861, ]
 [-0000.0097, ]
 [-0000.0005, ]
@@ -1777,9 +1972,11 @@ UPDATE
 [-0000.0424, ]
 [-0000.0225, ]
 
+Update rotation = 0.345894 radians
 Time Elapsed: 9.900000s
+True rotation: 4.747247 radians
 PREDICT
-Rotation = 0.328855 radians
+Prediction rotation = 0.328855 radians
 [-0000.0820, ]
 [-0000.0079, ]
 [-0000.0019, ]
@@ -1795,9 +1992,11 @@ UPDATE
 [-0000.0441, ]
 [-0000.0223, ]
 
+Update rotation = 0.328855 radians
 Time Elapsed: 10.000000s
+True rotation: 4.761160 radians
 PREDICT
-Rotation = 0.327723 radians
+Prediction rotation = 0.327723 radians
 [-0000.0810, ]
 [-0000.0135, ]
 [ 0000.0012, ]
@@ -1813,3 +2012,4 @@ UPDATE
 [-0000.0500, ]
 [-0000.0241, ]
 
+Update rotation = 0.327723 radians

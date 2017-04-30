@@ -287,18 +287,20 @@ int main()
 		matrix_cross_matrix(matrix, g_north, north, 3, 3, 1);
 		matrix_cross_matrix(matrix, g_down, down, 3, 3, 1);
 		generate_measurements(measurements, true_omega, down, north);
+		printf("True rotation: %f radians\n", angle);
 		// end test purposes
 
 		process_noise(Q, delta_t, 0.1);
 		ukf_predict(state, covariance, &process_model, &mean_state, &state_error, Q, delta_t, chi, gamma, w_m, w_c, new_state, new_covariance, SIZE_STATE);
 		printf("PREDICT\n");
-		printf("Rotation = %f radians\n", 4*atan(vector_magnitude(new_state)));
+		printf("Prediction rotation = %f radians\n", 4*atan(vector_magnitude(new_state)));
 		matrix_quick_print(new_state, SIZE_STATE, 1);
 		//matrix_quick_print(new_covariance, SIZE_STATE, SIZE_STATE);
 		
 		ukf_update(new_state, measurements, new_covariance, &measurement, NULL, &state_error, NULL, R, gamma, w_m, w_c, state, covariance, SIZE_STATE, SIZE_MEASUREMENT);
 		printf("UPDATE\n");
 		matrix_quick_print(state, SIZE_STATE, 1);
+		printf("Update rotation = %f radians\n", 4*atan(vector_magnitude(new_state)));
 		//matrix_quick_print(covariance, SIZE_STATE, SIZE_STATE);
 
 		// WARNING - hack
