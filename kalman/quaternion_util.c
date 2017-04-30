@@ -64,6 +64,20 @@ void generate_matrix(double q[4], double matrix[9])
 	matrix[8] = 1 - 2*q[1]*q[1] - 2*q[2]*q[2];
 }
 
+void axis_angle_matrix(double axis[3], double angle, double matrix[9])
+{
+	double constant = 1 - cos(angle);
+	matrix[0] = axis[0]*axis[0]*constant + cos(angle);
+	matrix[1] = axis[0]*axis[1]*constant - axis[2]*sin(angle);
+	matrix[2] = axis[0]*axis[2]*constant + axis[1]*sin(angle);
+	matrix[3] = axis[1]*axis[0]*constant + axis[2]*sin(angle);
+	matrix[4] = axis[1]*axis[1]*constant + cos(angle);
+	matrix[5] = axis[1]*axis[2]*constant - axis[0]*sin(angle);
+	matrix[6] = axis[2]*axis[0]*constant - axis[1]*sin(angle);
+	matrix[7] = axis[2]*axis[1]*constant + axis[0]*sin(angle);
+	matrix[8] = axis[2]*axis[2]*constant + cos(angle);
+}
+
 void vector_by_matrix(double v[3], double r[9], double result[3])
 // Multiplies vector v by matrix r
 {

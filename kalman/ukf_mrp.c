@@ -21,6 +21,9 @@
 
 #define POWER_ITERATIONS 100
 
+double g_down[3] = {0, -1, 0};
+double g_north[3] = {0, 0, 1};
+
 void compose_mrp(double mrp_a[3], double mrp_b[3], double mrp_f[3])
 // equation from Journal of Astronautical Sciences paper "A Survey of Attitude Representations"
 // P" = ((1 - |P|^2)P' + (1 - |P'|^2)P - 2P'xP) / (1 + |P'|^2 * |P|^2 - 2P'*P)
@@ -47,26 +50,28 @@ void compose_mrp(double mrp_a[3], double mrp_b[3], double mrp_f[3])
 void rotate_mrp(double orientation[3], double omega[3], double result[3], double dt)
 {
 	double temp[3];
+	double result_copy[3];
 	// equation from NASA paper "Attitude Estimation Using Modified Rodrigues Parameters"
 	// 1/4{(1 - |P|^2)w - 2w x P + 2(w*P)P
 
 	// (1 - |P|^2)w
 	double factor = 1 - pow(vector_magnitude(orientation), 2);
-	scale_matrix(omega, result, factor, 3, 1);
+	scale_matrix(omega, result_copy, factor, 3, 1);
 
 	// -2w x P
 	scale_matrix(omega, temp, -2, 3, 1);
 	cross_product(temp, orientation, temp);
-	matrix_plus_matrix(temp, result, result, 3, 1, MATRIX_ADD);
+	matrix_plus_matrix(temp, result_copy, result_copy, 3, 1, MATRIX_ADD);
 
 	// 2(w*P)P
 	factor = dot_product(omega, orientation);
 	scale_matrix(orientation, temp, factor, 3, 1);
-	matrix_plus_matrix(temp, result, result, 3, 1, MATRIX_ADD);
+	matrix_plus_matrix(temp, result_copy, result_copy, 3, 1, MATRIX_ADD);
 
 	// 1/4{ .. }
-	scale_matrix(result, result, 0.25*dt, 3, 1);
-	matrix_plus_matrix(orientation, result, result, 3, 1, MATRIX_ADD);
+	scale_matrix(result_copy, result_copy, 0.25*dt, 3, 1);
+	matrix_plus_matrix(orientation, result_copy, result_copy, 3, 1, MATRIX_ADD);
+	memcpy(result, result_copy, sizeof(result_copy));
 }
 
 void process_model(double *curr_state, double *next_state, double delta_t, int n)
@@ -88,9 +93,18 @@ void process_model(double *curr_state, double *next_state, double delta_t, int n
 
 void measurement(double *state, double *measurement, int n, int m)
 {
-	measurement[0] = state[3];
-	measurement[1] = state[4];
-	measurement[2] = state[5];
+	measurement[6] = state[3];
+	measurement[7] = state[4];
+	measurement[8] = state[5];
+
+	double angle;
+	double axis[3];
+	double matrix[9];
+	angle = atan(vector_magnitude(state))*4;
+	normalize_vector(state, axis);
+	axis_angle_matrix(axis, angle, matrix);
+	matrix_cross_matrix(matrix, g_down, measurement, 3, 3, 1);
+	matrix_cross_matrix(matrix, g_north, measurement + 3, 3, 3, 1);
 }
 
 void mean_state(double *points, double *weights, double *mean, int size, int count)
@@ -244,8 +258,7 @@ int main()
 
 	double measurements[SIZE_MEASUREMENT] = {0.0};
 	double true_orientation[3] = {0.0};
-	double true_omega[3] = {0.0};
-	//TODO: update measurement function (h) to use new measurement size
+	double true_omega[3] = {1.0, 0.0, 0.0};
 
 #if defined(FE_DIVBYZERO) && defined(FE_INVALID)
 	feenableexcept( FE_DIVBYZERO | FE_INVALID);
@@ -260,6 +273,21 @@ int main()
 		// vdm_get_all(state, covariance, SIZE_STATE, ALPHA, BETA, KAPPA, chi, w_m, w_c);
 		custom_scaled_points(state, covariance, chi, SIZE_STATE, ALPHA, KAPPA);
 		vdm_scaled_weights(w_m, w_c, SIZE_STATE, ALPHA, BETA, KAPPA);
+
+		// for test purposes
+		double down[3];
+		double north[3];
+		double angle;
+		double axis[3];
+		double matrix[9];
+		rotate_mrp(true_orientation, true_omega, true_orientation, delta_t);
+		angle = atan(vector_magnitude(true_orientation))*4;
+		normalize_vector(true_orientation, axis);
+		axis_angle_matrix(axis, angle, matrix);
+		matrix_cross_matrix(matrix, g_north, north, 3, 3, 1);
+		matrix_cross_matrix(matrix, g_down, down, 3, 3, 1);
+		generate_measurements(measurements, true_omega, down, north);
+		// end test purposes
 
 		process_noise(Q, delta_t, 0.1);
 		ukf_predict(state, covariance, &process_model, &mean_state, &state_error, Q, delta_t, chi, gamma, w_m, w_c, new_state, new_covariance, SIZE_STATE);
