@@ -145,60 +145,6 @@ void mean_state(double *points, double *weights, double *mean, int size, int cou
 	memcpy(mean + 3, sum_state, sizeof(sum_state));
 }
 
-void mean_quaternion(double *points, double *weights, double *mean, int count)
-{
-	double *Q = alloca(4*count*sizeof(double));
-	double *Q_t = alloca(4*count*sizeof(double));
-	double *M = alloca(4*4*sizeof(double));
-	int i;
-	for (i = 0; i < count; i++) {
-		scale_matrix(points + i*4, Q + i*4, weights[i], 4, 1);
-	}
-	matrix_transpose(Q, Q_t, 4, count);
-	matrix_cross_matrix(Q, Q_t, M, 4, count, 4);
-
-	// find the eigenvector with the greatest eigenvalue using the power iteration method
-	// in most cases this is equivilent to finding the mean quaternion
-	double b[4] = {1, 0, 0, 0};
-	for (i = 0; i < POWER_ITERATIONS; i++) {
-		matrix_cross_matrix(Q, b, b, 4, 4, 1);
-		normalize_quaternion(b, b);
-	}
-	memcpy(mean, b, sizeof(b));
-}
-
-void alt_mean_state(double *points, double *weights, double *mean, int size, int count)
-{
-	double *qs = alloca(count*4*sizeof(double));
-	double mean_q[4];
-	double sum_state[3] = {0.0};
-
-	int i;
-	for (i = 0; i < count; i++) {
-		double rest_state[3];
-		memcpy(rest_state, points + i*size + 3, sizeof(rest_state));
-		scale_matrix(rest_state, rest_state, weights[i], 3, 1);
-		matrix_plus_matrix(rest_state, sum_state, sum_state, 3, 1, MATRIX_ADD);
-
-		double angle;
-		double axis[3];
-		angle = 4*atan(vector_magnitude(points + i*size));
-		normalize_vector(points + i*size, axis);
-		gen_quaternion(angle, axis, qs + i*4);
-	}
-	mean_quaternion(qs, weights, mean_q, count);
-
-	double angle;
-	double mrp[3];
-	decomp_quaternion(mean_q, mrp);
-	angle = vector_magnitude(mrp);
-	normalize_vector(mrp, mrp);
-	scale_matrix(mrp, mrp, tan(angle/4), 3, 1);
-
-	memcpy(mean, mrp, sizeof(mrp));
-	memcpy(mean + 3, sum_state, sizeof(sum_state));
-}
-
 void state_error(double *point, double *mean, double *error, int n)
 {
 	assert(n == SIZE_STATE);
@@ -282,31 +228,27 @@ void process_noise(double *Q, double dt, double scale)
 	scale_matrix(Q, Q, scale, SIZE_STATE, SIZE_STATE);
 }
 
+double rand_gauss()
+// returns a guassian distributed random number with mean 0 and standard deviation 1
+// assumes srand() has already been seeded
+{
+	double u1 = (double)rand() / (double) RAND_MAX;
+	double u2 = (double)rand() / (double) RAND_MAX;
+	return sqrt(-2*log(u1))*cos(2*M_PI*u2);
+}
+
 void generate_measurements(double *z, double *omega, double *down_vect, double *north_vect)
 {
 	memcpy(z, down_vect, 3*sizeof(double));
 	memcpy(z + 3, north_vect, 3*sizeof(double));
 	memcpy(z + 6, omega, 3*sizeof(double));
-}
 
-double rand_gauss()
-// returns a guassian distributed random number between -1 and 1
-// assumes srand() has already been seeded
-// not thread safe
-{
-	static int called = 0;
-	static double z2;
-	if (called == 0) {
-		double u1 = 2 * (double)rand() / (double) RAND_MAX - 1
-		double u2 = 2 * (double)rand() / (double) RAND_MAX - 1
-		z2 = sqrt(-2*log(u1))*sin(2*M_PI*u2);
-		called = 1;
-		return sqrt(-2*log(u1))*cos(2*M_PI*u2);
+	int i;
+	for(i = 0; i < 6; i++) {
+		//z[i] += rand_gauss()*sqrt(POSITION_VARIANCE);
 	}
-	else
-	{
-		called = 0;
-		return z2;
+	for(i = 6; i < 9; i++) {
+		//z[i] += rand_gauss()*GYRO_VARIANCE;
 	}
 }
 
@@ -343,6 +285,8 @@ int main()
 #if defined(FE_DIVBYZERO) && defined(FE_INVALID)
 	feenableexcept( FE_DIVBYZERO | FE_INVALID);
 #endif
+
+	srand(1); // seed random number generator for rand_gauss()
 
 	printf("INITIAL\n");
 	matrix_quick_print(state, SIZE_STATE, 1);
@@ -382,6 +326,9 @@ int main()
 		printf("Prediction rotation = %f radians\n", 4*atan(vector_magnitude(new_state)));
 		matrix_quick_print(new_state, SIZE_STATE, 1);
 		matrix_quick_print(new_covariance, SIZE_STATE, SIZE_STATE);
+
+		printf("MEASUREMENT\n");
+		matrix_quick_print(measurements, SIZE_MEASUREMENT, 1);
 		
 		ukf_update(new_state, measurements, new_covariance, &measurement, NULL, &state_error, NULL, R, gamma, w_m, w_c, state, covariance, SIZE_STATE, SIZE_MEASUREMENT);
 		printf("UPDATE\n");

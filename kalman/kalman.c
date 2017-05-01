@@ -167,7 +167,7 @@ void ukf_update
 	double *u_z = alloca(m*sizeof(double));
 	// u_z = sum[ w_m*Z .. Mean of the sigma points in measurement space
 	if (mean == NULL) {
-			for (i = 0; i < m; i++) {
+		for (i = 0; i < m; i++) {
 			u_z[i] = 0;
 		}
 		for (i = 0; i <= 2*n; i++) {
