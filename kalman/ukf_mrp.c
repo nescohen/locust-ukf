@@ -299,8 +299,15 @@ double rand_gauss()
 	if (called == 0) {
 		double u1 = 2 * (double)rand() / (double) RAND_MAX - 1
 		double u2 = 2 * (double)rand() / (double) RAND_MAX - 1
-
-	// TODO: finish this function	
+		z2 = sqrt(-2*log(u1))*sin(2*M_PI*u2);
+		called = 1;
+		return sqrt(-2*log(u1))*cos(2*M_PI*u2);
+	}
+	else
+	{
+		called = 0;
+		return z2;
+	}
 }
 
 int main()
