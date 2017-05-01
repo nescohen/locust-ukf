@@ -13,9 +13,9 @@
 #define SIZE_STATE 6
 #define SIZE_MEASUREMENT 9
 #define GYRO_VARIANCE 0.193825 // 11.111... degress in radians
-#define POSITION_VARIANCE 0.5
+#define POSITION_VARIANCE 0.1
 
-#define ALPHA 0.9
+#define ALPHA 0.001
 #define BETA 2.0
 #define KAPPA (double)(3 - SIZE_STATE)
 
@@ -85,10 +85,15 @@ void process_model(double *curr_state, double *next_state, double delta_t, int n
 
 	memcpy(mrp, curr_state, sizeof(mrp));
 	memcpy(omega, curr_state + 3, sizeof(omega));
-	memcpy(next_state + 3, omega, sizeof(omega));
 
-	rotate_mrp(mrp, omega, result_mrp, delta_t);
+	double rot_total[3];
+	double rot_angle = delta_t*vector_magnitude(omega);
+	normalize_vector(omega, rot_total);
+	scale_matrix(rot_total, rot_total, tan(rot_angle/4), 3, 1);
+	compose_mrp(mrp, rot_total, result_mrp);
+
 	memcpy(next_state, result_mrp, sizeof(result_mrp));
+	memcpy(next_state + 3, omega, sizeof(omega));
 }
 
 void measurement(double *state, double *measurement, int n, int m)
@@ -125,10 +130,10 @@ void mean_state(double *points, double *weights, double *mean, int size, int cou
 		memcpy(mrp, points + i*size, sizeof(mrp));
 		angle = vector_magnitude(mrp);
 		angle = atan(angle)*4;
+		sum_mrp_angle[0] += cos(angle)*abs(weights[i]);
+		sum_mrp_angle[1] += sin(angle)*abs(weights[i]);
 		normalize_vector(mrp, mrp);
-		sum_mrp_angle[0] += cos(angle)*weights[i];
-		sum_mrp_angle[1] += sin(angle)*weights[i];
-		scale_matrix(mrp, mrp, weights[i], 3, 1);
+		scale_matrix(mrp, mrp, abs(weights[i]), 3, 1);
 		matrix_plus_matrix(mrp, sum_mrp_vector, sum_mrp_vector, 3, 1, MATRIX_ADD);
 	}
 	double mean_mrp[3];
@@ -137,6 +142,60 @@ void mean_state(double *points, double *weights, double *mean, int size, int cou
 	scale_matrix(mean_mrp, mean_mrp, tan(mean_angle/4), 3, 1);
 
 	memcpy(mean, mean_mrp, sizeof(mean_mrp));
+	memcpy(mean + 3, sum_state, sizeof(sum_state));
+}
+
+void mean_quaternion(double *points, double *weights, double *mean, int count)
+{
+	double *Q = alloca(4*count*sizeof(double));
+	double *Q_t = alloca(4*count*sizeof(double));
+	double *M = alloca(4*4*sizeof(double));
+	int i;
+	for (i = 0; i < count; i++) {
+		scale_matrix(points + i*4, Q + i*4, weights[i], 4, 1);
+	}
+	matrix_transpose(Q, Q_t, 4, count);
+	matrix_cross_matrix(Q, Q_t, M, 4, count, 4);
+
+	// find the eigenvector with the greatest eigenvalue using the power iteration method
+	// in most cases this is equivilent to finding the mean quaternion
+	double b[4] = {1, 0, 0, 0};
+	for (i = 0; i < POWER_ITERATIONS; i++) {
+		matrix_cross_matrix(Q, b, b, 4, 4, 1);
+		normalize_quaternion(b, b);
+	}
+	memcpy(mean, b, sizeof(b));
+}
+
+void alt_mean_state(double *points, double *weights, double *mean, int size, int count)
+{
+	double *qs = alloca(count*4*sizeof(double));
+	double mean_q[4];
+	double sum_state[3] = {0.0};
+
+	int i;
+	for (i = 0; i < count; i++) {
+		double rest_state[3];
+		memcpy(rest_state, points + i*size + 3, sizeof(rest_state));
+		scale_matrix(rest_state, rest_state, weights[i], 3, 1);
+		matrix_plus_matrix(rest_state, sum_state, sum_state, 3, 1, MATRIX_ADD);
+
+		double angle;
+		double axis[3];
+		angle = 4*atan(vector_magnitude(points + i*size));
+		normalize_vector(points + i*size, axis);
+		gen_quaternion(angle, axis, qs + i*4);
+	}
+	mean_quaternion(qs, weights, mean_q, count);
+
+	double angle;
+	double mrp[3];
+	decomp_quaternion(mean_q, mrp);
+	angle = vector_magnitude(mrp);
+	normalize_vector(mrp, mrp);
+	scale_matrix(mrp, mrp, tan(angle/4), 3, 1);
+
+	memcpy(mean, mrp, sizeof(mrp));
 	memcpy(mean + 3, sum_state, sizeof(sum_state));
 }
 
@@ -230,14 +289,28 @@ void generate_measurements(double *z, double *omega, double *down_vect, double *
 	memcpy(z + 6, omega, 3*sizeof(double));
 }
 
+double rand_gauss()
+// returns a guassian distributed random number between -1 and 1
+// assumes srand() has already been seeded
+// not thread safe
+{
+	static int called = 0;
+	static double z2;
+	if (called == 0) {
+		double u1 = 2 * (double)rand() / (double) RAND_MAX - 1
+		double u2 = 2 * (double)rand() / (double) RAND_MAX - 1
+
+	// TODO: finish this function	
+}
+
 int main()
 {
 	int i;
-	double state[SIZE_STATE] = {0.0, 0.0, 0.0, 1.0, 0.0, 0.0};
+	double state[SIZE_STATE] = {0.025, 0.0, 0.0, 1.0, 0.0, 0.0};
 	double covariance[SIZE_STATE*SIZE_STATE];
 	double new_state[SIZE_STATE];
 	double new_covariance[SIZE_STATE*SIZE_STATE];
-	matrix_diagonal(covariance, 0.001, SIZE_STATE);
+	matrix_diagonal(covariance, 1, SIZE_STATE);
 
 	double R[SIZE_MEASUREMENT*SIZE_MEASUREMENT];
 	double Q[SIZE_STATE*SIZE_STATE];
@@ -257,7 +330,7 @@ int main()
 	double delta_t = 0.1;
 
 	double measurements[SIZE_MEASUREMENT] = {0.0};
-	double true_orientation[3] = {0.0};
+	double true_orientation[3] = {0.025, 0.0, 0.0};
 	double true_omega[3] = {1.0, 0.0, 0.0};
 
 #if defined(FE_DIVBYZERO) && defined(FE_INVALID)
@@ -267,7 +340,7 @@ int main()
 	printf("INITIAL\n");
 	matrix_quick_print(state, SIZE_STATE, 1);
 	matrix_quick_print(covariance, SIZE_STATE, SIZE_STATE);
-	for (i = 0; i < 100; i++) {
+	for (i = 0; i < 30; i++) {
 		printf("Time Elapsed: %fs\n", (i+1)*delta_t);
 
 		// vdm_get_all(state, covariance, SIZE_STATE, ALPHA, BETA, KAPPA, chi, w_m, w_c);
@@ -280,35 +353,41 @@ int main()
 		double angle;
 		double axis[3];
 		double matrix[9];
-		rotate_mrp(true_orientation, true_omega, true_orientation, delta_t);
+		angle = delta_t*vector_magnitude(true_omega);
+		normalize_vector(true_omega, axis);
+		scale_matrix(axis, axis, tan(angle/4), 3, 1);
+		compose_mrp(true_orientation, axis, true_orientation);
 		angle = atan(vector_magnitude(true_orientation))*4;
 		normalize_vector(true_orientation, axis);
 		axis_angle_matrix(axis, angle, matrix);
 		matrix_cross_matrix(matrix, g_north, north, 3, 3, 1);
 		matrix_cross_matrix(matrix, g_down, down, 3, 3, 1);
 		generate_measurements(measurements, true_omega, down, north);
+		printf("TRUE\n");
 		printf("True rotation: %f radians\n", angle);
+		matrix_quick_print(true_orientation, 3, 1);
+		matrix_quick_print(true_omega, 3, 1);
 		// end test purposes
 
-		process_noise(Q, delta_t, 0.1);
+		process_noise(Q, delta_t, 10);
 		ukf_predict(state, covariance, &process_model, &mean_state, &state_error, Q, delta_t, chi, gamma, w_m, w_c, new_state, new_covariance, SIZE_STATE);
 		printf("PREDICT\n");
 		printf("Prediction rotation = %f radians\n", 4*atan(vector_magnitude(new_state)));
 		matrix_quick_print(new_state, SIZE_STATE, 1);
-		//matrix_quick_print(new_covariance, SIZE_STATE, SIZE_STATE);
+		matrix_quick_print(new_covariance, SIZE_STATE, SIZE_STATE);
 		
 		ukf_update(new_state, measurements, new_covariance, &measurement, NULL, &state_error, NULL, R, gamma, w_m, w_c, state, covariance, SIZE_STATE, SIZE_MEASUREMENT);
 		printf("UPDATE\n");
+		printf("Update rotation = %f radians\n", 4*atan(vector_magnitude(state)));
 		matrix_quick_print(state, SIZE_STATE, 1);
-		printf("Update rotation = %f radians\n", 4*atan(vector_magnitude(new_state)));
-		//matrix_quick_print(covariance, SIZE_STATE, SIZE_STATE);
+		matrix_quick_print(covariance, SIZE_STATE, SIZE_STATE);
 
 		// WARNING - hack
 		// double *temp = alloca(SIZE_STATE*SIZE_STATE*sizeof(double));
 		// scale_matrix(covariance, covariance, 0.5, SIZE_STATE, SIZE_STATE);
 		// matrix_transpose(covariance, temp, SIZE_STATE, SIZE_STATE);
 		// matrix_plus_matrix(covariance, temp, covariance, SIZE_STATE, SIZE_STATE, 1);
-		// matrix_diagonal(temp, 0.01, SIZE_STATE);
+		// matrix_diagonal(temp, 0.1, SIZE_STATE);
 		// matrix_plus_matrix(covariance, temp, covariance, SIZE_STATE, SIZE_STATE, 1);
 		// hack over
 	}
