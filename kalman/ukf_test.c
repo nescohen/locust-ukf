@@ -33,7 +33,7 @@ void process_model(double *curr_state, double *next_state, double delta_t, int n
 	memcpy(alpha, curr_state + 7, sizeof(alpha));
 	
 	double d_omega[3];
-	scale_matrix(alpha, d_omega, delta_t, 3, 1);
+	matrix_scale(alpha, d_omega, delta_t, 3, 1);
 	matrix_plus_matrix(d_omega, omega, omega, 3, 3, 1);
 	rotation_magnitude = vector_magnitude(omega);
 	rotation_magnitude *= delta_t;
@@ -61,16 +61,16 @@ void mean_state(double *points, double *weights, double *mean, int size, int cou
 	double *M = alloca(4*4*sizeof(double));
 	int i;
 	for (i = 0; i < count; i++) {
-		scale_matrix(points + i*size, Q + i*4, weights[i], 4, 1);
+		matrix_scale(points + i*size, Q + i*4, weights[i], 4, 1);
 	}
 	matrix_transpose(Q, Q_t, 4, count);
-	matrix_cross_matrix(Q, Q_t, M, 4, count, 4);
+	matrix_multiply(Q, Q_t, M, 4, count, 4);
 
 	// find the eigenvector with the greatest eigenvalue using the power iteration method
 	// in most cases this is equivilent to finding the mean quaternion
 	double b[4] = {1, 0, 0, 0};
 	for (i = 0; i < POWER_ITERATIONS; i++) {
-		matrix_cross_matrix(Q, b, b, 4, 4, 1);
+		matrix_multiply(Q, b, b, 4, 4, 1);
 		normalize_quaternion(b, b);
 	}
 	memcpy(mean, b, sizeof(b));
@@ -78,7 +78,7 @@ void mean_state(double *points, double *weights, double *mean, int size, int cou
 	double avg[6] = {0, 0, 0};
 	for (i = 0; i < count; i++) {
 		double temp[6];
-		scale_matrix(points + 4 + i*size, temp, weights[i], 6, 1);
+		matrix_scale(points + 4 + i*size, temp, weights[i], 6, 1);
 		matrix_plus_matrix(temp, avg, avg, 6, 1, 1);
 	}
 	memcpy(mean + 4, avg, sizeof(avg));
@@ -127,7 +127,7 @@ void custom_scaled_points(double *x, double *P, double *chi, int n, double a, do
 			else temp[j + i*n] = 0.0;
 		}
 	}
-	scale_matrix(temp, temp, scale, n-1 , n-1);
+	matrix_scale(temp, temp, scale, n-1 , n-1);
 	matrix_sqrt(temp, temp, n-1);
 
 	for (i = 1; i <= n; i++) {
@@ -211,7 +211,7 @@ int main()
 		matrix_quick_print(covariance, SIZE_STATE, SIZE_STATE);
 		// WARNING - hack
 		//double *temp = alloca(SIZE_STATE*SIZE_STATE*sizeof(double));
-		//scale_matrix(covariance, covariance, 0.5, SIZE_STATE, SIZE_STATE);
+		//matrix_scale(covariance, covariance, 0.5, SIZE_STATE, SIZE_STATE);
 		//matrix_transpose(covariance, temp, SIZE_STATE, SIZE_STATE);
 		//matrix_plus_matrix(covariance, temp, covariance, SIZE_STATE, SIZE_STATE, 1);
 		//matrix_diagonal(temp, 0.01, SIZE_STATE);

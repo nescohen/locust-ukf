@@ -37,14 +37,14 @@ void compose_mrp(double mrp_a[3], double mrp_b[3], double mrp_f[3])
 
 	double numerator[3];
 	double temp[3];
-	scale_matrix(mrp_b, numerator, 1 - mag2_a, 3, 1);
-	scale_matrix(mrp_a, temp, 1 - mag2_b, 3, 1);
+	matrix_scale(mrp_b, numerator, 1 - mag2_a, 3, 1);
+	matrix_scale(mrp_a, temp, 1 - mag2_b, 3, 1);
 	matrix_plus_matrix(temp, numerator, numerator, 3, 1, MATRIX_ADD);
-	scale_matrix(mrp_b, temp, 2, 3, 1);
+	matrix_scale(mrp_b, temp, 2, 3, 1);
 	cross_product(temp, mrp_a, temp);
 	matrix_plus_matrix(numerator, temp, numerator, 3, 1, MATRIX_SUBTRACT);
 	
-	scale_matrix(numerator, mrp_f, 1/denominator, 3, 1);
+	matrix_scale(numerator, mrp_f, 1/denominator, 3, 1);
 }
 
 void rotate_mrp(double orientation[3], double omega[3], double result[3], double dt)
@@ -56,20 +56,20 @@ void rotate_mrp(double orientation[3], double omega[3], double result[3], double
 
 	// (1 - |P|^2)w
 	double factor = 1 - pow(vector_magnitude(orientation), 2);
-	scale_matrix(omega, result_copy, factor, 3, 1);
+	matrix_scale(omega, result_copy, factor, 3, 1);
 
 	// -2w x P
-	scale_matrix(omega, temp, -2, 3, 1);
+	matrix_scale(omega, temp, -2, 3, 1);
 	cross_product(temp, orientation, temp);
 	matrix_plus_matrix(temp, result_copy, result_copy, 3, 1, MATRIX_ADD);
 
 	// 2(w*P)P
 	factor = dot_product(omega, orientation);
-	scale_matrix(orientation, temp, factor, 3, 1);
+	matrix_scale(orientation, temp, factor, 3, 1);
 	matrix_plus_matrix(temp, result_copy, result_copy, 3, 1, MATRIX_ADD);
 
 	// 1/4{ .. }
-	scale_matrix(result_copy, result_copy, 0.25*dt, 3, 1);
+	matrix_scale(result_copy, result_copy, 0.25*dt, 3, 1);
 	matrix_plus_matrix(orientation, result_copy, result_copy, 3, 1, MATRIX_ADD);
 	memcpy(result, result_copy, sizeof(result_copy));
 }
@@ -89,7 +89,7 @@ void process_model(double *curr_state, double *next_state, double delta_t, int n
 	double rot_total[3];
 	double rot_angle = delta_t*vector_magnitude(omega);
 	normalize_vector(omega, rot_total);
-	scale_matrix(rot_total, rot_total, tan(rot_angle/4), 3, 1);
+	matrix_scale(rot_total, rot_total, tan(rot_angle/4), 3, 1);
 	compose_mrp(mrp, rot_total, result_mrp);
 
 	memcpy(next_state, result_mrp, sizeof(result_mrp));
@@ -108,8 +108,8 @@ void measurement(double *state, double *measurement, int n, int m)
 	angle = atan(vector_magnitude(state))*4;
 	normalize_vector(state, axis);
 	axis_angle_matrix(axis, angle, matrix);
-	matrix_cross_matrix(matrix, g_down, measurement, 3, 3, 1);
-	matrix_cross_matrix(matrix, g_north, measurement + 3, 3, 3, 1);
+	matrix_multiply(matrix, g_down, measurement, 3, 3, 1);
+	matrix_multiply(matrix, g_north, measurement + 3, 3, 3, 1);
 }
 
 void mean_state(double *points, double *weights, double *mean, int size, int count)
@@ -124,7 +124,7 @@ void mean_state(double *points, double *weights, double *mean, int size, int cou
 		double angle;
 		double rest_state[3];
 		memcpy(rest_state, points + i*size + 3, sizeof(rest_state));
-		scale_matrix(rest_state, rest_state, weights[i], 3, 1);
+		matrix_scale(rest_state, rest_state, weights[i], 3, 1);
 		matrix_plus_matrix(rest_state, sum_state, sum_state, 3, 1, MATRIX_ADD);
 
 		memcpy(mrp, points + i*size, sizeof(mrp));
@@ -133,13 +133,13 @@ void mean_state(double *points, double *weights, double *mean, int size, int cou
 		sum_mrp_angle[0] += cos(angle)*abs(weights[i]);
 		sum_mrp_angle[1] += sin(angle)*abs(weights[i]);
 		normalize_vector(mrp, mrp);
-		scale_matrix(mrp, mrp, abs(weights[i]), 3, 1);
+		matrix_scale(mrp, mrp, abs(weights[i]), 3, 1);
 		matrix_plus_matrix(mrp, sum_mrp_vector, sum_mrp_vector, 3, 1, MATRIX_ADD);
 	}
 	double mean_mrp[3];
 	double mean_angle = atan2(sum_mrp_angle[1], sum_mrp_angle[0]);
 	normalize_vector(sum_mrp_vector, mean_mrp);
-	scale_matrix(mean_mrp, mean_mrp, tan(mean_angle/4), 3, 1);
+	matrix_scale(mean_mrp, mean_mrp, tan(mean_angle/4), 3, 1);
 
 	memcpy(mean, mean_mrp, sizeof(mean_mrp));
 	memcpy(mean + 3, sum_state, sizeof(sum_state));
@@ -172,7 +172,7 @@ void state_error(double *point, double *mean, double *error, int n)
 	decomp_quaternion(final_q, axis);
 	angle = vector_magnitude(axis);
 	normalize_vector(axis, axis);
-	scale_matrix(axis, error, tan(angle/4), 3, 1);
+	matrix_scale(axis, error, tan(angle/4), 3, 1);
 }
 
 void add_state(double *state, double *change, double *result, int n)
@@ -192,7 +192,7 @@ void custom_scaled_points(double *x, double *P, double *chi, int n, double a, do
 
 	double scale = a*a*(n + k);
 	double *temp = alloca(n * n * sizeof(double));
-	scale_matrix(P, temp, scale, n, n);
+	matrix_scale(P, temp, scale, n, n);
 	matrix_sqrt(temp, temp, n);
 
 	for (i = 1; i <= n; i++) {
@@ -202,7 +202,7 @@ void custom_scaled_points(double *x, double *P, double *chi, int n, double a, do
 		}
 		double angle = vector_magnitude(point_rotation);
 		normalize_vector(point_rotation, point_rotation);
-		scale_matrix(point_rotation, point_rotation, tan(angle/4), 3, 1);
+		matrix_scale(point_rotation, point_rotation, tan(angle/4), 3, 1);
 		compose_mrp(x, point_rotation, chi + i*n);
 		for (j = 3; j < n; j++) {
 			chi[i*n + j] = x[j] + temp[(i-1) + j*n];
@@ -215,7 +215,7 @@ void custom_scaled_points(double *x, double *P, double *chi, int n, double a, do
 		}
 		double angle = -1*vector_magnitude(point_rotation);
 		normalize_vector(point_rotation, point_rotation);
-		scale_matrix(point_rotation, point_rotation, tan(angle/4), 3, 1);
+		matrix_scale(point_rotation, point_rotation, tan(angle/4), 3, 1);
 		compose_mrp(x, point_rotation, chi + i*n);
 		for (j = 3; j < n; j++) {
 			chi[i*n + j] = x[j] - temp[(i-n-1) + j*n];
@@ -234,7 +234,7 @@ void process_noise(double *Q, double dt, double scale)
 		Q[i+3 + i*SIZE_STATE] = pow(dt, 3) / 2;
 		Q[i + (i+3)*SIZE_STATE] = pow(dt, 3) / 2;
 	}
-	scale_matrix(Q, Q, scale, SIZE_STATE, SIZE_STATE);
+	matrix_scale(Q, Q, scale, SIZE_STATE, SIZE_STATE);
 }
 
 double rand_gauss()
@@ -315,13 +315,13 @@ int main()
 		double matrix[9];
 		angle = delta_t*vector_magnitude(true_omega);
 		normalize_vector(true_omega, axis);
-		scale_matrix(axis, axis, tan(angle/4), 3, 1);
+		matrix_scale(axis, axis, tan(angle/4), 3, 1);
 		compose_mrp(true_orientation, axis, true_orientation);
 		angle = atan(vector_magnitude(true_orientation))*4;
 		normalize_vector(true_orientation, axis);
 		axis_angle_matrix(axis, angle, matrix);
-		matrix_cross_matrix(matrix, g_north, north, 3, 3, 1);
-		matrix_cross_matrix(matrix, g_down, down, 3, 3, 1);
+		matrix_multiply(matrix, g_north, north, 3, 3, 1);
+		matrix_multiply(matrix, g_down, down, 3, 3, 1);
 		generate_measurements(measurements, true_omega, down, north, delta_t);
 		printf("TRUE\n");
 		printf("True rotation: %f radians\n", angle);
@@ -347,7 +347,7 @@ int main()
 
 		// WARNING - hack
 		double *temp = alloca(SIZE_STATE*SIZE_STATE*sizeof(double));
-		scale_matrix(covariance, covariance, 0.5, SIZE_STATE, SIZE_STATE);
+		matrix_scale(covariance, covariance, 0.5, SIZE_STATE, SIZE_STATE);
 		matrix_transpose(covariance, temp, SIZE_STATE, SIZE_STATE);
 		matrix_plus_matrix(covariance, temp, covariance, SIZE_STATE, SIZE_STATE, 1);
 		matrix_diagonal(temp, 0.1, SIZE_STATE);

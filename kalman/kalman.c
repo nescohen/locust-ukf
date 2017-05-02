@@ -19,8 +19,8 @@ void predict(double *x, double *P, double *F, double *Q, double *x_f, double *P_
 	matrix_transpose(F, transpose, x_dim, x_dim);
 
 	double *temp = alloca(x_dim*sizeof(double));
-	matrix_cross_matrix(F, P, temp, x_dim, x_dim, x_dim);
-	matrix_cross_matrix(temp, transpose, P_f, x_dim, x_dim, x_dim);
+	matrix_multiply(F, P, temp, x_dim, x_dim, x_dim);
+	matrix_multiply(temp, transpose, P_f, x_dim, x_dim, x_dim);
 	matrix_plus_matrix(P_f, Q, P_f, x_dim, x_dim, 1);
 }
 
@@ -37,12 +37,12 @@ void update(double *x, double *z, double *P, double *H, double *R, double *x_f, 
 	double *temp_k = alloca(z_dim*z_dim*sizeof(double));
 	double *H_t = alloca(x_dim*z_dim*sizeof(double));
 	matrix_transpose(H, H_t, x_dim, z_dim);
-	matrix_cross_matrix(H, P, K, z_dim, x_dim, x_dim);
-	matrix_cross_matrix(K, H_t, temp_k, z_dim, x_dim, z_dim); 
+	matrix_multiply(H, P, K, z_dim, x_dim, x_dim);
+	matrix_multiply(K, H_t, temp_k, z_dim, x_dim, z_dim); 
 	matrix_plus_matrix(temp_k, R, temp_k, z_dim, z_dim, 1);
 	matrix_inverse(temp_k, temp_k, z_dim);
-	matrix_cross_matrix(P, H_t, K, x_dim, x_dim, z_dim);
-	matrix_cross_matrix(K, temp_k, K, x_dim, z_dim, z_dim);
+	matrix_multiply(P, H_t, K, x_dim, x_dim, z_dim);
+	matrix_multiply(K, temp_k, K, x_dim, z_dim, z_dim);
 
 	// x = x + Ky
 	matrix_cross_vector(K, y, x_f, x_dim, z_dim);
@@ -51,9 +51,9 @@ void update(double *x, double *z, double *P, double *H, double *R, double *x_f, 
 	// P = (I - KH)P
 	double *identity = alloca(x_dim*x_dim*sizeof(double));
 	matrix_identity(identity, x_dim);
-	matrix_cross_matrix(K, H, P_f, x_dim, z_dim, x_dim);
+	matrix_multiply(K, H, P_f, x_dim, z_dim, x_dim);
 	matrix_plus_matrix(identity, P_f, P_f, x_dim, x_dim, 0);
-	matrix_cross_matrix(P_f, P, P_f, x_dim, x_dim, x_dim);
+	matrix_multiply(P_f, P, P_f, x_dim, x_dim, x_dim);
 }
 
 void vdm_scaled_points(double *x, double *P, double *chi, int n, double a, double k)
@@ -64,7 +64,7 @@ void vdm_scaled_points(double *x, double *P, double *chi, int n, double a, doubl
 
 	double scale = a*a*(n + k);
 	double *temp = alloca(n * n * sizeof(double));
-	scale_matrix(P, temp, scale, n, n);
+	matrix_scale(P, temp, scale, n, n);
 	matrix_sqrt(temp, temp, n);
 
 	int i, j;
@@ -126,7 +126,7 @@ void ukf_predict
 		// sum the scaled means 
 		for (i = 0; i <= 2*n; i++) {
 			memcpy(temp_x, gamma + i*n, n*sizeof(double));
-			scale_matrix(temp_x, temp_x, weight_m[i], n, 1);
+			matrix_scale(temp_x, temp_x, weight_m[i], n, 1);
 			matrix_plus_matrix(temp_x, x_f, x_f, n, 1, 1);
 		}
 	}
@@ -139,8 +139,8 @@ void ukf_predict
 		if (diff == NULL) matrix_plus_matrix(temp_P, x_f, temp_P, n, 1, 0);
 		else (*diff)(temp_P, x_f, temp_P, n);
 		matrix_transpose(temp_P, temp_x, n, 1);
-		scale_matrix(temp_P, temp_P, weight_c[i], n, 1);
-		matrix_cross_matrix(temp_P, temp_x, temp_P, n, 1, n);
+		matrix_scale(temp_P, temp_P, weight_c[i], n, 1);
+		matrix_multiply(temp_P, temp_x, temp_P, n, 1, n);
 		matrix_plus_matrix(temp_P, P_f, P_f, n, n, 1);
 	}
 	matrix_plus_matrix(P_f, Q, P_f, n, n, 1);
@@ -172,7 +172,7 @@ void ukf_update
 		}
 		for (i = 0; i <= 2*n; i++) {
 			memcpy(temp, zeta + i*m, m*sizeof(double));
-			scale_matrix(temp, temp, weight_m[i], m, 1);
+			matrix_scale(temp, temp, weight_m[i], m, 1);
 			matrix_plus_matrix(temp, u_z, u_z, m, 1, 1);
 		}
 	}
@@ -187,8 +187,8 @@ void ukf_update
 		if (zdiff == NULL) matrix_plus_matrix(zeta + i*m, u_z, temp, m, 1, 0);
 		else (*zdiff)(zeta + i*m, u_z, temp, m);
 		matrix_transpose(temp, temp_t, m, 1);
-		scale_matrix(temp, temp, weight_c[i], m, m);
-		matrix_cross_matrix(temp, temp_t, temp, m, 1, m);
+		matrix_scale(temp, temp, weight_c[i], m, m);
+		matrix_multiply(temp, temp_t, temp, m, 1, m);
 		matrix_plus_matrix(temp, P_z, P_z, m, m, 1);
 	}
 	matrix_plus_matrix(P_z, R, P_z, m, m, 1);
@@ -208,24 +208,24 @@ void ukf_update
 		if (zdiff == NULL) matrix_plus_matrix(zeta + i*m, u_z, temp_t, m, 1, 0);
 		else (*zdiff)(zeta + i*m, u_z, temp_t, m);
 		matrix_transpose(temp_t, temp_t, m, 1);
-		scale_matrix(temp, temp, weight_c[i], n, m);
-		matrix_cross_matrix(temp, temp_t, temp, n, 1, m);
+		matrix_scale(temp, temp, weight_c[i], n, m);
+		matrix_multiply(temp, temp_t, temp, n, 1, m);
 		matrix_plus_matrix(temp, P_xz, P_xz, n, m, 1);
 	}
 	
 	// K = P_xz * P_z^-1 .. Kalman Gain
 	double *K = alloca(n*m*sizeof(double));
 	matrix_inverse(P_z, temp, m);
-	matrix_cross_matrix(P_xz, temp, K, n, m, m);
+	matrix_multiply(P_xz, temp, K, n, m, m);
 
 	// x_f = x + K*y .. New state estimate
-	matrix_cross_matrix(K, y, temp, n, m, 1);
+	matrix_multiply(K, y, temp, n, m, 1);
 	if (add_state == NULL) matrix_plus_matrix(temp, x, x_f, n, 1, 1);
 	else (*add_state)(x, temp, x_f, n);
 
 	// P_f = P - K*P_z*K^t .. New covariance
-	matrix_cross_matrix(K, P_z, temp, n, m, m);
+	matrix_multiply(K, P_z, temp, n, m, m);
 	matrix_transpose(K, temp_t, n, m);
-	matrix_cross_matrix(temp, temp_t, temp, n, m, n);
+	matrix_multiply(temp, temp_t, temp, n, m, n);
 	matrix_plus_matrix(P, temp, P_f, n, n, 0);
 }

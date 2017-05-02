@@ -5,10 +5,10 @@
 #define MATRIX_SUBTRACT 0
 
 void matrix_column(double *matrix, double *result, int rows, int columns, int column);
-void scale_matrix(double *matrix, double *result, double factor, int rows, int columns);
+void matrix_scale(double *matrix, double *result, double factor, int rows, int columns);
 void matrix_cross_vector(double *matrix, double *vector, double *result, int rows, int columns);
 // vector columns must equal matrix rows, result must be vector of with same number of rows of matrix
-void matrix_cross_matrix(double *a, double *b, double *result, int m, int n, int p);
+void matrix_multiply(double *a, double *b, double *result, int m, int n, int p);
 // matrix a has dimensions m x n, matrix b has dimensions n x p, and the result matrix has dimensions m x p
 void matrix_plus_matrix(double *a, double *b, double *result, int rows, int columns, int sign);
 // if sign is nonzero matrices are added, if zero matrix b is subtracted from matrix a

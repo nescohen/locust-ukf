@@ -15,7 +15,7 @@ void matrix_column(double *matrix, double *result, int rows, int columns, int co
 	}
 }
 
-void scale_matrix(double *matrix, double *result, double factor, int rows, int columns)
+void matrix_scale(double *matrix, double *result, double factor, int rows, int columns)
 {
 	int i;
 	for (i = 0; i < rows * columns; i++) {
@@ -38,7 +38,7 @@ void matrix_cross_vector(double *matrix, double *vector, double *result, int row
 	memcpy(result, result_temp, result_size);
 }
 
-void matrix_cross_matrix(double *a, double *b, double *result, int m, int n, int p)
+void matrix_multiply(double *a, double *b, double *result, int m, int n, int p)
 // matrix a has dimensions m x n, matrix b has dimensions n x p, and the result matrix has dimensions m x p
 {
 	size_t result_size = m*p*sizeof(double);

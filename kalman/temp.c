@@ -17,14 +17,14 @@ void compose_mrp(double mrp_a[3], double mrp_b[3], double mrp_f[3])
 
 	double numerator[3];
 	double temp[3];
-	scale_matrix(mrp_b, numerator, 1 - mag2_a, 3, 1);
-	scale_matrix(mrp_a, temp, 1 - mag2_b, 3, 1);
+	matrix_scale(mrp_b, numerator, 1 - mag2_a, 3, 1);
+	matrix_scale(mrp_a, temp, 1 - mag2_b, 3, 1);
 	matrix_plus_matrix(temp, numerator, numerator, 3, 1, MATRIX_ADD);
-	scale_matrix(mrp_b, temp, 2, 3, 1);
+	matrix_scale(mrp_b, temp, 2, 3, 1);
 	cross_product(temp, mrp_a, temp);
 	matrix_plus_matrix(numerator, temp, numerator, 3, 1, MATRIX_SUBTRACT);
 	
-	scale_matrix(numerator, mrp_f, 1/denominator, 3, 1);
+	matrix_scale(numerator, mrp_f, 1/denominator, 3, 1);
 }
 
 void rotate_mrp(double orientation[3], double omega[3], double result[3], double dt)
@@ -36,20 +36,20 @@ void rotate_mrp(double orientation[3], double omega[3], double result[3], double
 
 	// (1 - |P|^2)w
 	double factor = 1 - pow(vector_magnitude(orientation), 2);
-	scale_matrix(omega, result_copy, factor, 3, 1);
+	matrix_scale(omega, result_copy, factor, 3, 1);
 
 	// -2w x P
-	scale_matrix(omega, temp, -2, 3, 1);
+	matrix_scale(omega, temp, -2, 3, 1);
 	cross_product(temp, orientation, temp);
 	matrix_plus_matrix(temp, result_copy, result_copy, 3, 1, MATRIX_ADD);
 
 	// 2(w*P)P
 	factor = dot_product(omega, orientation);
-	scale_matrix(orientation, temp, factor, 3, 1);
+	matrix_scale(orientation, temp, factor, 3, 1);
 	matrix_plus_matrix(temp, result_copy, result_copy, 3, 1, MATRIX_ADD);
 
 	// 1/4{ .. }
-	scale_matrix(result_copy, result_copy, 0.25*dt, 3, 1);
+	matrix_scale(result_copy, result_copy, 0.25*dt, 3, 1);
 	matrix_plus_matrix(orientation, result_copy, result_copy, 3, 1, MATRIX_ADD);
 	memcpy(result, result_copy, sizeof(result_copy));
 }
@@ -63,11 +63,11 @@ int main()
 	double rotate[3];
 	double compose[3];
 
-	scale_matrix(axis, temp, angle, 3, 1);
+	matrix_scale(axis, temp, angle, 3, 1);
 	rotate_mrp(start, temp, rotate, 1);
 	printf("Rotate rotation = %f rad\n", atan(vector_magnitude(rotate))*4);
 
-	scale_matrix(axis, temp, tan(angle/4), 3, 1);
+	matrix_scale(axis, temp, tan(angle/4), 3, 1);
 	compose_mrp(start, temp, compose);
 	printf("Compose rotation = %f rad\n", atan(vector_magnitude(compose))*4);
 }
