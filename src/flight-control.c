@@ -8,9 +8,10 @@
 #include <signal.h>
 #include <pthread.h>
 #include <unistd.h>
-#include "boardutil.h"
-#include "flight-input.h"
-#include "error_log.h"
+
+#include "hardware/boardutil.h"
+#include "hardware/flight-input.h"
+#include "error/error_log.h"
 #include "pid/pid.h"
 
 #define SIGNED_16_MAX 0x7FFF

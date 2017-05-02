@@ -1,5 +1,5 @@
-#include "error_log.h"
 #include <stdio.h>
+#include "error_log.h"
 
 static FILE *error_log = NULL;
 static int count = 0;

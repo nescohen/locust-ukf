@@ -1,13 +1,13 @@
 /* Nes Cohen */
 /* 6/28/2016 */
 
-#include "boardutil.h"
-#include "error_log.h"
 #include <linux/i2c-dev.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <errno.h>
+#include "boardutil.h"
+#include "../error/error_log.h"
 
 #define GYRO_ADDR 0x69
 #define ACCL_ADDR 0x19

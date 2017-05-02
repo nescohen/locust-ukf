@@ -5,9 +5,9 @@
 #include <time.h>
 #include <assert.h>
 
-#include "kalman.h"
-#include "matrix_util.h"
-#include "quaternion_util.h"
+#include "kalman/kalman.h"
+#include "math/matrix_util.h"
+#include "math/quaternion_util.h"
 
 #define SIZE_STATE 6
 #define SIZE_MEASUREMENT 9

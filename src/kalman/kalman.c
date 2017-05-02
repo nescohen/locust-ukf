@@ -7,7 +7,7 @@
 #include <gsl/gsl_linalg.h>
 
 #include "kalman.h"
-#include "matrix_util.h"
+#include "../math/matrix_util.h"
 
 void predict(double *x, double *P, double *F, double *Q, double *x_f, double *P_f, int x_dim)
 {
