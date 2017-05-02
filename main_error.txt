@@ -1,252 +1,252 @@
-==2898== Memcheck, a memory error detector
-==2898== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.
-==2898== Using Valgrind-3.10.0 and LibVEX; rerun with -h for copyright info
-==2898== Command: bin/test.bin
-==2898== Parent PID: 2884
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x400FBC: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BB0: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x400FE3: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BCB: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x40100C: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BCB: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x40101E: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BCB: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x401050: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BB9: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x401062: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BB9: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x401070: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BB9: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x539F0C7: __printf_fp (printf_fp.c:378)
-==2898==    by 0x539D95C: vfprintf (vfprintf.c:1641)
-==2898==    by 0x53A3D88: printf (printf.c:33)
-==2898==    by 0x400D13: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x539F1F7: __printf_fp (printf_fp.c:393)
-==2898==    by 0x539D95C: vfprintf (vfprintf.c:1641)
-==2898==    by 0x53A3D88: printf (printf.c:33)
-==2898==    by 0x400D13: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x53989A2: __mpn_extract_double (dbl2mpn.c:56)
-==2898==    by 0x539F531: __printf_fp (printf_fp.c:409)
-==2898==    by 0x539D95C: vfprintf (vfprintf.c:1641)
-==2898==    by 0x53A3D88: printf (printf.c:33)
-==2898==    by 0x400D13: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x53989A7: __mpn_extract_double (dbl2mpn.c:60)
-==2898==    by 0x539F531: __printf_fp (printf_fp.c:409)
-==2898==    by 0x539D95C: vfprintf (vfprintf.c:1641)
-==2898==    by 0x53A3D88: printf (printf.c:33)
-==2898==    by 0x400D13: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x539FC6E: __printf_fp (printf_fp.c:942)
-==2898==    by 0x539D95C: vfprintf (vfprintf.c:1641)
-==2898==    by 0x53A3D88: printf (printf.c:33)
-==2898==    by 0x400D13: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x539FCBC: __printf_fp (printf_fp.c:953)
-==2898==    by 0x539D95C: vfprintf (vfprintf.c:1641)
-==2898==    by 0x53A3D88: printf (printf.c:33)
-==2898==    by 0x400D13: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x539FCDD: __printf_fp (printf_fp.c:956)
-==2898==    by 0x539D95C: vfprintf (vfprintf.c:1641)
-==2898==    by 0x53A3D88: printf (printf.c:33)
-==2898==    by 0x400D13: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x539FCE8: __printf_fp (printf_fp.c:956)
-==2898==    by 0x539D95C: vfprintf (vfprintf.c:1641)
-==2898==    by 0x53A3D88: printf (printf.c:33)
-==2898==    by 0x400D13: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x539FD17: __printf_fp (printf_fp.c:966)
-==2898==    by 0x539D95C: vfprintf (vfprintf.c:1641)
-==2898==    by 0x53A3D88: printf (printf.c:33)
-==2898==    by 0x400D13: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x539FD26: __printf_fp (printf_fp.c:966)
-==2898==    by 0x539D95C: vfprintf (vfprintf.c:1641)
-==2898==    by 0x53A3D88: printf (printf.c:33)
-==2898==    by 0x400D13: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x53A013C: round_away (rounding-mode.h:52)
-==2898==    by 0x53A013C: __printf_fp (printf_fp.c:973)
-==2898==    by 0x539D95C: vfprintf (vfprintf.c:1641)
-==2898==    by 0x53A3D88: printf (printf.c:33)
-==2898==    by 0x400D13: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x539FE92: __printf_fp (printf_fp.c:1141)
-==2898==    by 0x539D95C: vfprintf (vfprintf.c:1641)
-==2898==    by 0x53A3D88: printf (printf.c:33)
-==2898==    by 0x400D13: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x539FF85: __printf_fp (printf_fp.c:1148)
-==2898==    by 0x539D95C: vfprintf (vfprintf.c:1641)
-==2898==    by 0x53A3D88: printf (printf.c:33)
-==2898==    by 0x400D13: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x53A0111: __printf_fp (printf_fp.c:1202)
-==2898==    by 0x539D95C: vfprintf (vfprintf.c:1641)
-==2898==    by 0x53A3D88: printf (printf.c:33)
-==2898==    by 0x400D13: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x53A00F2: __printf_fp (printf_fp.c:1204)
-==2898==    by 0x539D95C: vfprintf (vfprintf.c:1641)
-==2898==    by 0x53A3D88: printf (printf.c:33)
-==2898==    by 0x400D13: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x402318: recovery_pid (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==    by 0x401125: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x402320: recovery_pid (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==    by 0x401125: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x40232D: recovery_pid (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==    by 0x401125: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x402334: recovery_pid (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==    by 0x401125: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x402342: recovery_pid (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==    by 0x401125: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x402349: recovery_pid (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==    by 0x401125: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x402357: recovery_pid (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==    by 0x401125: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x40235E: recovery_pid (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==    by 0x401125: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Syscall param write(buf) points to uninitialised byte(s)
-==2898==    at 0x542EC00: __write_nocancel (syscall-template.S:81)
-==2898==    by 0x53C7422: _IO_file_write@@GLIBC_2.2.5 (fileops.c:1253)
-==2898==    by 0x53C6AE2: new_do_write (fileops.c:530)
-==2898==    by 0x53C8254: _IO_do_write@@GLIBC_2.2.5 (fileops.c:503)
-==2898==    by 0x53C867E: _IO_file_overflow@@GLIBC_2.2.5 (fileops.c:863)
-==2898==    by 0x53A0C76: __printf_fp (printf_fp.c:1228)
-==2898==    by 0x539D95C: vfprintf (vfprintf.c:1641)
-==2898==    by 0x53A3D88: printf (printf.c:33)
-==2898==    by 0x400D13: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Address 0x4022003 is not stack'd, malloc'd or (recently) free'd
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x53C84EB: _IO_file_overflow@@GLIBC_2.2.5 (fileops.c:859)
-==2898==    by 0x53A0C76: __printf_fp (printf_fp.c:1228)
-==2898==    by 0x539D95C: vfprintf (vfprintf.c:1641)
-==2898==    by 0x53A3D88: printf (printf.c:33)
-==2898==    by 0x400D13: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== Conditional jump or move depends on uninitialised value(s)
-==2898==    at 0x53A0C88: __printf_fp (printf_fp.c:1228)
-==2898==    by 0x539D95C: vfprintf (vfprintf.c:1641)
-==2898==    by 0x53A3D88: printf (printf.c:33)
-==2898==    by 0x400D13: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898==  Uninitialised value was created by a stack allocation
-==2898==    at 0x400BC2: main (in /home/nes/projects/i2c-util/bin/test.bin)
-==2898== 
-==2898== 
-==2898== HEAP SUMMARY:
-==2898==     in use at exit: 0 bytes in 0 blocks
-==2898==   total heap usage: 1 allocs, 1 frees, 568 bytes allocated
-==2898== 
-==2898== All heap blocks were freed -- no leaks are possible
-==2898== 
-==2898== For counts of detected and suppressed errors, rerun with: -v
-==2898== ERROR SUMMARY: 4007633 errors from 33 contexts (suppressed: 0 from 0)
+==2561== Memcheck, a memory error detector
+==2561== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.
+==2561== Using Valgrind-3.10.0 and LibVEX; rerun with -h for copyright info
+==2561== Command: bin/test.bin
+==2561== Parent PID: 2539
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x40158C: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401180: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x4015B3: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x40119B: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x4015DC: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x40119B: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x4015EE: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x40119B: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x401620: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401189: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x401632: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401189: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x401640: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401189: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x5A0A0C7: __printf_fp (printf_fp.c:378)
+==2561==    by 0x5A0895C: vfprintf (vfprintf.c:1641)
+==2561==    by 0x5A0ED88: printf (printf.c:33)
+==2561==    by 0x4012E3: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x5A0A1F7: __printf_fp (printf_fp.c:393)
+==2561==    by 0x5A0895C: vfprintf (vfprintf.c:1641)
+==2561==    by 0x5A0ED88: printf (printf.c:33)
+==2561==    by 0x4012E3: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x5A039A2: __mpn_extract_double (dbl2mpn.c:56)
+==2561==    by 0x5A0A531: __printf_fp (printf_fp.c:409)
+==2561==    by 0x5A0895C: vfprintf (vfprintf.c:1641)
+==2561==    by 0x5A0ED88: printf (printf.c:33)
+==2561==    by 0x4012E3: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x5A039A7: __mpn_extract_double (dbl2mpn.c:60)
+==2561==    by 0x5A0A531: __printf_fp (printf_fp.c:409)
+==2561==    by 0x5A0895C: vfprintf (vfprintf.c:1641)
+==2561==    by 0x5A0ED88: printf (printf.c:33)
+==2561==    by 0x4012E3: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x5A0AC6E: __printf_fp (printf_fp.c:942)
+==2561==    by 0x5A0895C: vfprintf (vfprintf.c:1641)
+==2561==    by 0x5A0ED88: printf (printf.c:33)
+==2561==    by 0x4012E3: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x5A0ACBC: __printf_fp (printf_fp.c:953)
+==2561==    by 0x5A0895C: vfprintf (vfprintf.c:1641)
+==2561==    by 0x5A0ED88: printf (printf.c:33)
+==2561==    by 0x4012E3: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x5A0ACDD: __printf_fp (printf_fp.c:956)
+==2561==    by 0x5A0895C: vfprintf (vfprintf.c:1641)
+==2561==    by 0x5A0ED88: printf (printf.c:33)
+==2561==    by 0x4012E3: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x5A0ACE8: __printf_fp (printf_fp.c:956)
+==2561==    by 0x5A0895C: vfprintf (vfprintf.c:1641)
+==2561==    by 0x5A0ED88: printf (printf.c:33)
+==2561==    by 0x4012E3: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x5A0AD17: __printf_fp (printf_fp.c:966)
+==2561==    by 0x5A0895C: vfprintf (vfprintf.c:1641)
+==2561==    by 0x5A0ED88: printf (printf.c:33)
+==2561==    by 0x4012E3: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x5A0AD26: __printf_fp (printf_fp.c:966)
+==2561==    by 0x5A0895C: vfprintf (vfprintf.c:1641)
+==2561==    by 0x5A0ED88: printf (printf.c:33)
+==2561==    by 0x4012E3: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x5A0B13C: round_away (rounding-mode.h:52)
+==2561==    by 0x5A0B13C: __printf_fp (printf_fp.c:973)
+==2561==    by 0x5A0895C: vfprintf (vfprintf.c:1641)
+==2561==    by 0x5A0ED88: printf (printf.c:33)
+==2561==    by 0x4012E3: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x5A0AE92: __printf_fp (printf_fp.c:1141)
+==2561==    by 0x5A0895C: vfprintf (vfprintf.c:1641)
+==2561==    by 0x5A0ED88: printf (printf.c:33)
+==2561==    by 0x4012E3: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x5A0AF85: __printf_fp (printf_fp.c:1148)
+==2561==    by 0x5A0895C: vfprintf (vfprintf.c:1641)
+==2561==    by 0x5A0ED88: printf (printf.c:33)
+==2561==    by 0x4012E3: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x5A0B111: __printf_fp (printf_fp.c:1202)
+==2561==    by 0x5A0895C: vfprintf (vfprintf.c:1641)
+==2561==    by 0x5A0ED88: printf (printf.c:33)
+==2561==    by 0x4012E3: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x5A0B0F2: __printf_fp (printf_fp.c:1204)
+==2561==    by 0x5A0895C: vfprintf (vfprintf.c:1641)
+==2561==    by 0x5A0ED88: printf (printf.c:33)
+==2561==    by 0x4012E3: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x401C98: recovery_pid (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==    by 0x4016F5: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x401CA0: recovery_pid (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==    by 0x4016F5: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x401CAD: recovery_pid (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==    by 0x4016F5: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x401CB4: recovery_pid (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==    by 0x4016F5: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x401CC2: recovery_pid (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==    by 0x4016F5: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x401CC9: recovery_pid (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==    by 0x4016F5: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x401CD7: recovery_pid (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==    by 0x4016F5: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x401CDE: recovery_pid (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==    by 0x4016F5: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Syscall param write(buf) points to uninitialised byte(s)
+==2561==    at 0x5A99C00: __write_nocancel (syscall-template.S:81)
+==2561==    by 0x5A32422: _IO_file_write@@GLIBC_2.2.5 (fileops.c:1253)
+==2561==    by 0x5A31AE2: new_do_write (fileops.c:530)
+==2561==    by 0x5A33254: _IO_do_write@@GLIBC_2.2.5 (fileops.c:503)
+==2561==    by 0x5A3367E: _IO_file_overflow@@GLIBC_2.2.5 (fileops.c:863)
+==2561==    by 0x5A0BC76: __printf_fp (printf_fp.c:1228)
+==2561==    by 0x5A0895C: vfprintf (vfprintf.c:1641)
+==2561==    by 0x5A0ED88: printf (printf.c:33)
+==2561==    by 0x4012E3: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Address 0x4022003 is not stack'd, malloc'd or (recently) free'd
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x5A334EB: _IO_file_overflow@@GLIBC_2.2.5 (fileops.c:859)
+==2561==    by 0x5A0BC76: __printf_fp (printf_fp.c:1228)
+==2561==    by 0x5A0895C: vfprintf (vfprintf.c:1641)
+==2561==    by 0x5A0ED88: printf (printf.c:33)
+==2561==    by 0x4012E3: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== Conditional jump or move depends on uninitialised value(s)
+==2561==    at 0x5A0BC88: __printf_fp (printf_fp.c:1228)
+==2561==    by 0x5A0895C: vfprintf (vfprintf.c:1641)
+==2561==    by 0x5A0ED88: printf (printf.c:33)
+==2561==    by 0x4012E3: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561==  Uninitialised value was created by a stack allocation
+==2561==    at 0x401192: main (in /home/nes/projects/i2c-util/bin/test.bin)
+==2561== 
+==2561== 
+==2561== HEAP SUMMARY:
+==2561==     in use at exit: 0 bytes in 0 blocks
+==2561==   total heap usage: 1 allocs, 1 frees, 568 bytes allocated
+==2561== 
+==2561== All heap blocks were freed -- no leaks are possible
+==2561== 
+==2561== For counts of detected and suppressed errors, rerun with: -v
+==2561== ERROR SUMMARY: 817350 errors from 33 contexts (suppressed: 0 from 0)

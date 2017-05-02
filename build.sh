@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if ! gcc -o bin/test.bin -Wall -O3 src/hardware/boardutil.c src/flight-control.c src/hardware/flight-input.c src/error/error_log.c src/pid/pid.c -lm -lpthread
+if ! gcc -o bin/test.bin -Wall -O3 src/main.c src/hardware/boardutil.c src/hardware/flight-input.c src/error/error_log.c src/pid/pid.c src/kalman/ukf_mrp.c src/kalman/kalman.c src/math/quaternion_util.c src/math/matrix_util.c -lm -lpthread -lgsl -lgslcblas
 then
 	echo "Compilation failed."
 	exit 1

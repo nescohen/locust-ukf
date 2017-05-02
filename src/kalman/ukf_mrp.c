@@ -1,3 +1,5 @@
+// Specifice Ukf implementation for attitude filtering using Modified Rodriguez Parameters
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -5,20 +7,10 @@
 #include <time.h>
 #include <assert.h>
 
-#include "kalman/kalman.h"
-#include "math/matrix_util.h"
-#include "math/quaternion_util.h"
-
-#define SIZE_STATE 6
-#define SIZE_MEASUREMENT 9
-#define GYRO_VARIANCE 0.193825 // 11.111... degress in radians
-#define POSITION_VARIANCE 0.1
-
-#define ALPHA 0.001
-#define BETA 2.0
-#define KAPPA 0.0 // (double)(3 - SIZE_STATE)
-
-#define POWER_ITERATIONS 100
+#include "ukf_mrp.h"
+#include "kalman.h"
+#include "../math/matrix_util.h"
+#include "../math/quaternion_util.h"
 
 double g_down[3] = {0, -1, 0};
 double g_north[3] = {0, 0, 1};
@@ -47,6 +39,7 @@ void compose_mrp(double mrp_a[3], double mrp_b[3], double mrp_f[3])
 }
 
 void rotate_mrp(double orientation[3], double omega[3], double result[3], double dt)
+// DOES NOT WORK! DO NOT USE!
 {
 	double temp[3];
 	double result_copy[3];
@@ -95,7 +88,7 @@ void process_model(double *curr_state, double *next_state, double delta_t, int n
 	memcpy(next_state + 3, omega, sizeof(omega));
 }
 
-void measurement(double *state, double *measurement, int n, int m)
+void measurement_function(double *state, double *measurement, int n, int m)
 {
 	measurement[6] = state[3];
 	measurement[7] = state[4];
@@ -239,6 +232,7 @@ void process_noise(double *Q, double dt, double scale)
 double rand_gauss()
 // returns a guassian distributed random number with mean 0 and standard deviation 1
 // assumes srand() has already been seeded
+// for testing purposes, do not use in production
 {
 	double u1 = (double)rand() / (double) RAND_MAX;
 	double u2 = (double)rand() / (double) RAND_MAX;
@@ -246,6 +240,7 @@ double rand_gauss()
 }
 
 void generate_measurements(double *z, double *omega, double *down_vect, double *north_vect, double dt)
+// for testing purposes, do not use in production
 {
 	memcpy(z, down_vect, 3*sizeof(double));
 	memcpy(z + 3, north_vect, 3*sizeof(double));
@@ -260,104 +255,75 @@ void generate_measurements(double *z, double *omega, double *down_vect, double *
 	}
 }
 
-int main()
+void ukf_run(double *result_state, double *measurement, double delta_t)
 {
-	int i;
-	double state[SIZE_STATE] = {0.0, 0.0, 0.0, 1.0, 0.0, 0.0};
-	double covariance[SIZE_STATE*SIZE_STATE];
+	static int initialized = 0;
+	static double state[SIZE_STATE] = {0.0, 0.0, 0.0, 1.0, 0.0, 0.0};
+	static double covariance[SIZE_STATE*SIZE_STATE];
+	static double R[SIZE_MEASUREMENT*SIZE_MEASUREMENT];
+	static Ukf_options options;
+
 	double new_state[SIZE_STATE];
 	double new_covariance[SIZE_STATE*SIZE_STATE];
-	matrix_diagonal(covariance, 1, SIZE_STATE);
-
-	double R[SIZE_MEASUREMENT*SIZE_MEASUREMENT];
 	double Q[SIZE_STATE*SIZE_STATE];
-	matrix_init(R, 0, SIZE_MEASUREMENT, SIZE_MEASUREMENT);
-	for (i = 0; i < 6; i++) {
-		R[i + i*SIZE_MEASUREMENT] = POSITION_VARIANCE;
-	}
-	for (i = 6; i < 9; i++) {
-		R[i + i*SIZE_MEASUREMENT] = GYRO_VARIANCE;
-	}
-
 	double chi[SIZE_STATE*(2*SIZE_STATE + 1)];
 	double gamma[SIZE_STATE*(2*SIZE_STATE + 1)];
 	double w_m[2*SIZE_STATE + 1];
 	double w_c[2*SIZE_STATE + 1];
-	
-	double delta_t = 0.01;
 
-	double measurements[SIZE_MEASUREMENT] = {0.0};
-	double true_orientation[3] = {0.0, 0.0, 0.0};
-	double true_omega[3] = {1.0, 0.0, 0.0};
+	if (!initialized) {
+		int i;
+		matrix_diagonal(covariance, 1, SIZE_STATE);
 
-	// initialize and configure additional options for the ukf
-	Ukf_options options;
-	ukf_init_options(&options, SIZE_STATE, SIZE_MEASUREMENT);
-	options.f = &process_model;
-	options.h = &measurement;
-	options.state_mean = &mean_state;
-	options.state_diff = &state_error;
-	options.state_add = &add_state;
-
-	srand(2);// seed random number generator for rand_gauss()
-
-	printf("INITIAL\n");
-	matrix_quick_print(state, SIZE_STATE, 1);
-	matrix_quick_print(covariance, SIZE_STATE, SIZE_STATE);
-	for (i = 0; i < 30; i++) {
-		printf("Time Elapsed: %fs\n", (i+1)*delta_t);
-
-		// vdm_get_all(state, covariance, SIZE_STATE, ALPHA, BETA, KAPPA, chi, w_m, w_c);
-		custom_scaled_points(state, covariance, chi, SIZE_STATE, ALPHA, KAPPA);
-		vdm_scaled_weights(w_m, w_c, SIZE_STATE, ALPHA, BETA, KAPPA);
-
-		// for test purposes
-		double down[3];
-		double north[3];
-		double angle;
-		double axis[3];
-		double matrix[9];
-		angle = delta_t*vector_magnitude(true_omega);
-		normalize_vector(true_omega, axis);
-		matrix_scale(axis, axis, tan(angle/4), 3, 1);
-		compose_mrp(true_orientation, axis, true_orientation);
-		angle = atan(vector_magnitude(true_orientation))*4;
-		normalize_vector(true_orientation, axis);
-		axis_angle_matrix(axis, angle, matrix);
-		matrix_multiply(matrix, g_north, north, 3, 3, 1);
-		matrix_multiply(matrix, g_down, down, 3, 3, 1);
-		generate_measurements(measurements, true_omega, down, north, delta_t);
-		printf("TRUE\n");
-		printf("True rotation: %f radians\n", angle);
-		matrix_quick_print(true_orientation, 3, 1);
-		matrix_quick_print(true_omega, 3, 1);
-		// end test purposes
-
-		process_noise(Q, delta_t, 10);
-		ukf_predict(state, covariance, Q, delta_t, chi, gamma, w_m, w_c, new_state, new_covariance, &options);
-		printf("PREDICT\n");
-		printf("Prediction rotation = %f radians\n", 4*atan(vector_magnitude(new_state)));
-		matrix_quick_print(new_state, SIZE_STATE, 1);
-		matrix_quick_print(new_covariance, SIZE_STATE, SIZE_STATE);
-
-		printf("MEASUREMENT\n");
-		matrix_quick_print(measurements, SIZE_MEASUREMENT, 1);
+		matrix_init(R, 0, SIZE_MEASUREMENT, SIZE_MEASUREMENT);
+		for (i = 0; i < 6; i++) {
+			R[i + i*SIZE_MEASUREMENT] = POSITION_VARIANCE;
+		}
+		for (i = 6; i < 9; i++) {
+			R[i + i*SIZE_MEASUREMENT] = GYRO_VARIANCE;
+		}
 		
-		ukf_update(new_state, measurements, new_covariance, R, gamma, w_m, w_c, state, covariance, &options);
-		printf("UPDATE\n");
-		printf("Update rotation = %f radians\n", 4*atan(vector_magnitude(state)));
+		// initialize and configure additional options for the ukf
+		ukf_init_options(&options, SIZE_STATE, SIZE_MEASUREMENT);
+		options.f = &process_model;
+		options.h = &measurement_function;
+		options.state_mean = &mean_state;
+		options.state_diff = &state_error;
+		options.state_add = &add_state;
+		printf("INITIAL\n");
 		matrix_quick_print(state, SIZE_STATE, 1);
 		matrix_quick_print(covariance, SIZE_STATE, SIZE_STATE);
-
-		// WARNING - hack
-		double *temp = alloca(SIZE_STATE*SIZE_STATE*sizeof(double));
-		matrix_scale(covariance, covariance, 0.5, SIZE_STATE, SIZE_STATE);
-		matrix_transpose(covariance, temp, SIZE_STATE, SIZE_STATE);
-		matrix_plus_matrix(covariance, temp, covariance, SIZE_STATE, SIZE_STATE, 1);
-		matrix_diagonal(temp, 0.1, SIZE_STATE);
-		matrix_plus_matrix(covariance, temp, covariance, SIZE_STATE, SIZE_STATE, 1);
-		// hack over
 	}
 
-	return 0;
+	custom_scaled_points(state, covariance, chi, SIZE_STATE, ALPHA, KAPPA);
+	vdm_scaled_weights(w_m, w_c, SIZE_STATE, ALPHA, BETA, KAPPA);
+
+	process_noise(Q, delta_t, 10);
+	ukf_predict(state, covariance, Q, delta_t, chi, gamma, w_m, w_c, new_state, new_covariance, &options);
+
+	printf("PREDICT\n");
+	printf("Prediction rotation = %f radians\n", 4*atan(vector_magnitude(new_state)));
+	matrix_quick_print(new_state, SIZE_STATE, 1);
+	matrix_quick_print(new_covariance, SIZE_STATE, SIZE_STATE);
+
+	printf("MEASUREMENT\n");
+	matrix_quick_print(measurement, SIZE_MEASUREMENT, 1);
+	
+	ukf_update(new_state, measurement, new_covariance, R, gamma, w_m, w_c, state, covariance, &options);
+
+	printf("UPDATE\n");
+	printf("Update rotation = %f radians\n", 4*atan(vector_magnitude(state)));
+	matrix_quick_print(state, SIZE_STATE, 1);
+	matrix_quick_print(covariance, SIZE_STATE, SIZE_STATE);
+
+	// WARNING - hack
+	double *temp = alloca(SIZE_STATE*SIZE_STATE*sizeof(double));
+	matrix_scale(covariance, covariance, 0.5, SIZE_STATE, SIZE_STATE);
+	matrix_transpose(covariance, temp, SIZE_STATE, SIZE_STATE);
+	matrix_plus_matrix(covariance, temp, covariance, SIZE_STATE, SIZE_STATE, 1);
+	matrix_diagonal(temp, 0.1, SIZE_STATE);
+	matrix_plus_matrix(covariance, temp, covariance, SIZE_STATE, SIZE_STATE, 1);
+	// hack over
+
+	memcpy(result_state, state, SIZE_STATE*sizeof(double));
 }
