@@ -5,7 +5,7 @@ then
 	echo "Compilation failed."
 	exit 1
 fi
-if ! valgrind --error-exitcode=1 --track-origins=yes --log-file=main_error.txt --tool=memcheck -- bin/test.bin > main_out.txt
+if ! valgrind --error-exitcode=1 --track-origins=yes --log-file=main_error.txt --tool=memcheck -- bin/test.bin > /dev/null
 then
 	echo "Valgrind returned error(s)."
 fi
