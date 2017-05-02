@@ -23,35 +23,11 @@
 
 #define MAX_CORRECT 0.1f // expressed as fraction of power setting
 
-typedef struct realvect3
-{
-	double x;
-	double y;
-	double z;
-} Realvect3;
-
 volatile sig_atomic_t stop;
-struct timespec curr_clock;
-struct timespec last_clock;
 
 void inthand(int signum)
 {
 	stop = 1;
-}
-
-inline double magnitude(Realvect3 *vector)
-{
-	double sum = vector->x*vector->x + vector->y*vector->y + vector->z*vector->z;
-	return sqrt(sum);
-}
-
-double angle_between(const double *array)
-/* array is size 4: (x,y) of first vector followed by (x,y) of second vector */
-{
-	double dot = array[0]*array[2] + array[1]*array[3];
-	double mag = sqrt(array[0]*array[0] + array[1]*array[1]) * sqrt(array[2]*array[2] + array[3]*array[3]);
-	double cosine = dot/mag;
-	return acos(cosine)*180/M_PI;
 }
 
 void recovery_pid(double x, double y, Controls *controls, int *motors, Pidhist *hist_x, Pidhist *hist_y, double delta_t)
@@ -61,10 +37,6 @@ void recovery_pid(double x, double y, Controls *controls, int *motors, Pidhist *
 
 	double correct_x = pid(hist_x, error_x, delta_t);
 	double correct_y = pid(hist_y, error_y, delta_t);
-
-	//char buffer[100];
-	//snprintf(buffer, 100, "correct_x = %f, correct_y = %f", correct_x, correct_y);
-	//log_error(buffer);
 
 	motors[0] = controls->throttle + (int)(0.5*correct_x) + (int)(0.5*correct_y);
 	motors[1] = controls->throttle + (int)(0.5*correct_x) + (int)(-0.5*correct_y);
@@ -82,128 +54,36 @@ void recovery_pid(double x, double y, Controls *controls, int *motors, Pidhist *
 	}
 }
 
-void recovery(double x, double y, Controls *controls, int *motors)
-{
-	/*   front
-		0     1
-	left       right
-		2     3
-		 rear
-	*/
-
-	motors[0] = controls->throttle + controls->pitch - controls->roll;
-	motors[1] =	controls->throttle + controls->pitch + controls->roll;
-	motors[2] =	controls->throttle - controls->pitch - controls->roll;
-	motors[3] =	controls->throttle - controls->pitch + controls->roll;
-	//Andy - set trim before correcting
-
-	if (x > 45) {
-		motors[0] += controls->throttle*MAX_CORRECT;
-		motors[1] += controls->throttle*MAX_CORRECT;
-		motors[2] -= controls->throttle*MAX_CORRECT;
-		motors[3] -= controls->throttle*MAX_CORRECT;
-	}
-	else if (x < -45) {
-		motors[0] -= controls->throttle*MAX_CORRECT;
-		motors[1] -= controls->throttle*MAX_CORRECT;
-		motors[2] += controls->throttle*MAX_CORRECT;
-		motors[3] += controls->throttle*MAX_CORRECT;
-	}
-	else {
-		motors[0] += (int)((float)x/45.f*MAX_CORRECT*controls->throttle);
-		motors[1] += (int)((float)x/45.f*MAX_CORRECT*controls->throttle);
-		motors[2] -= (int)((float)x/45.f*MAX_CORRECT*controls->throttle);
-		motors[3] -= (int)((float)x/45.f*MAX_CORRECT*controls->throttle);
-	}
-
-	if (y > 45) {
-		motors[0] -= controls->throttle*MAX_CORRECT;
-		motors[2] -= controls->throttle*MAX_CORRECT;
-		motors[1] += controls->throttle*MAX_CORRECT;
-		motors[3] += controls->throttle*MAX_CORRECT;
-	}
-	else if (y < -45) {
-		motors[0] += controls->throttle*MAX_CORRECT;
-		motors[2] += controls->throttle*MAX_CORRECT;
-		motors[1] -= controls->throttle*MAX_CORRECT;
-		motors[3] -= controls->throttle*MAX_CORRECT;
-	}
-	else {
-		motors[0] -= (int)((float)y/45.f*MAX_CORRECT*controls->throttle);
-		motors[2] -= (int)((float)y/45.f*MAX_CORRECT*controls->throttle);
-		motors[1] += (int)((float)y/45.f*MAX_CORRECT*controls->throttle);
-		motors[3] += (int)((float)y/45.f*MAX_CORRECT*controls->throttle);
-	}
-
-	int i;
-	for (i = 0; i < 4; i++) {
-		if (motors[i] < 0) {
-			motors[i] = 0;
-		}
-		if (motors[i] > 200) {
-			motors[i] = 200;
-		}
-	}
-}
-
-void trim(int *current_motor_speed, const int *trim_amount){
-	int i;
-	for(i = 0; i < 4; i++){
-		current_motor_speed[i] += trim_amount[i];
-	}
-}
-
 int main(int argc, char **argv)
 {
+	struct timespec curr_clock;
+	struct timespec last_clock;
+
 	signal(SIGINT, inthand);
 	signal(SIGTSTP, inthand);
 
-	Controls controls = {25, 0, 0};
-	pthread_t inout_thread;
+	if (open_bus(DEVICE_FILE) != 0) {
+		log_error("Failed to open i2c device file.");
+		stop = 1;
+	}
+	int test = 0;
+	test = test || gyro_power_on();
+	test = test || accl_power_on();
+	test = test || comp_power_on();
+	if (test != 0) {
+		log_error("Failed to power on one or more sensors.");
+		stop = 1;
+	}
 
-	open_bus(DEVICE_FILE);
-	gyro_power_on();
-	accl_power_on();
-	comp_power_on();
-
-	//pthread_create(&inout_thread, NULL, &start_inout, NULL);
-	
-	double deg_x = 0;
-	double deg_y = 0;
-	double deg_z = 0;
-
-	Vector3 last_grav;
-	last_grav.x = 0;
-	last_grav.y = 0;
-	last_grav.z = 0;
-
-	Vector3 init_north;
-	comp_poll(&init_north);
-
-	Pidhist hist_x;
-	Pidhist hist_y;
-	init_hist(&hist_x);
-	init_hist(&hist_y);
-
-	int motors[4] = {0,0,0,0};
-	long total = 0;
-	double percentage = 0;
-	Vector3 gyro;
-	Vector3 accel;
-	Vector3 north;
-	Realvect3 grav;
 	if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
 	while(!stop) {
-
 		last_clock = curr_clock;
 		if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
-		int status = gyro_poll(&gyro);
-		percentage = (percentage + status) / 2;
+		long elapsed = curr_clock.tv_nsec - last_clock.tv_nsec + (curr_clock.tv_sec - last_clock.tv_sec)*1000000000;
+
+		gyro_poll(&gyro);
 		accl_poll(&accel);
 		comp_poll(&north);
-		long elapsed = curr_clock.tv_nsec - last_clock.tv_nsec + (curr_clock.tv_sec - last_clock.tv_sec)*1000000000;
-		total += elapsed;
-
 
 		double v_ang_x = ((double)gyro.x/(double)SIGNED_16_MAX) * GYRO_SENSATIVITY;
 		double v_ang_y = ((double)gyro.y/(double)SIGNED_16_MAX) * GYRO_SENSATIVITY;
@@ -242,10 +122,6 @@ int main(int argc, char **argv)
 			// update_motors(motors);
 			total = total % 10000000;
 		}
-		/* if (deg_x > 45 || deg_x < -45 || deg_y > 45 || deg_y < -45) {
-			stop = 1;
-		}*/
-
 		//printf("\r%f|%f|%f(%f) ... %f|%f|%f[%f] ... %f|%f|%f| ... %d|%d|%d|%d     ", deg_x, deg_y, deg_z, angle, grav.x, grav.y, grav.z, accel_mag, v_ang_x, v_ang_y, v_ang_z, motors[0], motors[1], motors[2], motors[3]);
 		printf("\r%f|%f|%f || %f|%f|%f || %f         ", deg_x, deg_y, deg_z, v_ang_x, v_ang_y, v_ang_z, percentage);
 	}
