@@ -290,6 +290,15 @@ int main()
 	double true_orientation[3] = {0.0, 0.0, 0.0};
 	double true_omega[3] = {1.0, 0.0, 0.0};
 
+	// initialize and configure additional options for the ukf
+	Ukf_options options;
+	ukf_init_options(&options, SIZE_STATE, SIZE_MEASUREMENT);
+	options.f = &process_model;
+	options.h = &measurement;
+	options.state_mean = &mean_state;
+	options.state_diff = &state_error;
+	options.state_add = &add_state;
+
 	srand(2);// seed random number generator for rand_gauss()
 
 	printf("INITIAL\n");
@@ -325,7 +334,7 @@ int main()
 		// end test purposes
 
 		process_noise(Q, delta_t, 10);
-		ukf_predict(state, covariance, &process_model, &mean_state, &state_error, Q, delta_t, chi, gamma, w_m, w_c, new_state, new_covariance, SIZE_STATE);
+		ukf_predict(state, covariance, Q, delta_t, chi, gamma, w_m, w_c, new_state, new_covariance, &options);
 		printf("PREDICT\n");
 		printf("Prediction rotation = %f radians\n", 4*atan(vector_magnitude(new_state)));
 		matrix_quick_print(new_state, SIZE_STATE, 1);
@@ -334,7 +343,7 @@ int main()
 		printf("MEASUREMENT\n");
 		matrix_quick_print(measurements, SIZE_MEASUREMENT, 1);
 		
-		ukf_update(new_state, measurements, new_covariance, &measurement, NULL, &state_error, NULL, &add_state, R, gamma, w_m, w_c, state, covariance, SIZE_STATE, SIZE_MEASUREMENT);
+		ukf_update(new_state, measurements, new_covariance, R, gamma, w_m, w_c, state, covariance, &options);
 		printf("UPDATE\n");
 		printf("Update rotation = %f radians\n", 4*atan(vector_magnitude(state)));
 		matrix_quick_print(state, SIZE_STATE, 1);
