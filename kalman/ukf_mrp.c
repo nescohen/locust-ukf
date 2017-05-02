@@ -4,7 +4,6 @@
 #include <string.h>
 #include <time.h>
 #include <assert.h>
-#include <fenv.h>
 
 #include "kalman.h"
 #include "matrix_util.h"
@@ -290,10 +289,6 @@ int main()
 	double measurements[SIZE_MEASUREMENT] = {0.0};
 	double true_orientation[3] = {0.0, 0.0, 0.0};
 	double true_omega[3] = {1.0, 0.0, 0.0};
-
-#if defined(FE_DIVBYZERO) && defined(FE_INVALID)
-	feenableexcept( FE_DIVBYZERO | FE_INVALID);
-#endif
 
 	srand(2);// seed random number generator for rand_gauss()
 
