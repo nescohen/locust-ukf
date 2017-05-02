@@ -17,7 +17,7 @@
 
 #define ALPHA 0.001
 #define BETA 2.0
-#define KAPPA (double)(3 - SIZE_STATE)
+#define KAPPA 0.0 // (double)(3 - SIZE_STATE)
 
 #define POWER_ITERATIONS 100
 
@@ -175,6 +175,15 @@ void state_error(double *point, double *mean, double *error, int n)
 	scale_matrix(axis, error, tan(angle/4), 3, 1);
 }
 
+void add_state(double *state, double *change, double *result, int n)
+{
+	double final_state[SIZE_STATE];
+
+	matrix_plus_matrix(state + 3, change + 3, final_state + 3, 3, 1, MATRIX_ADD);
+	compose_mrp(state, change, final_state);
+	memcpy(result, final_state, sizeof(final_state));
+}
+
 void custom_scaled_points(double *x, double *P, double *chi, int n, double a, double k)
 // modified scaled points algorithm for use with MRPs
 {
@@ -237,7 +246,7 @@ double rand_gauss()
 	return sqrt(-2*log(u1))*cos(2*M_PI*u2);
 }
 
-void generate_measurements(double *z, double *omega, double *down_vect, double *north_vect)
+void generate_measurements(double *z, double *omega, double *down_vect, double *north_vect, double dt)
 {
 	memcpy(z, down_vect, 3*sizeof(double));
 	memcpy(z + 3, north_vect, 3*sizeof(double));
@@ -245,17 +254,17 @@ void generate_measurements(double *z, double *omega, double *down_vect, double *
 
 	int i;
 	for(i = 0; i < 6; i++) {
-		//z[i] += rand_gauss()*sqrt(POSITION_VARIANCE);
+		z[i] += rand_gauss()*sqrt(POSITION_VARIANCE)*dt;
 	}
 	for(i = 6; i < 9; i++) {
-		//z[i] += rand_gauss()*GYRO_VARIANCE;
+		z[i] += rand_gauss()*sqrt(GYRO_VARIANCE)*dt;
 	}
 }
 
 int main()
 {
 	int i;
-	double state[SIZE_STATE] = {0.025, 0.0, 0.0, 1.0, 0.0, 0.0};
+	double state[SIZE_STATE] = {0.0, 0.0, 0.0, 1.0, 0.0, 0.0};
 	double covariance[SIZE_STATE*SIZE_STATE];
 	double new_state[SIZE_STATE];
 	double new_covariance[SIZE_STATE*SIZE_STATE];
@@ -276,17 +285,17 @@ int main()
 	double w_m[2*SIZE_STATE + 1];
 	double w_c[2*SIZE_STATE + 1];
 	
-	double delta_t = 0.1;
+	double delta_t = 0.01;
 
 	double measurements[SIZE_MEASUREMENT] = {0.0};
-	double true_orientation[3] = {0.025, 0.0, 0.0};
+	double true_orientation[3] = {0.0, 0.0, 0.0};
 	double true_omega[3] = {1.0, 0.0, 0.0};
 
 #if defined(FE_DIVBYZERO) && defined(FE_INVALID)
 	feenableexcept( FE_DIVBYZERO | FE_INVALID);
 #endif
 
-	srand(1); // seed random number generator for rand_gauss()
+	srand(2);// seed random number generator for rand_gauss()
 
 	printf("INITIAL\n");
 	matrix_quick_print(state, SIZE_STATE, 1);
@@ -313,7 +322,7 @@ int main()
 		axis_angle_matrix(axis, angle, matrix);
 		matrix_cross_matrix(matrix, g_north, north, 3, 3, 1);
 		matrix_cross_matrix(matrix, g_down, down, 3, 3, 1);
-		generate_measurements(measurements, true_omega, down, north);
+		generate_measurements(measurements, true_omega, down, north, delta_t);
 		printf("TRUE\n");
 		printf("True rotation: %f radians\n", angle);
 		matrix_quick_print(true_orientation, 3, 1);
@@ -330,19 +339,19 @@ int main()
 		printf("MEASUREMENT\n");
 		matrix_quick_print(measurements, SIZE_MEASUREMENT, 1);
 		
-		ukf_update(new_state, measurements, new_covariance, &measurement, NULL, &state_error, NULL, R, gamma, w_m, w_c, state, covariance, SIZE_STATE, SIZE_MEASUREMENT);
+		ukf_update(new_state, measurements, new_covariance, &measurement, NULL, &state_error, NULL, &add_state, R, gamma, w_m, w_c, state, covariance, SIZE_STATE, SIZE_MEASUREMENT);
 		printf("UPDATE\n");
 		printf("Update rotation = %f radians\n", 4*atan(vector_magnitude(state)));
 		matrix_quick_print(state, SIZE_STATE, 1);
 		matrix_quick_print(covariance, SIZE_STATE, SIZE_STATE);
 
 		// WARNING - hack
-		// double *temp = alloca(SIZE_STATE*SIZE_STATE*sizeof(double));
-		// scale_matrix(covariance, covariance, 0.5, SIZE_STATE, SIZE_STATE);
-		// matrix_transpose(covariance, temp, SIZE_STATE, SIZE_STATE);
-		// matrix_plus_matrix(covariance, temp, covariance, SIZE_STATE, SIZE_STATE, 1);
-		// matrix_diagonal(temp, 0.1, SIZE_STATE);
-		// matrix_plus_matrix(covariance, temp, covariance, SIZE_STATE, SIZE_STATE, 1);
+		double *temp = alloca(SIZE_STATE*SIZE_STATE*sizeof(double));
+		scale_matrix(covariance, covariance, 0.5, SIZE_STATE, SIZE_STATE);
+		matrix_transpose(covariance, temp, SIZE_STATE, SIZE_STATE);
+		matrix_plus_matrix(covariance, temp, covariance, SIZE_STATE, SIZE_STATE, 1);
+		matrix_diagonal(temp, 0.1, SIZE_STATE);
+		matrix_plus_matrix(covariance, temp, covariance, SIZE_STATE, SIZE_STATE, 1);
 		// hack over
 	}
 

@@ -147,7 +147,7 @@ void ukf_predict
 }
 
 void ukf_update
-(double *x, double *z, double *P, Ukf_measurement_f h, Ukf_measurements_mean mean, Ukf_difference_state xdiff, Ukf_difference_measure zdiff, double *R, double *gamma, double *weight_m, double *weight_c, double *x_f, double *P_f, int n, int m)
+(double *x, double *z, double *P, Ukf_measurement_f h, Ukf_measurements_mean mean, Ukf_difference_state xdiff, Ukf_difference_measure zdiff, Ukf_add_state add_state, double *R, double *gamma, double *weight_m, double *weight_c, double *x_f, double *P_f, int n, int m)
 // n is the number of dimensions in state space, m is the number of dimensions in measurement space
 {
 	// Find maximum matrix size
@@ -220,7 +220,8 @@ void ukf_update
 
 	// x_f = x + K*y .. New state estimate
 	matrix_cross_matrix(K, y, temp, n, m, 1);
-	matrix_plus_matrix(temp, x, x_f, n, 1, 1);
+	if (add_state == NULL) matrix_plus_matrix(temp, x, x_f, n, 1, 1);
+	else (*add_state)(x, temp, x_f, n);
 
 	// P_f = P - K*P_z*K^t .. New covariance
 	matrix_cross_matrix(K, P_z, temp, n, m, m);
