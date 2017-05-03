@@ -255,16 +255,11 @@ void generate_measurements(double *z, double *omega, double *down_vect, double *
 	}
 }
 
-void ukf_run(double *result_state, double *measurement, double delta_t)
+void ukf_run(Ukf_parameters *parameters, double *measurement, double delta_t)
 {
 	static int initialized = 0;
-	static double state[SIZE_STATE] = {0.0, 0.0, 0.0, 1.0, 0.0, 0.0};
-	static double covariance[SIZE_STATE*SIZE_STATE];
-	static double R[SIZE_MEASUREMENT*SIZE_MEASUREMENT];
 	static Ukf_options options;
 
-	double new_state[SIZE_STATE];
-	double new_covariance[SIZE_STATE*SIZE_STATE];
 	double Q[SIZE_STATE*SIZE_STATE];
 	double chi[SIZE_STATE*(2*SIZE_STATE + 1)];
 	double gamma[SIZE_STATE*(2*SIZE_STATE + 1)];
@@ -273,14 +268,14 @@ void ukf_run(double *result_state, double *measurement, double delta_t)
 
 	if (!initialized) {
 		int i;
-		matrix_diagonal(covariance, 1, SIZE_STATE);
+		matrix_diagonal(parameters->covariance, 1, SIZE_STATE);
 
-		matrix_init(R, 0, SIZE_MEASUREMENT, SIZE_MEASUREMENT);
+		matrix_init(parameters->R, 0, SIZE_MEASUREMENT, SIZE_MEASUREMENT);
 		for (i = 0; i < 6; i++) {
-			R[i + i*SIZE_MEASUREMENT] = POSITION_VARIANCE;
+			parameters->R[i + i*SIZE_MEASUREMENT] = POSITION_VARIANCE;
 		}
 		for (i = 6; i < 9; i++) {
-			R[i + i*SIZE_MEASUREMENT] = GYRO_VARIANCE;
+			parameters->R[i + i*SIZE_MEASUREMENT] = GYRO_VARIANCE;
 		}
 		
 		// initialize and configure additional options for the ukf
@@ -291,39 +286,37 @@ void ukf_run(double *result_state, double *measurement, double delta_t)
 		options.state_diff = &state_error;
 		options.state_add = &add_state;
 		printf("INITIAL\n");
-		matrix_quick_print(state, SIZE_STATE, 1);
-		matrix_quick_print(covariance, SIZE_STATE, SIZE_STATE);
+		matrix_quick_print(parameters->state, SIZE_STATE, 1);
+		matrix_quick_print(parameters->covariance, SIZE_STATE, SIZE_STATE);
 	}
 
-	custom_scaled_points(state, covariance, chi, SIZE_STATE, ALPHA, KAPPA);
+	custom_scaled_points(parameters->state, parameters->covariance, chi, SIZE_STATE, ALPHA, KAPPA);
 	vdm_scaled_weights(w_m, w_c, SIZE_STATE, ALPHA, BETA, KAPPA);
 
 	process_noise(Q, delta_t, 10);
-	ukf_predict(state, covariance, Q, delta_t, chi, gamma, w_m, w_c, new_state, new_covariance, &options);
+	ukf_predict(parameters->state, parameters->covariance, Q, delta_t, chi, gamma, w_m, w_c, parameters->state, parameters->covariance, &options);
 
 	printf("PREDICT\n");
-	printf("Prediction rotation = %f radians\n", 4*atan(vector_magnitude(new_state)));
-	matrix_quick_print(new_state, SIZE_STATE, 1);
-	matrix_quick_print(new_covariance, SIZE_STATE, SIZE_STATE);
+	printf("Prediction rotation = %f radians\n", 4*atan(vector_magnitude(parameters->state)));
+	matrix_quick_print(parameters->state, SIZE_STATE, 1);
+	matrix_quick_print(parameters->covariance, SIZE_STATE, SIZE_STATE);
 
 	printf("MEASUREMENT\n");
 	matrix_quick_print(measurement, SIZE_MEASUREMENT, 1);
 	
-	ukf_update(new_state, measurement, new_covariance, R, gamma, w_m, w_c, state, covariance, &options);
+	ukf_update(parameters->state, measurement, parameters->covariance, parameters->R, gamma, w_m, w_c, parameters->state, parameters->covariance, &options);
 
 	printf("UPDATE\n");
-	printf("Update rotation = %f radians\n", 4*atan(vector_magnitude(state)));
-	matrix_quick_print(state, SIZE_STATE, 1);
-	matrix_quick_print(covariance, SIZE_STATE, SIZE_STATE);
+	printf("Update rotation = %f radians\n", 4*atan(vector_magnitude(parameters->state)));
+	matrix_quick_print(parameters->state, SIZE_STATE, 1);
+	matrix_quick_print(parameters->covariance, SIZE_STATE, SIZE_STATE);
 
 	// WARNING - hack
 	double *temp = alloca(SIZE_STATE*SIZE_STATE*sizeof(double));
-	matrix_scale(covariance, covariance, 0.5, SIZE_STATE, SIZE_STATE);
-	matrix_transpose(covariance, temp, SIZE_STATE, SIZE_STATE);
-	matrix_plus_matrix(covariance, temp, covariance, SIZE_STATE, SIZE_STATE, 1);
+	matrix_scale(parameters->covariance, parameters->covariance, 0.5, SIZE_STATE, SIZE_STATE);
+	matrix_transpose(parameters->covariance, temp, SIZE_STATE, SIZE_STATE);
+	matrix_plus_matrix(parameters->covariance, temp, parameters->covariance, SIZE_STATE, SIZE_STATE, 1);
 	matrix_diagonal(temp, 0.1, SIZE_STATE);
-	matrix_plus_matrix(covariance, temp, covariance, SIZE_STATE, SIZE_STATE, 1);
+	matrix_plus_matrix(parameters->covariance, temp, parameters->covariance, SIZE_STATE, SIZE_STATE, 1);
 	// hack over
-
-	memcpy(result_state, state, SIZE_STATE*sizeof(double));
 }

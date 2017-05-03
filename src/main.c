@@ -16,7 +16,7 @@
 
 #define SIGNED_16_MAX 0x7FFF
 
-#define GYRO_SENSATIVITY 250.f
+#define GYRO_SENSATIVITY 4.36332f
 #define ACCL_SENSATIVITY 2.f
 #define GRAVITY 9.81f
 #define EPSILON 0.5f
@@ -81,58 +81,19 @@ int main(int argc, char **argv)
 		if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
 		long elapsed = curr_clock.tv_nsec - last_clock.tv_nsec + (curr_clock.tv_sec - last_clock.tv_sec)*1000000000;
 
+		Vector3 gyro;
+		Vector3 accel;
+		Vector3 north;
 		gyro_poll(&gyro);
 		accl_poll(&accel);
 		comp_poll(&north);
 
-		double v_ang_x = ((double)gyro.x/(double)SIGNED_16_MAX) * GYRO_SENSATIVITY;
-		double v_ang_y = ((double)gyro.y/(double)SIGNED_16_MAX) * GYRO_SENSATIVITY;
-		double v_ang_z = ((double)gyro.z/(double)SIGNED_16_MAX) * GYRO_SENSATIVITY;
-		deg_x += v_ang_x * (elapsed/1e9);
-		deg_y += v_ang_y * (elapsed/1e9);
-		deg_z += v_ang_z * (elapsed/1e9);
-
-		grav.x =    ((double)(accel.x)/(double)SIGNED_16_MAX*ACCL_SENSATIVITY*GRAVITY)*0.3 + 0.7*last_grav.x;
-		grav.y = (-1*(double)(accel.y)/(double)SIGNED_16_MAX*ACCL_SENSATIVITY*GRAVITY)*0.3 + 0.7*last_grav.y;
-		grav.z =    ((double)(accel.z)/(double)SIGNED_16_MAX*ACCL_SENSATIVITY*GRAVITY)*0.3 + 0.7*last_grav.z;
-		last_grav.x = grav.x;
-		last_grav.y = grav.y;
-		last_grav.z = grav.z;
-
-		double vect_pair[4];
-		vect_pair[0] = (double)north.x;
-		vect_pair[1] = (double)north.y;
-		vect_pair[2] = (double)init_north.x;
-		vect_pair[3] = (double)init_north.y;
-		double angle = angle_between(vect_pair);
-
-		double accel_mag = magnitude(&grav);
-		if( accel_mag < GRAVITY + EPSILON && accel_mag > GRAVITY - EPSILON ) {
-			double pitch = atan2(grav.y, grav.z) * 180 / M_PI;
-			// deg_x = pitch*0.8 + deg_x*0.2;
-			double roll = atan2(grav.x, grav.z) * 180 / M_PI;
-			// deg_y = roll*0.8 + deg_y*0.2;
-		}
-
-		if (total > 10000000) {
-			/*if (check_update()) {
-				get_controls(&controls);
-			}*/
-			recovery_pid(deg_x, deg_y, &controls, motors, &hist_x, &hist_y, 0.01); // dt is one one-hundredth of a second
-			// update_motors(motors);
-			total = total % 10000000;
-		}
-		//printf("\r%f|%f|%f(%f) ... %f|%f|%f[%f] ... %f|%f|%f| ... %d|%d|%d|%d     ", deg_x, deg_y, deg_z, angle, grav.x, grav.y, grav.z, accel_mag, v_ang_x, v_ang_y, v_ang_z, motors[0], motors[1], motors[2], motors[3]);
-		printf("\r%f|%f|%f || %f|%f|%f || %f         ", deg_x, deg_y, deg_z, v_ang_x, v_ang_y, v_ang_z, percentage);
+		double omega[3];
+		omega[0] = ((double)gyro.x/(double)SIGNED_16_MAX) * GYRO_SENSATIVITY;
+		omega[1] = ((double)gyro.y/(double)SIGNED_16_MAX) * GYRO_SENSATIVITY;
+		omega[2] = ((double)gyro.z/(double)SIGNED_16_MAX) * GYRO_SENSATIVITY;
 	}
-	printf("\n");
 
-	int i;
-	for (i = 0; i < 4; i++)
-	{
-		motors[i] = 0;
-	}
-	update_motors(motors);
 	gyro_power_off();
 	accl_power_off();
 	comp_power_on();

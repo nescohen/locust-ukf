@@ -128,11 +128,13 @@ void ukf_predict(double *x, double *P, double *Q, double delta_t, double *chi, d
 		(*options->f)(chi + i*n, gamma + i*n, delta_t, n);
 	}
 
+	double *state_f = alloca(n*sizeof(double));
+	double *cov_f = alloca(n*n*sizeof(double));
 	for (i = 0; i < n; i++) {
-		x_f[i] = 0.f;
+		state_f[i] = 0.f;
 	}
 	for (i = 0; i < n*n; i++) {
-		P_f[i] = 0.f;
+		cov_f[i] = 0.f;
 	}
 
 	double *temp_x = alloca(n*sizeof(double));
@@ -141,23 +143,26 @@ void ukf_predict(double *x, double *P, double *Q, double delta_t, double *chi, d
 		for (i = 0; i <= 2*n; i++) {
 			memcpy(temp_x, gamma + i*n, n*sizeof(double));
 			matrix_scale(temp_x, temp_x, weight_m[i], n, 1);
-			matrix_plus_matrix(temp_x, x_f, x_f, n, 1, 1);
+			matrix_plus_matrix(temp_x, state_f, state_f, n, 1, 1);
 		}
 	}
-	else (*options->state_mean)(gamma, weight_m, x_f, n, 2*n + 1);
+	else (*options->state_mean)(gamma, weight_m, state_f, n, 2*n + 1);
 
 	// sum the scaled covariances
 	double *temp_P = alloca(n*n*sizeof(double));
 	for (i = 0; i <= 2*n; i++) {
 		memcpy(temp_P, gamma + i*n, n*sizeof(double));
-		if (options->state_diff == NULL) matrix_plus_matrix(temp_P, x_f, temp_P, n, 1, 0);
-		else (*options->state_diff)(temp_P, x_f, temp_P, n);
+		if (options->state_diff == NULL) matrix_plus_matrix(temp_P, state_f, temp_P, n, 1, 0);
+		else (*options->state_diff)(temp_P, state_f, temp_P, n);
 		matrix_transpose(temp_P, temp_x, n, 1);
 		matrix_scale(temp_P, temp_P, weight_c[i], n, 1);
 		matrix_multiply(temp_P, temp_x, temp_P, n, 1, n);
-		matrix_plus_matrix(temp_P, P_f, P_f, n, n, 1);
+		matrix_plus_matrix(temp_P, cov_f, cov_f, n, n, 1);
 	}
-	matrix_plus_matrix(P_f, Q, P_f, n, n, 1);
+	matrix_plus_matrix(cov_f, Q, cov_f, n, n, 1);
+
+	memcpy(x_f, state_f, n*sizeof(double));
+	memcpy(P_f, cov_f, n*n*sizeof(double));
 }
 
 void ukf_update(double *x, double *z, double *P, double *R, double *gamma, double *weight_m, double *weight_c, double *x_f, double *P_f, Ukf_options *options)

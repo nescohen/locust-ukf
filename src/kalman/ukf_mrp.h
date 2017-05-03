@@ -12,6 +12,12 @@
 
 #define POWER_ITERATIONS 100
 
-void ukf_run(double *result_state, double *measurement, double delta_t);
+typedef struct ukf_parameters {
+	double state[SIZE_STATE];
+	double covariance[SIZE_STATE*SIZE_STATE];
+	double R[SIZE_MEASUREMENT*SIZE_MEASUREMENT];
+} Ukf_parameters;
+
+void ukf_run(Ukf_parameters *parameters, double *measurement, double delta_t);
 
 #endif
