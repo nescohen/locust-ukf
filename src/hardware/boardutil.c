@@ -50,17 +50,17 @@ int gyro_power_on()
 {
 	// TODO: try powering the gyro in self test mode and make corrections
 	if (ioctl(g_bus, I2C_SLAVE, GYRO_ADDR) < 0) {
-		return 2;
+		return -2;
 	}
 	int32_t error = i2c_smbus_write_byte_data(g_bus, 0x20, GYRO_POWER_ON);
-	if (error < 0) return 1;
+	if (error < 0) return -1;
 	error = i2c_smbus_write_byte_data(g_bus, 0x23, GYRO_FULL_SCALE);
-	if (error < 0) return 1;
+	if (error < 0) return -1;
 	
 	error = i2c_smbus_write_byte_data(g_bus, 0x21, GYRO_HIGH_PASS_SET);
-	if (error < 0) return 1;
+	if (error < 0) return -1;
 	error = i2c_smbus_write_byte_data(g_bus, 0x24, GYRO_HIGH_PASS_ON);
-	if (error < 0) return 1;
+	if (error < 0) return -1;
 	
 	return 0;
 }
@@ -69,17 +69,17 @@ int accl_power_on()
 {
 	if (ioctl(g_bus, I2C_SLAVE, ACCL_ADDR) < 0) {
 		/* some sort of error */
-		return 2;
+		return -2;
 	}
 	
 	int32_t result;
 	result = i2c_smbus_write_byte_data(g_bus, 0x20, ACCL_POWER_ON);
 	if (result < 0) {
-		return 1;
+		return -1;
 	}
 	result = i2c_smbus_write_byte_data(g_bus, 0x23, ACCL_HIGH_REZ);
 	if (result < 0) {
-		return 3;
+		return -3;
 	}
 	return 0;
 }
@@ -87,17 +87,17 @@ int accl_power_on()
 int comp_power_on()
 {
 	if (ioctl(g_bus, I2C_SLAVE, COMP_ADDR) < 0) {
-		return 2;
+		return -2;
 	}
 	
 	int32_t result;
 	result = i2c_smbus_write_byte_data(g_bus, 0x02, COMP_POWER_ON);
 	if (result < 0) {
-		return 1;
+		return -1;
 	}
 	result = i2c_smbus_write_byte_data(g_bus, 0x01, COMP_SET_GAIN);
 	if (result < 0) {
-		return 1;
+		return -1;
 	}
 	return 0;
 }
@@ -105,10 +105,10 @@ int comp_power_on()
 int gyro_power_off()
 {
 	if (ioctl(g_bus, I2C_SLAVE, GYRO_ADDR) < 0) {
-		return 2;
+		return -2;
 	}
 	int32_t error = i2c_smbus_write_byte_data(g_bus, 0x20, GYRO_POWER_OFF);
-	if (error < 0) return 1;
+	if (error < 0) return -1;
 	return 0;
 }
 
@@ -116,12 +116,12 @@ int accl_power_off()
 {
 	if (ioctl(g_bus, I2C_SLAVE, ACCL_ADDR) < 0) {
 		/* some sort of error */
-		return 2;
+		return -2;
 	}
 	int32_t result;
 	result = i2c_smbus_write_byte_data(g_bus, 0x20, ACCL_POWER_OFF);
 	if (result < 0) {
-		return 3;
+		return -3;
 	}
 	return 0;
 }
@@ -129,13 +129,13 @@ int accl_power_off()
 int comp_power_off()
 {
 	if (ioctl(g_bus, I2C_SLAVE, COMP_ADDR) < 0) {
-		return 2;
+		return -2;
 	}
 	
 	int32_t result;
 	result = i2c_smbus_write_byte_data(g_bus, 0x02, COMP_POWER_OFF);
 	if (result < 0) {
-		return 1;
+		return -1;
 	}
 	return 0;
 }
@@ -153,7 +153,6 @@ int gyro_poll(Vector3 *output)
 	int16_t read_y;
 	int16_t read_z;
 
-	int first = 1;
 	int count = 0;
 	status = i2c_smbus_read_byte_data(g_bus, 0x27);
 	if (status & (1 << STATUS_NEW_BIT_ALL)) {
@@ -183,17 +182,9 @@ int gyro_poll(Vector3 *output)
 		if (result < 0) return -1;
 		read_z |= (int16_t)result << 8;
 
-		if (first) {
-			output->x = read_x;
-			output->y = read_y;
-			output->z = read_z;
-			first = 0;
-		}
-		else {
-			output->x = (output->x + read_x) / 2;
-			output->y = (output->y + read_y) / 2;
-			output->z = (output->z + read_z) / 2;
-		}
+		output->x = (count*output->x + read_x) / count + 1;
+		output->y = (count*output->y + read_y) / count + 1;
+		output->z = (count*output->z + read_z) / count + 1;
 		status = i2c_smbus_read_byte_data(g_bus, 0x27);
 		count++;
 	}
@@ -205,29 +196,29 @@ int accl_poll(Vector3 *output)
 {
 	if (ioctl(g_bus, I2C_SLAVE, ACCL_ADDR) < 0) {
 		/* some sort of error */
-		return 2;
+		return -2;
 	}
 	int32_t result;
 
 	result = i2c_smbus_read_byte_data(g_bus, 0x28);
-	if (result < 0) return 1;
+	if (result < 0) return -1;
 	output->x = (int16_t)result;
 	result = i2c_smbus_read_byte_data(g_bus, 0x29);
-	if (result < 0) return 1;
+	if (result < 0) return -1;
 	output->x |= (int16_t)result << 8;
 
 	result = i2c_smbus_read_byte_data(g_bus, 0x2A);
-	if (result < 0) return 1;
+	if (result < 0) return -1;
 	output->y = (int16_t)result;
 	result = i2c_smbus_read_byte_data(g_bus, 0x2B);
-	if (result < 0) return 1;
+	if (result < 0) return -1;
 	output->y |= (int16_t)result << 8;
 
 	result = i2c_smbus_read_byte_data(g_bus, 0x2C);
-	if (result < 0) return 1;
+	if (result < 0) return -1;
 	output->z = (int16_t)result;
 	result = i2c_smbus_read_byte_data(g_bus, 0x2D);
-	if (result < 0) return 1;
+	if (result < 0) return -1;
 	output->z |= (int16_t)result << 8;
 
 	return 0;
@@ -237,29 +228,29 @@ int comp_poll(Vector3 *output)
 {
 	
 	if (ioctl(g_bus, I2C_SLAVE, COMP_ADDR) < 0) {
-		return 2;
+		return -2;
 	}
 	int32_t result;
 
 	result = i2c_smbus_read_byte_data(g_bus, 0x04);
-	if (result < 0) return 1;
+	if (result < 0) return -1;
 	output->x = (int16_t)result;
 	result = i2c_smbus_read_byte_data(g_bus, 0x03);
-	if (result < 0) return 1;
+	if (result < 0) return -1;
 	output->x |= (int16_t)result << 8;
 
 	result = i2c_smbus_read_byte_data(g_bus, 0x06);
-	if (result < 0) return 1;
+	if (result < 0) return -1;
 	output->y = (int16_t)result;
 	result = i2c_smbus_read_byte_data(g_bus, 0x05);
-	if (result < 0) return 1;
+	if (result < 0) return -1;
 	output->y |= (int16_t)result << 8;
 
 	result = i2c_smbus_read_byte_data(g_bus, 0x08);
-	if (result < 0) return 1;
+	if (result < 0) return -1;
 	output->z = (int16_t)result;
 	result = i2c_smbus_read_byte_data(g_bus, 0x07);
-	if (result < 0) return 1;
+	if (result < 0) return -1;
 	output->z |= (int16_t)result << 8;
 
 	return 0;

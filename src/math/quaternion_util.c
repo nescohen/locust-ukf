@@ -78,6 +78,19 @@ void axis_angle_matrix(double axis[3], double angle, double matrix[9])
 	matrix[8] = axis[2]*axis[2]*constant + cos(angle);
 }
 
+void matrix_to_euler(double matrix[9], double axis[3], double *angle)
+{
+	int i;
+	double diagonal_sum = 0;
+	for (i = 0; i < 3; i++) {
+		diagonal_sum += matrix[i*3 + i];
+	}
+	*angle = acos((diagonal_sum - 1) / 2)
+	axis[0] = (matrix[2 + 1*3] - matrix[1 + 2*3]) / 2*sin(*angle);
+	axis[1] = (matrix[0 + 2*3] - matrix[2 + 0*3]) / 2*sin(*angle);
+	axis[2] = (matrix[1 + 0*3] - matrix[0 + 1*3]) / 2*sin(*angle);
+}
+
 void vector_by_matrix(double v[3], double r[9], double result[3])
 // Multiplies vector v by matrix r
 {

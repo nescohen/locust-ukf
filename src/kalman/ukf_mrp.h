@@ -18,6 +18,12 @@ typedef struct ukf_parameters {
 	double R[SIZE_MEASUREMENT*SIZE_MEASUREMENT];
 } Ukf_parameters;
 
+void ukf_reverse_measure(double *state, double *measurement);
+//converts a measurement to a state
+
+void ukf_param_init(Ukf_parameters *parameters);
+//performs very basic initialization and gauranntees that no uninitialized memory will slip through
+
 void ukf_run(Ukf_parameters *parameters, double *measurement, double delta_t);
 
 #endif

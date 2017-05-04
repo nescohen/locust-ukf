@@ -12,8 +12,8 @@
 #include "../math/matrix_util.h"
 #include "../math/quaternion_util.h"
 
-double g_down[3] = {0, -1, 0};
-double g_north[3] = {0, 0, 1};
+extern double g_north[3];
+extern double g_down[3];
 
 void compose_mrp(double mrp_a[3], double mrp_b[3], double mrp_f[3])
 // equation from Journal of Astronautical Sciences paper "A Survey of Attitude Representations"
@@ -255,6 +255,54 @@ void generate_measurements(double *z, double *omega, double *down_vect, double *
 	}
 }
 
+void triad_mrp(double *result_mrp, double *r1, double *r2, double *R1, double *R2)
+// Algorithm from "Triad Method" wikipedia article
+{
+	double R1xR2[3];
+	double r1xr2[3];
+	double S[3];
+	double s[3];
+	double M[3];
+	double m[3];
+	double SxM[3];
+	double sxm[3];
+	double rot_matrix[9];
+	double temp_matrix[9];
+
+	cross_product(R1, R2, R1xR2);
+	cross_product(r1, r2, r1xr2);
+	normalize_vector(R1, S);
+	normalize_vector(r1, s);
+	normalize_vector(R1xR2, M);
+	normalize_vector(r1xr2, m);
+
+	matrix_init_column(rot_matrix, 3, S, M, SxM);
+	matrix_init_column(temp, 3, s, m, sxm);
+	matrix_transpose(temp, temp, 3, 3);
+	matrix_multiply(rot_matrix, temp, rot_matrix, 3, 3, 3);
+
+	double axis[3];
+	double angle;
+	matrix_to_euler(rot_matrix, axis, &angle);
+	matrix_scale(axis, result_mrp, tan(angle/4), 3, 1);
+}
+
+void ukf_reverse_measure(double *state, double *measurement)
+//converts a measurement to a state
+{
+	triad_mrp(state, measurement, measurement + 3, g_down, g_north);
+	memcpy(state + 3, measurement + 6, 3*sizeof(double));
+}
+
+void ukf_param_init(Ukf_parameters *parameters)
+//performs very basic initialization and gauranntees that no uninitialized memory will slip through
+{
+	memset(parameters->state, 0, sizeof(parameters->state));
+	memset(parameters->R, 0, sizeof(parameters->R));
+
+	matrix_identity(parameters->covariance, SIZE_STATE);
+}
+
 void ukf_run(Ukf_parameters *parameters, double *measurement, double delta_t)
 {
 	static int initialized = 0;
@@ -268,9 +316,6 @@ void ukf_run(Ukf_parameters *parameters, double *measurement, double delta_t)
 
 	if (!initialized) {
 		int i;
-		matrix_diagonal(parameters->covariance, 1, SIZE_STATE);
-
-		matrix_init(parameters->R, 0, SIZE_MEASUREMENT, SIZE_MEASUREMENT);
 		for (i = 0; i < 6; i++) {
 			parameters->R[i + i*SIZE_MEASUREMENT] = POSITION_VARIANCE;
 		}

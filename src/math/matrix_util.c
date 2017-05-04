@@ -1,6 +1,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <string.h>
 #include <gsl/gsl_linalg.h>
 
@@ -146,4 +147,19 @@ void matrix_init(double *matrix, double value, int rows, int columns)
 	for (i = 0; i < rows*columns; i++) {
 		matrix[i] = value;
 	}
+}
+
+void matrix_init_column(double *matrix, int rows, int columns, ...)
+{
+	va_list valist;
+	va_start(valist, columns);
+	
+	int i, j;
+	for (i = 0; i < columns; i++) {
+		for (j = 0; j < rows; j++) {
+			matrix[i*rows + j] = va_arg(valist, i)[j];
+		}
+	}
+
+	va_end(valist);
 }
