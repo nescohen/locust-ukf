@@ -267,7 +267,7 @@ void triad_mrp(double *result_mrp, double *r1, double *r2, double *R1, double *R
 	double SxM[3];
 	double sxm[3];
 	double rot_matrix[9];
-	double temp_matrix[9];
+	double temp[9];
 
 	cross_product(R1, R2, R1xR2);
 	cross_product(r1, r2, r1xr2);
@@ -276,8 +276,8 @@ void triad_mrp(double *result_mrp, double *r1, double *r2, double *R1, double *R
 	normalize_vector(R1xR2, M);
 	normalize_vector(r1xr2, m);
 
-	matrix_init_column(rot_matrix, 3, S, M, SxM);
-	matrix_init_column(temp, 3, s, m, sxm);
+	matrix_init_column(rot_matrix, 3, 3, S, M, SxM);
+	matrix_init_column(temp, 3, 3, s, m, sxm);
 	matrix_transpose(temp, temp, 3, 3);
 	matrix_multiply(rot_matrix, temp, rot_matrix, 3, 3, 3);
 

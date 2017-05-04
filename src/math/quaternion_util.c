@@ -85,7 +85,7 @@ void matrix_to_euler(double matrix[9], double axis[3], double *angle)
 	for (i = 0; i < 3; i++) {
 		diagonal_sum += matrix[i*3 + i];
 	}
-	*angle = acos((diagonal_sum - 1) / 2)
+	*angle = acos((diagonal_sum - 1) / 2);
 	axis[0] = (matrix[2 + 1*3] - matrix[1 + 2*3]) / 2*sin(*angle);
 	axis[1] = (matrix[0 + 2*3] - matrix[2 + 0*3]) / 2*sin(*angle);
 	axis[2] = (matrix[1 + 0*3] - matrix[0 + 1*3]) / 2*sin(*angle);

@@ -157,7 +157,8 @@ void matrix_init_column(double *matrix, int rows, int columns, ...)
 	int i, j;
 	for (i = 0; i < columns; i++) {
 		for (j = 0; j < rows; j++) {
-			matrix[i*rows + j] = va_arg(valist, i)[j];
+			double *column = va_arg(valist, double *);
+			matrix[i*rows + j] = column[j];
 		}
 	}
 

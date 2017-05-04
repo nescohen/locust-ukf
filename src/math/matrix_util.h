@@ -29,7 +29,7 @@ void matrix_diagonal(double *matrix, double value, int size);
 // Initialize a square matrix with all zeroes and a diagonal of one value
 void matrix_init(double *matrix, double value, int rows, int columns);
 // Initialize a matrix with one value in all cells
-void matrix_init_column(double *matrix, int columns, ...);
+void matrix_init_column(double *matrix, int rows, int columns, ...);
 // Initialize a matrix with a series of column vectors
 
 #endif
