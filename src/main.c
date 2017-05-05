@@ -145,14 +145,16 @@ int main(int argc, char **argv)
 
 	if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
 	while(!stop) {
+		// declarations
+		Vector3 gyro;
+		Vector3 accel;
+		Vector3 north;
+		double measurement[SIZE_MEASUREMENT];
 		// calculate time elapsed during last loop iteration
 		last_clock = curr_clock;
 		if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
 		double elapsed = (double)(curr_clock.tv_nsec - last_clock.tv_nsec)*NSEC_TO_SEC + (double)(curr_clock.tv_sec - last_clock.tv_sec); 
 
-		Vector3 gyro;
-		Vector3 accel;
-		Vector3 north;
 		failure = 0;
 		failure = failure || gyro_poll(&gyro) < 0;
 		failure = failure || accl_poll(&accel) < 0;
@@ -162,8 +164,11 @@ int main(int argc, char **argv)
 			stop = 1;
 		}
 
-		double omega[3];
-		sensor_to_array(omega, gyro, GYRO_SENSATIVITY);
+		sensor_to_array(measurement + 0, accel, ACCL_SENSATIVITY);
+		sensor_to_array(measurement + 3, north, 1);
+		sensor_to_array(measurement + 6, gyro, GYRO_SENSATIVITY);
+		ukf_run(&ukf, measurement, elapsed);
+		printf("Attitude MRP = [%f, %f, %f]^t\n", ukf.state[0], ukf.state[1], ukf.state[2]);
 	}
 
 	gyro_power_off();

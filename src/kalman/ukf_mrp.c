@@ -330,9 +330,9 @@ void ukf_run(Ukf_parameters *parameters, double *measurement, double delta_t)
 		options.state_mean = &mean_state;
 		options.state_diff = &state_error;
 		options.state_add = &add_state;
-		printf("INITIAL\n");
-		matrix_quick_print(parameters->state, SIZE_STATE, 1);
-		matrix_quick_print(parameters->covariance, SIZE_STATE, SIZE_STATE);
+		// printf("INITIAL\n");
+		// matrix_quick_print(parameters->state, SIZE_STATE, 1);
+		// matrix_quick_print(parameters->covariance, SIZE_STATE, SIZE_STATE);
 	}
 
 	custom_scaled_points(parameters->state, parameters->covariance, chi, SIZE_STATE, ALPHA, KAPPA);
@@ -341,20 +341,20 @@ void ukf_run(Ukf_parameters *parameters, double *measurement, double delta_t)
 	process_noise(Q, delta_t, 10);
 	ukf_predict(parameters->state, parameters->covariance, Q, delta_t, chi, gamma, w_m, w_c, parameters->state, parameters->covariance, &options);
 
-	printf("PREDICT\n");
-	printf("Prediction rotation = %f radians\n", 4*atan(vector_magnitude(parameters->state)));
-	matrix_quick_print(parameters->state, SIZE_STATE, 1);
-	matrix_quick_print(parameters->covariance, SIZE_STATE, SIZE_STATE);
+	// printf("PREDICT\n");
+	// printf("Prediction rotation = %f radians\n", 4*atan(vector_magnitude(parameters->state)));
+	// matrix_quick_print(parameters->state, SIZE_STATE, 1);
+	// matrix_quick_print(parameters->covariance, SIZE_STATE, SIZE_STATE);
 
-	printf("MEASUREMENT\n");
-	matrix_quick_print(measurement, SIZE_MEASUREMENT, 1);
+	// printf("MEASUREMENT\n");
+	// matrix_quick_print(measurement, SIZE_MEASUREMENT, 1);
 	
 	ukf_update(parameters->state, measurement, parameters->covariance, parameters->R, gamma, w_m, w_c, parameters->state, parameters->covariance, &options);
 
-	printf("UPDATE\n");
-	printf("Update rotation = %f radians\n", 4*atan(vector_magnitude(parameters->state)));
-	matrix_quick_print(parameters->state, SIZE_STATE, 1);
-	matrix_quick_print(parameters->covariance, SIZE_STATE, SIZE_STATE);
+	// printf("UPDATE\n");
+	// printf("Update rotation = %f radians\n", 4*atan(vector_magnitude(parameters->state)));
+	// matrix_quick_print(parameters->state, SIZE_STATE, 1);
+	// matrix_quick_print(parameters->covariance, SIZE_STATE, SIZE_STATE);
 
 	// WARNING - hack
 	double *temp = alloca(SIZE_STATE*SIZE_STATE*sizeof(double));
