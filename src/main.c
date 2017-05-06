@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <float.h>
 #include <signal.h>
 #include <pthread.h>
 #include <unistd.h>
@@ -23,7 +24,11 @@
 #define SEC_TO_NSEC (long)1e9
 
 #define GYRO_SENSATIVITY 4.36332f
-#define ACCL_SENSATIVITY 2.f
+#define ACCL_SENSATIVITY 2.f * GRAVITY // 2gs max converted to ms^-2
+#define GYRO_VARIANCE 0.193825 // 11.111... degress in radians
+#define ACCL_VARIANCE 1.1772
+#define COMP_VARIANCE 1
+
 #define GRAVITY 9.81f
 #define EPSILON 0.5f
 
@@ -142,13 +147,13 @@ int main(int argc, char **argv)
 		matrix_quick_print(ukf.covariance, SIZE_STATE, SIZE_STATE);
 	}
 
+	double measurement[SIZE_MEASUREMENT];
 	if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
 	while(!stop) {
 		// declarations
 		Vector3 gyro;
 		Vector3 accel;
 		Vector3 north;
-		double measurement[SIZE_MEASUREMENT];
 		// calculate time elapsed during last loop iteration
 		last_clock = curr_clock;
 		if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
@@ -163,11 +168,35 @@ int main(int argc, char **argv)
 			stop = 1;
 		}
 
-		sensor_to_array(measurement + 0, accel, ACCL_SENSATIVITY);
-		normalize_vector(measurement + 0, measurement + 0);
+		double accel_var[3];
+		double comp_var[3];
+		double gyro_var[3];
+		double acceleration[3];
+		sensor_to_array(acceleration, accel, ACCL_SENSATIVITY);
+		double accel_mag = vector_magnitude(acceleration);
+		if (accel_mag + EPSILON > GRAVITY && accel_mag - EPSILON < GRAVITY) {
+			normalize_vector(acceleration, measurement + 0);
+			matrix_init(accel_var, ACCL_VARIANCE, 3, 1);
+		}
+		else {
+			matrix_init(accel_var, DBL_MAX, 3, 1);
+		}
 		sensor_to_array(measurement + 3, north, 1);
 		normalize_vector(measurement + 3, measurement + 3);
+		matrix_init(comp_var, COMP_VARIANCE, 3, 1);
 		sensor_to_array(measurement + 6, gyro, GYRO_SENSATIVITY);
+		matrix_init(gyro_var, GYRO_VARIANCE, 3, 1);
+
+		int i;
+		for (i = 0; i < 3; i++) {
+			ukf.R[i*SIZE_MEASUREMENT + i] = accel_var[i];
+		}
+		for (i = 3; i < 6; i++) {
+			ukf.R[i*SIZE_MEASUREMENT + i] = comp_var[i - 3];
+		}
+		for (i = 6; i < 9; i++) {
+			ukf.R[i*SIZE_MEASUREMENT + i] = gyro_var[i - 6];
+		}
 
 		ukf_run(&ukf, measurement, elapsed);
 		printf("Attitude MRP = [%f, %f, %f]^t\n", ukf.state[0], ukf.state[1], ukf.state[2]);

@@ -239,21 +239,21 @@ double rand_gauss()
 	return sqrt(-2*log(u1))*cos(2*M_PI*u2);
 }
 
-void generate_measurements(double *z, double *omega, double *down_vect, double *north_vect, double dt)
-// for testing purposes, do not use in production
-{
-	memcpy(z, down_vect, 3*sizeof(double));
-	memcpy(z + 3, north_vect, 3*sizeof(double));
-	memcpy(z + 6, omega, 3*sizeof(double));
-
-	int i;
-	for(i = 0; i < 6; i++) {
-		z[i] += rand_gauss()*sqrt(POSITION_VARIANCE)*dt;
-	}
-	for(i = 6; i < 9; i++) {
-		z[i] += rand_gauss()*sqrt(GYRO_VARIANCE)*dt;
-	}
-}
+// void generate_measurements(double *z, double *omega, double *down_vect, double *north_vect, double dt)
+// // for testing purposes, do not use in production
+// {
+// 	memcpy(z, down_vect, 3*sizeof(double));
+// 	memcpy(z + 3, north_vect, 3*sizeof(double));
+// 	memcpy(z + 6, omega, 3*sizeof(double));
+// 
+// 	int i;
+// 	for(i = 0; i < 6; i++) {
+// 		z[i] += rand_gauss()*sqrt(POSITION_VARIANCE)*dt;
+// 	}
+// 	for(i = 6; i < 9; i++) {
+// 		z[i] += rand_gauss()*sqrt(GYRO_VARIANCE)*dt;
+// 	}
+// }
 
 void triad_mrp(double *result_mrp, double *r1, double *r2, double *R1, double *R2)
 // Algorithm from "Triad Method" wikipedia article
@@ -316,14 +316,6 @@ void ukf_run(Ukf_parameters *parameters, double *measurement, double delta_t)
 	double w_c[2*SIZE_STATE + 1];
 
 	if (!initialized) {
-		int i;
-		for (i = 0; i < 6; i++) {
-			parameters->R[i + i*SIZE_MEASUREMENT] = POSITION_VARIANCE;
-		}
-		for (i = 6; i < 9; i++) {
-			parameters->R[i + i*SIZE_MEASUREMENT] = GYRO_VARIANCE;
-		}
-		
 		// initialize and configure additional options for the ukf
 		ukf_init_options(&options, SIZE_STATE, SIZE_MEASUREMENT);
 		options.f = &process_model;
