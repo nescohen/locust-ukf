@@ -40,6 +40,7 @@ int open_bus(char *filename)
 {
 	int ref = open(filename, O_RDWR);
 	if (ref < 0) {
+		//printf("%d\n", errno);
 		return 1;
 	}
 	g_bus = ref;
@@ -182,9 +183,9 @@ int gyro_poll(Vector3 *output)
 		if (result < 0) return -1;
 		read_z |= (int16_t)result << 8;
 
-		output->x = (count*output->x + read_x) / count + 1;
-		output->y = (count*output->y + read_y) / count + 1;
-		output->z = (count*output->z + read_z) / count + 1;
+		output->x = (count*output->x + read_x) / (count + 1);
+		output->y = (count*output->y + read_y) / (count + 1);
+		output->z = (count*output->z + read_z) / (count + 1);
 		status = i2c_smbus_read_byte_data(g_bus, 0x27);
 		count++;
 	}

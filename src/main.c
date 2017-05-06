@@ -16,6 +16,7 @@
 #include "pid/pid.h"
 #include "kalman/ukf_mrp.h"
 #include "math/matrix_util.h"
+#include "math/quaternion_util.h"
 
 #define SIGNED_16_MAX 0x7FFF
 #define NSEC_TO_SEC 1e-9
@@ -26,7 +27,7 @@
 #define GRAVITY 9.81f
 #define EPSILON 0.5f
 
-#define INITIALIZE_TIME 10 // in seconds
+#define ALIGN_TIME 2.5 // in seconds
 
 volatile sig_atomic_t stop;
 double g_north[3];
@@ -96,7 +97,7 @@ int main(int argc, char **argv)
 		double align_var[SIZE_MEASUREMENT];
 		double weight_sum = 0;
 		if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
-		while (align == 1 && stop == 0) {
+		while (align == 1 && !stop) {
 			// calculate time elapsed during last loop iteration
 			last_clock = curr_clock;
 			if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
@@ -126,7 +127,7 @@ int main(int argc, char **argv)
 				align_var[i] += elapsed * (measurement[i] - old_mean) * (measurement[i] - align_mean[i]);
 			}
 			weight_sum += elapsed;
-			if(weight_sum >= 10) align = 0;
+			if(weight_sum >= ALIGN_TIME) align = 0;
 		}
 		matrix_scale(align_var, align_var, 1 / weight_sum, SIZE_MEASUREMENT, 1);
 		memcpy(g_down, align_mean, sizeof(g_down));
@@ -134,13 +135,11 @@ int main(int argc, char **argv)
 
 		ukf_param_init(&ukf);
 
-		double temp_variance[SIZE_STATE];
-		ukf_reverse_measure(ukf.state, align_mean);
-		ukf_reverse_measure(temp_variance, align_var);
-		int i;
-		for (i = 0; i < SIZE_STATE; i++) {
-			ukf.covariance[i*SIZE_STATE + i] = temp_variance[i];
-		}
+		memset(ukf.state, 0, 3*sizeof(double));
+		memcpy(ukf.state + 3, align_mean + 6, 3*sizeof(double));
+
+		printf("Align State:\n");
+		matrix_quick_print(ukf.covariance, SIZE_STATE, SIZE_STATE);
 	}
 
 	if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
@@ -165,8 +164,11 @@ int main(int argc, char **argv)
 		}
 
 		sensor_to_array(measurement + 0, accel, ACCL_SENSATIVITY);
+		normalize_vector(measurement + 0, measurement + 0);
 		sensor_to_array(measurement + 3, north, 1);
+		normalize_vector(measurement + 3, measurement + 3);
 		sensor_to_array(measurement + 6, gyro, GYRO_SENSATIVITY);
+
 		ukf_run(&ukf, measurement, elapsed);
 		printf("Attitude MRP = [%f, %f, %f]^t\n", ukf.state[0], ukf.state[1], ukf.state[2]);
 	}

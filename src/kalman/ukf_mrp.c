@@ -289,6 +289,7 @@ void triad_mrp(double *result_mrp, double *r1, double *r2, double *R1, double *R
 
 void ukf_reverse_measure(double *state, double *measurement)
 //converts a measurement to a state
+// DO NOT USE! Not in working stat
 {
 	triad_mrp(state, measurement, measurement + 3, g_down, g_north);
 	memcpy(state + 3, measurement + 6, 3*sizeof(double));
