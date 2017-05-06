@@ -95,6 +95,9 @@ int main(int argc, char **argv)
 		stop = 1;
 	}
 
+	//TODO: have the alignment step also run a self-test on the gyro and make corrections
+	//TODO: find the source of the NaNs. In the final program it should be impossible to generate a NaN
+
 	Ukf_parameters ukf;
 	if (!stop) {
 		int align = 1;
