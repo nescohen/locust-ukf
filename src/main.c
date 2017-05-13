@@ -50,6 +50,27 @@ void sensor_to_array(double array[3], Vector3 sensor, double sensativity)
 	array[2] = (double)sensor.z / (double)SIGNED_16_MAX * sensativity;
 }
 
+void mrp_to_euler(double *euler_angles, double *mrp)
+//expects 3x1 array to write and 3x1 mrp, returns equivelent euler_angle representation from mrp
+{
+	double angle;
+	double axis[3];
+	double matrix[9];
+	double result[3];
+	
+	// First convert the mrp into a rotation matrix
+	angle = 4*atan(vector_magnitude(mrp));
+	normalize_vector(mrp, axis);
+	axis_angle_matrix(axis, angle, matrix);
+
+	// Get relevant information from rotation matrix
+	result[0] = atan2(matrix[3*1 + 0], matrix[3*0 + 0]);
+	result[1] = atan2(-1*matrix[3*2 + 0], sqrt(pow(matrix[3*2 + 1], 2) + pow(matrix[3*2 + 2], 2)));
+	result[2] = atan2(matrix[3*2 + 1], matrix[3*2 + 2]);
+
+	memcpy(euler_angles, result, sizeof(result));
+}
+
 void recovery_pid(double x, double y, Controls *controls, int *motors, Pidhist *hist_x, Pidhist *hist_y, double delta_t)
 {
 	double error_x = x - controls->roll;
@@ -202,7 +223,11 @@ int main(int argc, char **argv)
 		}
 
 		ukf_run(&ukf, measurement, elapsed);
-		printf("Attitude MRP = [%f, %f, %f] ->\t[%f, %f, %f]^t |MRP| = %f\n", measurement[6], measurement[7], measurement[8], ukf.state[0], ukf.state[1], ukf.state[2], 4*atan(vector_magnitude(ukf.state)));
+
+		double euler_angles[3];
+		mrp_to_euler(euler_angles, ukf.state);
+
+		printf("Attitude MRP = [%f, %f, %f] ->\t[%f, %f, %f]^t\t (%f, %f, %f)\n", measurement[6], measurement[7], measurement[8], ukf.state[0], ukf.state[1], ukf.state[2], euler_angles[0], euler_angles[1], euler_angles[2]);
 	}
 
 	gyro_power_off();
