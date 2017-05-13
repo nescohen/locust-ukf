@@ -30,7 +30,7 @@
 #define COMP_VARIANCE 1
 
 #define GRAVITY 9.81f
-#define EPSILON 0.5f
+#define EPSILON 1.0f
 
 #define ALIGN_TIME 2.5 // in seconds
 
@@ -202,7 +202,7 @@ int main(int argc, char **argv)
 		}
 
 		ukf_run(&ukf, measurement, elapsed);
-		printf("Attitude MRP = [%f, %f, %f]^t\n", ukf.state[0], ukf.state[1], ukf.state[2]);
+		printf("Attitude MRP = [%f, %f, %f] ->\t[%f, %f, %f]^t |MRP| = %f\n", measurement[6], measurement[7], measurement[8], ukf.state[0], ukf.state[1], ukf.state[2], 4*atan(vector_magnitude(ukf.state)));
 	}
 
 	gyro_power_off();
