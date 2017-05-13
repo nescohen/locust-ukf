@@ -34,6 +34,8 @@
 
 #define ALIGN_TIME 2.5 // in seconds
 
+#define PID_SCALE 30 // 100 / 2 * M_PI
+
 volatile sig_atomic_t stop;
 double g_north[3];
 double g_down[3];
@@ -76,8 +78,8 @@ void recovery_pid(double x, double y, Controls *controls, int *motors, Pidhist *
 	double error_x = x - controls->roll;
 	double error_y = y - controls->pitch;
 
-	double correct_x = pid(hist_x, error_x, delta_t);
-	double correct_y = pid(hist_y, error_y, delta_t);
+	double correct_x = PID_SCALE*pid(hist_x, error_x, delta_t);
+	double correct_y = PID_SCALE*pid(hist_y, error_y, delta_t);
 
 	motors[0] = controls->throttle + (int)(0.5*correct_x) + (int)(0.5*correct_y);
 	motors[1] = controls->throttle + (int)(0.5*correct_x) + (int)(-0.5*correct_y);
@@ -93,6 +95,7 @@ void recovery_pid(double x, double y, Controls *controls, int *motors, Pidhist *
 			motors[i] = 200;
 		}
 	}
+	printf("[%f, %f] => [%f, %f] => [%d, %d, %d, %d]\n", error_x, error_y, correct_x, correct_y, motors[0], motors[1], motors[2], motors[3]);
 }
 
 int main(int argc, char **argv)
@@ -117,6 +120,7 @@ int main(int argc, char **argv)
 	}
 
 	//TODO: have the alignment step also run a self-test on the gyro and make corrections
+	// Addendum: the filter seems to be performing quite well with out this, it may not be necessary
 	//TODO: find the source of the NaNs. In the final program it should be impossible to generate a NaN
 
 	Ukf_parameters ukf;
@@ -171,6 +175,15 @@ int main(int argc, char **argv)
 		matrix_quick_print(ukf.covariance, SIZE_STATE, SIZE_STATE);
 	}
 
+	// array containing current motor throttle values
+	int motors[4];
+
+	// allocate and initialize history for pid
+	Pidhist hist_x;
+	Pidhist hist_y;
+	init_hist(&hist_x);
+	init_hist(&hist_y);
+
 	double measurement[SIZE_MEASUREMENT];
 	if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
 	while(!stop) {
@@ -224,15 +237,27 @@ int main(int argc, char **argv)
 
 		ukf_run(&ukf, measurement, elapsed);
 
+		// convert mrp to euler angles for pid
 		double euler_angles[3];
 		mrp_to_euler(euler_angles, ukf.state);
 
-		printf("Attitude MRP = [%f, %f, %f] ->\t[%f, %f, %f]^t\t (%f, %f, %f)\n", measurement[6], measurement[7], measurement[8], ukf.state[0], ukf.state[1], ukf.state[2], euler_angles[0], euler_angles[1], euler_angles[2]);
+		Controls controls;
+		controls.throttle = 150;
+		controls.roll = 0;
+		controls.pitch = 0;
+		recovery_pid(euler_angles[2], euler_angles[1], &controls, motors, &hist_x, &hist_y, elapsed);
+		
+		update_motors(motors);
+
+		// printf("Attitude MRP = [%f, %f, %f] ->\t[%f, %f, %f]^t\t (%f, %f, %f)\n", measurement[6], measurement[7], measurement[8], ukf.state[0], ukf.state[1], ukf.state[2], euler_angles[0], euler_angles[1], euler_angles[2]);
 	}
+
+	memset(motors, 0, sizeof(motors));
+	update_motors(motors);
 
 	gyro_power_off();
 	accl_power_off();
-	comp_power_on();
+	comp_power_off();
 
 	log_complete();
 
