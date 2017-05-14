@@ -2,6 +2,7 @@
 #define PID_H
 
 typedef struct pidhist {
+	int started;
 	double last_error;
 	double error_sum;
 } Pidhist;
