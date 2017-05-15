@@ -10,6 +10,7 @@
 #include <signal.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <errno.h>
 
 #include "hardware/boardutil.h"
 #include "hardware/flight-input.h"
@@ -105,6 +106,23 @@ int main(int argc, char **argv)
 
 	signal(SIGINT, inthand);
 	signal(SIGTSTP, inthand);
+
+	int user_throttle = -1;
+	if (argc == 3) {
+		char *end = NULL;
+		long input = strtol(argv[2], &end, 10);
+		if (end != argv[2] && !strcmp(argv[1], "throttle") && input >= 0 && input <= 200) {
+			user_throttle = (int) input;
+		}
+		else {
+			printf("Invalid arguments. Exiting.\n");
+			return 1;
+		}
+	}
+	else if (argc != 1) {
+		printf("Invalid arguments. Exiting.\n");
+		return 1;
+	}
 
 	if (open_bus(DEVICE_FILE) != 0) {
 		log_error("Failed to open i2c device file.");
@@ -242,12 +260,12 @@ int main(int argc, char **argv)
 		mrp_to_euler(euler_angles, ukf.state);
 
 		Controls controls;
-		controls.throttle = 150;
+		controls.throttle = (user_throttle == -1) ? 100 : user_throttle;
 		controls.roll = 0;
 		controls.pitch = 0;
 		recovery_pid(euler_angles[2], euler_angles[1], &controls, motors, &hist_x, &hist_y, elapsed);
 		
-		update_motors(motors);
+		if (user_throttle > 0) update_motors(motors);
 
 		// printf("Attitude MRP = [%f, %f, %f] ->\t[%f, %f, %f]^t\t (%f, %f, %f)\n", measurement[6], measurement[7], measurement[8], ukf.state[0], ukf.state[1], ukf.state[2], euler_angles[0], euler_angles[1], euler_angles[2]);
 	}
