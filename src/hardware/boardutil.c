@@ -35,6 +35,7 @@
 #define STATUS_NEW_BIT_ALL 3
 
 static int g_bus = -1; /* used to store the i2c bus file descriptor */
+static pthread_mutex_t bus_lock = (pthred_mutex_t) PTHREAD_MUTEX_INITIALIZER;
 
 int open_bus(char *filename)
 {
@@ -275,14 +276,24 @@ int update_motors(int *settings)
 	int err[4];
 	int i;
 
+	pthread_mutex_lock(&bus_lock);
 	err[0] = send_update( FORWARD_CONTROL, MOTOR_PORT,      (int8_t)settings[0] );
 	err[1] = send_update( FORWARD_CONTROL, MOTOR_STARBOARD, (int8_t)settings[1] );
 	err[2] = send_update( REAR_CONTROL,    MOTOR_PORT,      (int8_t)settings[2] );
 	err[3] = send_update( REAR_CONTROL,    MOTOR_STARBOARD, (int8_t)settings[3] );
+	pthread_mutex_unlock(&bus_lock);
 
 	for (i = 0; i < 4; i++) {
 		snprintf(buffer, 100, "motor=%d throttle=%d error=%d", i, settings[i], err[i]);
 		log_error(buffer);
 	}
 	return 0;
+}
+
+void poll_loop()
+//TODO: finish this routine
+{
+	while (true) {
+		
+	}
 }
