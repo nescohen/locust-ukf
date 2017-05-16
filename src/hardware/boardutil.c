@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <errno.h>
+#include <pthread.h>
 #include "boardutil.h"
 #include "../error/error_log.h"
 
@@ -35,9 +36,10 @@
 #define STATUS_NEW_BIT_ALL 3
 
 static int g_bus = -1; /* used to store the i2c bus file descriptor */
-static pthread_mutex_t bus_lock = (pthred_mutex_t) PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t bus_lock = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
 
 int open_bus(char *filename)
+// must be called before multi-threading starts
 {
 	int ref = open(filename, O_RDWR);
 	if (ref < 0) {
@@ -145,11 +147,14 @@ int comp_power_off()
 int gyro_poll(Vector3 *output)
 // only updates value if new data is available
 {
+	pthread_mutex_lock(&bus_lock);
 	if (ioctl(g_bus, I2C_SLAVE, GYRO_ADDR) < 0) {
+		pthread_mutex_unlock(&bus_lock);
 		return -1;
 	}
 	int32_t result;
 	int32_t status;
+	int error = 0;
 
 	int16_t read_x;
 	int16_t read_y;
@@ -164,24 +169,24 @@ int gyro_poll(Vector3 *output)
 	}
 	while (status & (1 << STATUS_NEW_BIT_ALL)) {
 		result = i2c_smbus_read_byte_data(g_bus, 0x28);
-		if (result < 0) return -1;
+		if (result < 0) error = -1;
 		read_x = (int16_t)result;
 		result = i2c_smbus_read_byte_data(g_bus, 0x29);
-		if (result < 0) return -1;
+		if (result < 0) error = -1;
 		read_x |= (int16_t)result << 8;
 
 		result = i2c_smbus_read_byte_data(g_bus, 0x2A);
-		if (result < 0) return -1;
+		if (result < 0) error = -1;
 		read_y = (int16_t)result;
 		result = i2c_smbus_read_byte_data(g_bus, 0x2B);
-		if (result < 0) return -1;
+		if (result < 0) error = -1;
 		read_y |= (int16_t)result << 8;
 		
 		result = i2c_smbus_read_byte_data(g_bus, 0x2C);
-		if (result < 0) return -1;
+		if (result < 0) error = -1;
 		read_z = (int16_t)result;
 		result = i2c_smbus_read_byte_data(g_bus, 0x2D);
-		if (result < 0) return -1;
+		if (result < 0) error = -1;
 		read_z |= (int16_t)result << 8;
 
 		output->x = (count*output->x + read_x) / (count + 1);
@@ -191,71 +196,80 @@ int gyro_poll(Vector3 *output)
 		count++;
 	}
 
-	return count;
+	pthread_mutex_unlock(&bus_lock);
+	if (error == 0) return count;
+	else return error;
 }
 
 int accl_poll(Vector3 *output)
 {
+	pthread_mutex_lock(&bus_lock);
 	if (ioctl(g_bus, I2C_SLAVE, ACCL_ADDR) < 0) {
 		/* some sort of error */
+		pthread_mutex_unlock(&bus_lock);
 		return -2;
 	}
 	int32_t result;
+	int error;
 
 	result = i2c_smbus_read_byte_data(g_bus, 0x28);
-	if (result < 0) return -1;
+	if (result < 0) error = -1;
 	output->x = (int16_t)result;
 	result = i2c_smbus_read_byte_data(g_bus, 0x29);
-	if (result < 0) return -1;
+	if (result < 0) error = -1;
 	output->x |= (int16_t)result << 8;
 
 	result = i2c_smbus_read_byte_data(g_bus, 0x2A);
-	if (result < 0) return -1;
+	if (result < 0) error = -1;
 	output->y = (int16_t)result;
 	result = i2c_smbus_read_byte_data(g_bus, 0x2B);
-	if (result < 0) return -1;
+	if (result < 0) error = -1;
 	output->y |= (int16_t)result << 8;
 
 	result = i2c_smbus_read_byte_data(g_bus, 0x2C);
-	if (result < 0) return -1;
+	if (result < 0) error = -1;
 	output->z = (int16_t)result;
 	result = i2c_smbus_read_byte_data(g_bus, 0x2D);
-	if (result < 0) return -1;
+	if (result < 0) error = -1;
 	output->z |= (int16_t)result << 8;
 
-	return 0;
+	pthread_mutex_unlock(&bus_lock);
+	return error;
 }
 
 int comp_poll(Vector3 *output)
 {
-	
+	pthread_mutex_lock(&bus_lock);
 	if (ioctl(g_bus, I2C_SLAVE, COMP_ADDR) < 0) {
+		pthread_mutex_unlock(&bus_lock);
 		return -2;
 	}
 	int32_t result;
+	int error = 0;
 
 	result = i2c_smbus_read_byte_data(g_bus, 0x04);
-	if (result < 0) return -1;
+	if (result < 0) error = -1;
 	output->x = (int16_t)result;
 	result = i2c_smbus_read_byte_data(g_bus, 0x03);
-	if (result < 0) return -1;
+	if (result < 0) error = -1;
 	output->x |= (int16_t)result << 8;
 
 	result = i2c_smbus_read_byte_data(g_bus, 0x06);
-	if (result < 0) return -1;
+	if (result < 0) error = -1;
 	output->y = (int16_t)result;
 	result = i2c_smbus_read_byte_data(g_bus, 0x05);
-	if (result < 0) return -1;
+	if (result < 0) error = -1;
 	output->y |= (int16_t)result << 8;
 
 	result = i2c_smbus_read_byte_data(g_bus, 0x08);
-	if (result < 0) return -1;
+	if (result < 0) error = -1;
 	output->z = (int16_t)result;
 	result = i2c_smbus_read_byte_data(g_bus, 0x07);
-	if (result < 0) return -1;
+	if (result < 0) error = -1;
 	output->z |= (int16_t)result << 8;
 
-	return 0;
+	pthread_mutex_unlock(&bus_lock);
+	return error;
 }
 
 static int send_update(int device, int motor, int8_t throttle)
@@ -293,7 +307,7 @@ int update_motors(int *settings)
 void poll_loop()
 //TODO: finish this routine
 {
-	while (true) {
+	while (1) {
 		
 	}
 }
