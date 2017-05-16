@@ -4,6 +4,7 @@
 #include <linux/i2c-dev.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <errno.h>
 #include <pthread.h>
@@ -37,51 +38,72 @@
 
 static int g_bus = -1; /* used to store the i2c bus file descriptor */
 static pthread_mutex_t bus_lock = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t output_lock = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
+
+static Vector3 curr_gyro;
+static Vector3 curr_accel;
+static Vector3 curr_compass;
+static int curr_gyro_count;
 
 int open_bus(char *filename)
 // must be called before multi-threading starts
 {
+	pthread_mutex_lock(&bus_lock);
+
 	int ref = open(filename, O_RDWR);
 	if (ref < 0) {
 		//printf("%d\n", errno);
+		pthread_mutex_unlock(&bus_lock);
 		return 1;
 	}
 	g_bus = ref;
+
+	pthread_mutex_unlock(&bus_lock);
 	return 0;
 }
 
 int gyro_power_on()
 {
 	// TODO: try powering the gyro in self test mode and make corrections
+
+	pthread_mutex_lock(&bus_lock);
 	if (ioctl(g_bus, I2C_SLAVE, GYRO_ADDR) < 0) {
+		pthread_mutex_unlock(&bus_lock);
 		return -2;
 	}
+	int result = 0;
 	int32_t error = i2c_smbus_write_byte_data(g_bus, 0x20, GYRO_POWER_ON);
-	if (error < 0) return -1;
+	if (error < 0) result = -1;
 	error = i2c_smbus_write_byte_data(g_bus, 0x23, GYRO_FULL_SCALE);
-	if (error < 0) return -1;
+	if (error < 0) result = -1;
 	
 	error = i2c_smbus_write_byte_data(g_bus, 0x21, GYRO_HIGH_PASS_SET);
-	if (error < 0) return -1;
+	if (error < 0) result = -1;
 	error = i2c_smbus_write_byte_data(g_bus, 0x24, GYRO_HIGH_PASS_ON);
-	if (error < 0) return -1;
-	
-	return 0;
+	if (error < 0) result = -1;
+
+	pthread_mutex_unlock(&bus_lock);
+	return result;
 }
 
 int accl_power_on()
 {
+	pthread_mutex_lock(&bus_lock);
 	if (ioctl(g_bus, I2C_SLAVE, ACCL_ADDR) < 0) {
 		/* some sort of error */
+		pthread_mutex_unlock(&bus_lock);
 		return -2;
 	}
 	
 	int32_t result;
 	result = i2c_smbus_write_byte_data(g_bus, 0x20, ACCL_POWER_ON);
 	if (result < 0) {
+		pthread_mutex_unlock(&bus_lock);
 		return -1;
 	}
 	result = i2c_smbus_write_byte_data(g_bus, 0x23, ACCL_HIGH_REZ);
+
+	pthread_mutex_unlock(&bus_lock);
 	if (result < 0) {
 		return -3;
 	}
@@ -90,16 +112,21 @@ int accl_power_on()
 
 int comp_power_on()
 {
+	pthread_mutex_lock(&bus_lock);
 	if (ioctl(g_bus, I2C_SLAVE, COMP_ADDR) < 0) {
+		pthread_mutex_unlock(&bus_lock);
 		return -2;
 	}
 	
 	int32_t result;
 	result = i2c_smbus_write_byte_data(g_bus, 0x02, COMP_POWER_ON);
 	if (result < 0) {
+		pthread_mutex_unlock(&bus_lock);
 		return -1;
 	}
 	result = i2c_smbus_write_byte_data(g_bus, 0x01, COMP_SET_GAIN);
+
+	pthread_mutex_unlock(&bus_lock);
 	if (result < 0) {
 		return -1;
 	}
@@ -108,40 +135,60 @@ int comp_power_on()
 
 int gyro_power_off()
 {
+	pthread_mutex_lock(&bus_lock);
 	if (ioctl(g_bus, I2C_SLAVE, GYRO_ADDR) < 0) {
+		pthread_mutex_unlock(&bus_lock);
 		return -2;
 	}
 	int32_t error = i2c_smbus_write_byte_data(g_bus, 0x20, GYRO_POWER_OFF);
+
+	pthread_mutex_unlock(&bus_lock);
 	if (error < 0) return -1;
 	return 0;
 }
 
 int accl_power_off()
 {
+	pthread_mutex_lock(&bus_lock);
 	if (ioctl(g_bus, I2C_SLAVE, ACCL_ADDR) < 0) {
 		/* some sort of error */
+		pthread_mutex_unlock(&bus_lock);
 		return -2;
 	}
+
 	int32_t result;
+	int return_val;
 	result = i2c_smbus_write_byte_data(g_bus, 0x20, ACCL_POWER_OFF);
 	if (result < 0) {
-		return -3;
+		return_val = -1;
 	}
-	return 0;
+	else {
+		return_val = 0;
+	}
+	pthread_mutex_unlock(&bus_lock);
+	return return_val;
 }
 
 int comp_power_off()
 {
+	pthread_mutex_lock(&bus_lock);
 	if (ioctl(g_bus, I2C_SLAVE, COMP_ADDR) < 0) {
+		pthread_mutex_unlock(&bus_lock);
 		return -2;
 	}
 	
 	int32_t result;
+	int return_val;
 	result = i2c_smbus_write_byte_data(g_bus, 0x02, COMP_POWER_OFF);
 	if (result < 0) {
-		return -1;
+		return_val = -1;
 	}
-	return 0;
+	else {
+		return_val = 0;
+	}
+
+	pthread_mutex_unlock(&bus_lock);
+	return return_val;
 }
 
 int gyro_poll(Vector3 *output)
@@ -304,10 +351,61 @@ int update_motors(int *settings)
 	return 0;
 }
 
-void poll_loop()
-//TODO: finish this routine
+void get_sensor_data(Vector3 *gyro, Vector3 *accel)
 {
+	pthread_mutex_lock(&output_lock);
+
+	if (curr_gyro_count > 0) memcpy(gyro, &curr_gyro, sizeof(Vector3));
+	else memset(gyro, 0, sizeof(Vector3));
+	memcpy(accel, &curr_accel, sizeof(Vector3));
+
+	pthread_mutex_unlock(&output_lock);
+}
+
+void get_compass_data(Vector3 *compass)
+{
+	pthread_mutex_lock(&output_lock);
+	memcpy(compass, &curr_compass, sizeof(Vector3));
+	pthread_mutex_unlock(&output_lock);
+}
+
+void poll_loop()
+{
+	pthread_mutex_lock(&output_lock);
+	curr_gyro_count = 0;
+	memset(&curr_gyro, 0, sizeof(Vector3));
+	memset(&curr_accel, 0, sizeof(Vector3));
+	memset(&curr_compass, 0, sizeof(Vector3));
+	pthread_mutex_unlock(&output_lock);
+
 	while (1) {
-		
+		int error;
+		int gyro_count = 0;
+		Vector3 temp_gyro;
+		Vector3 temp_accel;
+		Vector3 temp_compass;
+
+		error = accl_poll(&temp_accel);
+		if (error < 0) log_error("Error reading from accelerometer in 'poll_loop()'");
+		error = comp_poll(&temp_compass);
+		if (error < 0) log_error("Error reading from compass in 'poll_loop()'");
+		error = gyro_poll(&temp_gyro);
+		if (error < 0) log_error("Error reading from gyroscope in 'poll_loop()'");
+		else gyro_count = error;
+
+		pthread_mutex_lock(&output_lock);
+
+		memcpy(&curr_accel, &temp_accel, sizeof(Vector3));
+		memcpy(&curr_compass, &temp_compass, sizeof(Vector3));
+
+		int gyro_total = gyro_count + curr_gyro_count;
+		if (gyro_total > 0) {
+			curr_gyro.x = (temp_gyro.x*gyro_count + curr_gyro.x*curr_gyro_count) / gyro_total;
+			curr_gyro.y = (temp_gyro.y*gyro_count + curr_gyro.y*curr_gyro_count) / gyro_total;
+			curr_gyro.z = (temp_gyro.z*gyro_count + curr_gyro.z*curr_gyro_count) / gyro_total;
+			curr_gyro_count = gyro_total;
+		}
+
+		pthread_mutex_unlock(&output_lock);
 	}
 }

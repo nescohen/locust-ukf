@@ -25,4 +25,8 @@ int comp_poll(Vector3 *output);
 
 int update_motors(int *settings); /* settings points to a 4 size integer array */
 
+void get_sensor_data(Vector3 *gyro, Vector3 *accel);
+void get_compass_data(Vector3 *compass);
+void poll_loop();
+
 #endif
