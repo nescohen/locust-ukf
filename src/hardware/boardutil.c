@@ -355,7 +355,10 @@ void get_sensor_data(Vector3 *gyro, Vector3 *accel)
 {
 	pthread_mutex_lock(&output_lock);
 
-	if (curr_gyro_count > 0) memcpy(gyro, &curr_gyro, sizeof(Vector3));
+	if (curr_gyro_count > 0) {
+		memcpy(gyro, &curr_gyro, sizeof(Vector3));
+		curr_gyro_count = 0;
+	}
 	else memset(gyro, 0, sizeof(Vector3));
 	memcpy(accel, &curr_accel, sizeof(Vector3));
 
@@ -369,7 +372,8 @@ void get_compass_data(Vector3 *compass)
 	pthread_mutex_unlock(&output_lock);
 }
 
-void poll_loop()
+void *poll_loop(void *arg)
+// Starting point for sensor polling thread
 {
 	pthread_mutex_lock(&output_lock);
 	curr_gyro_count = 0;

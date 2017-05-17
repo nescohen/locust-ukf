@@ -137,6 +137,9 @@ int main(int argc, char **argv)
 		stop = 1;
 	}
 
+	pthread_t sensor_poll_thread;
+	pthread_create(&sensor_poll_thread, NULL, &poll_loop, NULL);
+
 	//TODO: have the alignment step also run a self-test on the gyro and make corrections
 	// Addendum: the filter seems to be performing quite well with out this, it may not be necessary
 	//TODO: find the source of the NaNs. In the final program it should be impossible to generate a NaN
@@ -158,14 +161,8 @@ int main(int argc, char **argv)
 			Vector3 accel;
 			Vector3 north;
 			double measurement[SIZE_MEASUREMENT];
-			failure = 0;
-			failure = failure || gyro_poll(&gyro) < 0;
-			failure = failure || accl_poll(&accel) < 0;
-			failure = failure || comp_poll(&north) < 0;
-			if (failure) {
-				log_error("Failed to get measurements from one or more sensors (during alignment).");
-				stop = 1;
-			}
+			get_sensor_data(&gyro, &accel);
+			get_compass_data(&north);
 			sensor_to_array(measurement, accel, ACCL_SENSATIVITY);
 			sensor_to_array(measurement + 3, north, 1);
 			sensor_to_array(measurement + 6, gyro, GYRO_SENSATIVITY);
@@ -209,19 +206,14 @@ int main(int argc, char **argv)
 		Vector3 gyro;
 		Vector3 accel;
 		Vector3 north;
+
 		// calculate time elapsed during last loop iteration
 		last_clock = curr_clock;
 		if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
 		double elapsed = (double)(curr_clock.tv_nsec - last_clock.tv_nsec)*NSEC_TO_SEC + (double)(curr_clock.tv_sec - last_clock.tv_sec); 
 
-		failure = 0;
-		failure = failure || gyro_poll(&gyro) < 0;
-		failure = failure || accl_poll(&accel) < 0;
-		failure = failure || comp_poll(&north) < 0;
-		if (failure) {
-			log_error("Failed to get measurements from one or more sensors.");
-			stop = 1;
-		}
+		get_sensor_data(&gyro, &accel);
+		get_compass_data(&north);
 
 		double accel_var[3];
 		double comp_var[3];
@@ -269,6 +261,8 @@ int main(int argc, char **argv)
 
 		// printf("Attitude MRP = [%f, %f, %f] ->\t[%f, %f, %f]^t\t (%f, %f, %f)\n", measurement[6], measurement[7], measurement[8], ukf.state[0], ukf.state[1], ukf.state[2], euler_angles[0], euler_angles[1], euler_angles[2]);
 	}
+
+	pthread_cancel(sensor_poll_thread);
 
 	memset(motors, 0, sizeof(motors));
 	update_motors(motors);
