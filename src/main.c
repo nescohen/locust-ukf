@@ -99,6 +99,16 @@ void recovery_pid(double x, double y, Controls *controls, int *motors, Pidhist *
 	printf("[%f, %f] => [%f, %f] => [%d, %d, %d, %d]\n", error_x, error_y, correct_x, correct_y, motors[0], motors[1], motors[2], motors[3]);
 }
 
+int detect_nans(double *array, int size)
+{
+	int i;
+	int nan = 0;
+	for (i = 0; i < size; i++) {
+		if (array[i] != array[i]) nan = 1;
+	}
+	return nan;
+}
+
 int main(int argc, char **argv)
 {
 	struct timespec curr_clock;
@@ -243,6 +253,12 @@ int main(int argc, char **argv)
 		}
 		for (i = 6; i < 9; i++) {
 			ukf.R[i*SIZE_MEASUREMENT + i] = gyro_var[i - 6];
+		}
+
+		if (detect_nans(measurement, SIZE_MEASUREMENT))
+		{
+			stop = 1;
+			break;
 		}
 
 		ukf_run(&ukf, measurement, elapsed);
