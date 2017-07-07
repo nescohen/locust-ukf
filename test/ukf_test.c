@@ -9,10 +9,10 @@
 #include <time.h>
 #include <assert.h>
 
-#include "kalman.h"
-#include "ukf_mrp.h"
-#include "matrix_util.h"
-#include "quaternion_util.h"
+#include "src/kalman/kalman.h"
+#include "src/kalman/ukf_mrp.h"
+#include "src/math/matrix_util.h"
+#include "src/math/quaternion_util.h"
 
 #define GYRO_VARIANCE 0.193825 // 11.111... degress in radians
 #define POSITION_VARIANCE 0.1
