@@ -1,4 +1,4 @@
-// Specifice Ukf implementation for attitude filtering using Modified Rodriguez Parameters
+// Specific Ukf implementation for attitude filtering using Modified Rodriguez Parameters
 
 #include <stdio.h>
 #include <stdlib.h>

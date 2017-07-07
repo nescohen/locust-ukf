@@ -18,7 +18,7 @@ typedef struct ukf_parameters {
 
 void ukf_reverse_measure(double *state, double *measurement);
 //converts a measurement to a state
-// DO NOT USE! Not in working stat
+// DO NOT USE! Not in working state
 
 void ukf_param_init(Ukf_parameters *parameters);
 //performs very basic initialization and gauranntees that no uninitialized memory will slip through
