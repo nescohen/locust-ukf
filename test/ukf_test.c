@@ -50,7 +50,7 @@ int main()
 	Ukf_parameters parameters;
 	ukf_param_init(&parameters);
 	parameters.state[3] = 1.0; //double state[SIZE_STATE] = {0.0, 0.0, 0.0, 1.0, 0.0, 0.0};
-	matrix_diagonal(covariance, 1, SIZE_STATE);
+	matrix_diagonal(parameters.covariance, 1, SIZE_STATE);
 
 	matrix_init(parameters.R, 0, SIZE_MEASUREMENT, SIZE_MEASUREMENT);
 	for (i = 0; i < 6; i++) {
@@ -62,6 +62,8 @@ int main()
 
 	double delta_t = 0.01;
 	double measurements[SIZE_MEASUREMENT] = {0.0};
+
+	double true_omega = {1, 0, 0};
 
 	srand(1);// seed random number generator for rand_gauss()
 
