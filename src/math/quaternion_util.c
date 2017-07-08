@@ -24,7 +24,9 @@ void gen_quaternion(double theta, double vect[3], double result[4])
 
 void decomp_quaternion(double quat[4], double vect[3])
 {
-	double value = sqrt(1 - quat[0]*quat[0]);
+	double temp = quat[0]*quat[0];
+	if (temp > 1.0) temp = 1.0;
+	double value = sqrt(1 - temp);
 	if (value != 0) {
 		int i;
 		for (i = 0; i < 3; i++) {

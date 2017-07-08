@@ -229,32 +229,6 @@ void process_noise(double *Q, double dt, double scale)
 	matrix_scale(Q, Q, scale, SIZE_STATE, SIZE_STATE);
 }
 
-double rand_gauss()
-// returns a guassian distributed random number with mean 0 and standard deviation 1
-// assumes srand() has already been seeded
-// for testing purposes, do not use in production
-{
-	double u1 = (double)rand() / (double) RAND_MAX;
-	double u2 = (double)rand() / (double) RAND_MAX;
-	return sqrt(-2*log(u1))*cos(2*M_PI*u2);
-}
-
-// void generate_measurements(double *z, double *omega, double *down_vect, double *north_vect, double dt)
-// // for testing purposes, do not use in production
-// {
-// 	memcpy(z, down_vect, 3*sizeof(double));
-// 	memcpy(z + 3, north_vect, 3*sizeof(double));
-// 	memcpy(z + 6, omega, 3*sizeof(double));
-// 
-// 	int i;
-// 	for(i = 0; i < 6; i++) {
-// 		z[i] += rand_gauss()*sqrt(POSITION_VARIANCE)*dt;
-// 	}
-// 	for(i = 6; i < 9; i++) {
-// 		z[i] += rand_gauss()*sqrt(GYRO_VARIANCE)*dt;
-// 	}
-// }
-
 void triad_mrp(double *result_mrp, double *r1, double *r2, double *R1, double *R2)
 // Algorithm from "Triad Method" wikipedia article
 {

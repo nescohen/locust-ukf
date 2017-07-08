@@ -16,6 +16,10 @@ typedef struct ukf_parameters {
 	double R[SIZE_MEASUREMENT*SIZE_MEASUREMENT];
 } Ukf_parameters;
 
+void compose_mrp(double mrp_a[3], double mrp_b[3], double mrp_f[3]);
+// equation from Journal of Astronautical Sciences paper "A Survey of Attitude Representations"
+// P" = ((1 - |P|^2)P' + (1 - |P'|^2)P - 2P'xP) / (1 + |P'|^2 * |P|^2 - 2P'*P)
+
 void ukf_reverse_measure(double *state, double *measurement);
 //converts a measurement to a state
 // DO NOT USE! Not in working state

@@ -60,17 +60,17 @@ int main()
 		parameters.R[i + i*SIZE_MEASUREMENT] = GYRO_VARIANCE;
 	}
 
-	double delta_t = 0.01;
+	double delta_t = 0.1;
 	double measurements[SIZE_MEASUREMENT] = {0.0};
+	double true_omega[3] = {1.0, 0.0, 0.0};
+	double true_orientation[3] = {0.0, 0.0, 0.0};
 
-	double true_omega = {1, 0, 0};
-
-	srand(1);// seed random number generator for rand_gauss()
+	srand(time(NULL));// seed random number generator for rand_gauss()
 
 	printf("INITIAL\n");
 	matrix_quick_print(parameters.state, SIZE_STATE, 1);
 	matrix_quick_print(parameters.covariance, SIZE_STATE, SIZE_STATE);
-	for (i = 0; i < 30; i++) {
+	for (i = 0; i < 100; i++) {
 		printf("Time Elapsed: %fs\n", (i+1)*delta_t);
 
 		// Prepare simulated test data
