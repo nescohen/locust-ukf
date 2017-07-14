@@ -122,14 +122,15 @@ void mean_state(double *points, double *weights, double *mean, int size, int cou
 		memcpy(mrp, points + i*size, sizeof(mrp));
 		angle = vector_magnitude(mrp);
 		angle = atan(angle)*4;
-		sum_mrp_angle[0] += cos(angle)*abs(weights[i]);
-		sum_mrp_angle[1] += sin(angle)*abs(weights[i]);
+		sum_mrp_angle[0] += cos(angle)*fabs(weights[i]);
+		sum_mrp_angle[1] += sin(angle)*fabs(weights[i]);
 		normalize_vector(mrp, mrp);
-		matrix_scale(mrp, mrp, abs(weights[i]), 3, 1);
+		matrix_scale(mrp, mrp, fabs(weights[i]), 3, 1);
 		matrix_plus_matrix(mrp, sum_mrp_vector, sum_mrp_vector, 3, 1, MATRIX_ADD);
 	}
 	double mean_mrp[3];
 	double mean_angle = atan2(sum_mrp_angle[1], sum_mrp_angle[0]);
+	if (mean_angle < 0) mean_angle += 2*M_PI;
 	normalize_vector(sum_mrp_vector, mean_mrp);
 	matrix_scale(mean_mrp, mean_mrp, tan(mean_angle/4), 3, 1);
 

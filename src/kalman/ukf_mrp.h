@@ -16,6 +16,9 @@ typedef struct ukf_parameters {
 	double R[SIZE_MEASUREMENT*SIZE_MEASUREMENT];
 } Ukf_parameters;
 
+void mean_state(double *points, double *weights, double *mean, int size, int count);
+// Temporary! for debugging purposes only
+
 void compose_mrp(double mrp_a[3], double mrp_b[3], double mrp_f[3]);
 // equation from Journal of Astronautical Sciences paper "A Survey of Attitude Representations"
 // P" = ((1 - |P|^2)P' + (1 - |P'|^2)P - 2P'xP) / (1 + |P'|^2 * |P|^2 - 2P'*P)
