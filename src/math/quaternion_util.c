@@ -184,3 +184,8 @@ void normalize_quaternion(double q[4], double result[4])
 		result[i] = q[i] / norm;
 	}
 }
+
+double convert_angle(double angle)
+{
+	return fmod(angle, 2*M_PI);
+}

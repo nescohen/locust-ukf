@@ -15,6 +15,17 @@
 extern double g_north[3];
 extern double g_down[3];
 
+void normalize_mrp_angle(double *mrp, double *result)
+{
+	double result_temp[3];
+
+	double angle = 4*atan(vector_magnitude(mrp));
+	angle = convert_angle(angle);
+	normalize_vector(mrp, result_temp);
+	matrix_scale(result_temp, result_temp, tan(angle/4), 3, 1);
+	memcpy(result, result_temp, sizeof(result_temp));
+}
+
 void compose_mrp(double mrp_a[3], double mrp_b[3], double mrp_f[3])
 // equation from Journal of Astronautical Sciences paper "A Survey of Attitude Representations"
 // P" = ((1 - |P|^2)P' + (1 - |P'|^2)P - 2P'xP) / (1 + |P'|^2 * |P|^2 - 2P'*P)
@@ -35,7 +46,13 @@ void compose_mrp(double mrp_a[3], double mrp_b[3], double mrp_f[3])
 	cross_product(temp, mrp_a, temp);
 	matrix_plus_matrix(numerator, temp, numerator, 3, 1, MATRIX_SUBTRACT);
 	
-	matrix_scale(numerator, mrp_f, 1/denominator, 3, 1);
+	if (denominator != 0) {
+		matrix_scale(numerator, mrp_f, 1/denominator, 3, 1);
+	}
+	else {
+		matrix_scale(numerator, mrp_f, 0, 3, 1);
+	}
+	normalize_mrp_angle(mrp_f, mrp_f);
 }
 
 void rotate_mrp(double orientation[3], double omega[3], double result[3], double dt)
@@ -166,6 +183,7 @@ void state_error(double *point, double *mean, double *error, int n)
 	angle = vector_magnitude(axis);
 	normalize_vector(axis, axis);
 	matrix_scale(axis, error, tan(angle/4), 3, 1);
+	normalize_mrp_angle(error, error);
 }
 
 void add_state(double *state, double *change, double *result, int n)
@@ -193,7 +211,7 @@ void custom_scaled_points(double *x, double *P, double *chi, int n, double a, do
 		for (j = 0; j < 3; j++) {
 			point_rotation[j] = temp[(i-1) + j*n];
 		}
-		double angle = vector_magnitude(point_rotation);
+		double angle = convert_angle(vector_magnitude(point_rotation));
 		normalize_vector(point_rotation, point_rotation);
 		matrix_scale(point_rotation, point_rotation, tan(angle/4), 3, 1);
 		compose_mrp(x, point_rotation, chi + i*n);
@@ -206,7 +224,7 @@ void custom_scaled_points(double *x, double *P, double *chi, int n, double a, do
 		for (j = 0; j < 3; j++) {
 			point_rotation[j] = temp[(i-n-1) + j*n];
 		}
-		double angle = -1*vector_magnitude(point_rotation);
+		double angle = convert_angle(-1*vector_magnitude(point_rotation));
 		normalize_vector(point_rotation, point_rotation);
 		matrix_scale(point_rotation, point_rotation, tan(angle/4), 3, 1);
 		compose_mrp(x, point_rotation, chi + i*n);

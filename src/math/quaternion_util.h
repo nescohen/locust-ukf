@@ -15,5 +15,6 @@ void add_vectors(double v_a[3], double v_b[3], double result[3]);
 double vector_magnitude(double vector[3]);
 void normalize_vector(double vector[3], double result[3]);
 void normalize_quaternion(double q[4], double result[4]);
+double convert_angle(double angle);
 
 #endif

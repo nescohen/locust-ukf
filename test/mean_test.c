@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define BASE_ANGLE 1.25*M_PI
+#define BASE_ANGLE 1.1*M_PI
 
 double g_north[3];
 double g_down[3];
@@ -38,6 +38,12 @@ int main()
 	double mean_mrp[6];
 	mean_state((double*)points, weights, mean_mrp, 6, 10);
 	printf("MEAN:\n{%f, %f, %f}\n", mean_mrp[0], mean_mrp[1], mean_mrp[2]);
+
+	double test_a[3] = {1, 0, 0};
+	double test_b[3] = {0.5, 0, 0};
+	double print_mrp[3];
+	compose_mrp(test_a, test_b, print_mrp);
+	printf("[%f, %f, %f]\n", print_mrp[0], print_mrp[1], print_mrp[2]);
 
 	return 0;
 }
