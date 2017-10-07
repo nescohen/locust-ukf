@@ -278,7 +278,8 @@ int main(int argc, char **argv)
 		// printf("Attitude MRP = [%f, %f, %f] ->\t[%f, %f, %f]^t\t (%f, %f, %f)\n", measurement[6], measurement[7], measurement[8], ukf.state[0], ukf.state[1], ukf.state[2], euler_angles[0], euler_angles[1], euler_angles[2]);
 	}
 
-	pthread_kill(sensor_poll_thread, SIGKILL);
+	// pthread_kill(sensor_poll_thread, SIGKILL);
+	stop_loop();
 
 	memset(motors, 0, sizeof(motors));
 	update_motors(motors);

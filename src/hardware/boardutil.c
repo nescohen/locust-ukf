@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <pthread.h>
+#include <signal.h>
 #include "boardutil.h"
 #include "../error/error_log.h"
 
@@ -44,6 +45,8 @@ static Vector3 curr_gyro;
 static Vector3 curr_accel;
 static Vector3 curr_compass;
 static int curr_gyro_count;
+
+static volatile sig_atomic_t stop = 0;
 
 int open_bus(char *filename)
 // must be called before multi-threading starts
@@ -372,6 +375,11 @@ void get_compass_data(Vector3 *compass)
 	pthread_mutex_unlock(&output_lock);
 }
 
+void stop_loop()
+{
+	stop = 1;
+}
+
 void *poll_loop(void *arg)
 // Starting point for sensor polling thread
 {
@@ -382,7 +390,7 @@ void *poll_loop(void *arg)
 	memset(&curr_compass, 0, sizeof(Vector3));
 	pthread_mutex_unlock(&output_lock);
 
-	while (1) {
+	while (!stop) {
 		int error;
 		int gyro_count = 0;
 		Vector3 temp_gyro;
@@ -412,4 +420,6 @@ void *poll_loop(void *arg)
 
 		pthread_mutex_unlock(&output_lock);
 	}
+
+	return NULL;
 }
