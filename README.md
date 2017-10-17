@@ -3,17 +3,16 @@
 
 ### What is this repository for? ###
 
-* We're doing crazy shit breh
+* The Software of The Locus One Project
 * Version 0.1
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
 
 ### How do I get set up? ###
 
-* Unfortunately I know fuckall
+* Contact the Repository Owner
 
 ### Contribution guidelines ###
 
-* I don't give a fuck do whatever
+* TBD
 
 ### Who do I talk to? ###
 
