@@ -263,7 +263,7 @@ int accl_poll(Vector3 *output)
 		return -2;
 	}
 	int32_t result;
-	int error;
+	int error = 0;
 
 	result = i2c_smbus_read_byte_data(g_bus, 0x28);
 	if (result < 0) error = result;

@@ -29,7 +29,7 @@
 #define ACCL_SENSATIVITY 2.f * GRAVITY // 2gs max converted to ms^-2
 #define GYRO_VARIANCE 0.193825 // 11.111... degress in radians
 #define ACCL_VARIANCE 1.1772
-#define COMP_VARIANCE 1
+#define COMP_VARIANCE INT_MAX
 
 #define GRAVITY 9.81f
 #define EPSILON 1.0f
