@@ -6,6 +6,7 @@
 #include <string.h>
 #include <time.h>
 #include <assert.h>
+#include <gsl/gsl_errno.h>
 
 #include "ukf_mrp.h"
 #include "kalman.h"
@@ -309,6 +310,9 @@ void ukf_run(Ukf_parameters *parameters, double *measurement, double delta_t)
 	double w_c[2*SIZE_STATE + 1];
 
 	if (!initialized) {
+
+		gsl_set_error_handler_off();
+
 		// initialize and configure additional options for the ukf
 		ukf_init_options(&options, SIZE_STATE, SIZE_MEASUREMENT);
 		options.f = &process_model;

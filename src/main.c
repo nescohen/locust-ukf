@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 #include <float.h>
 #include <signal.h>
 #include <pthread.h>
@@ -96,7 +97,7 @@ void recovery_pid(double x, double y, Controls *controls, int *motors, Pidhist *
 			motors[i] = 200;
 		}
 	}
-	printf("[%f, %f] => [%f, %f] => [%d, %d, %d, %d]\n", error_x, error_y, correct_x, correct_y, motors[0], motors[1], motors[2], motors[3]);
+	//printf("[%f, %f] => [%f, %f] => [%d, %d, %d, %d]\n", error_x, error_y, correct_x, correct_y, motors[0], motors[1], motors[2], motors[3]);
 }
 
 int detect_nans(double *array, int size)
@@ -149,10 +150,21 @@ int main(int argc, char **argv)
 
 	pthread_t sensor_poll_thread;
 	pthread_create(&sensor_poll_thread, NULL, &poll_loop, NULL);
+	pthread_t motor_update_thread;
+	pthread_create(&motor_update_thread, NULL, &motor_loop, NULL);
 
 	//TODO: have the alignment step also run a self-test on the gyro and make corrections
 	// Addendum: the filter seems to be performing quite well with out this, it may not be necessary
 	//TODO: find the source of the NaNs. In the final program it should be impossible to generate a NaN
+
+	// array containing current motor throttle values
+	int motors[4];
+
+	// int i;
+	// for(i = 0; i < 4; i++) {
+	// 	motors[i] = 30;
+	// }
+	// if (user_throttle > 0) update_motors(motors);
 
 	Ukf_parameters ukf;
 	if (!stop) {
@@ -200,8 +212,12 @@ int main(int argc, char **argv)
 		matrix_quick_print(ukf.covariance, SIZE_STATE, SIZE_STATE);
 	}
 
-	// array containing current motor throttle values
-	int motors[4];
+	log_error("END ALIGNMENT");
+
+	// for (i = 0; i < 4; i++) {
+	// 	motors[i] = 0;
+	// }
+	// if (user_throttle > 0) update_motors(motors);
 
 	// allocate and initialize history for pid
 	Pidhist hist_x;
@@ -255,17 +271,20 @@ int main(int argc, char **argv)
 			ukf.R[i*SIZE_MEASUREMENT + i] = gyro_var[i - 6];
 		}
 
-		if (detect_nans(measurement, SIZE_MEASUREMENT))
-		{
-			stop = 1;
-			break;
-		}
-
 		ukf_run(&ukf, measurement, elapsed);
+		//printf("elapsed - %f\n", elapsed);
 
 		// convert mrp to euler angles for pid
 		double euler_angles[3];
 		mrp_to_euler(euler_angles, ukf.state);
+
+		if (detect_nans(measurement, SIZE_MEASUREMENT) ||
+			detect_nans(euler_angles, 3))
+		{
+			printf("NAN detected\n");
+			stop = 1;
+			break;
+		}
 
 		Controls controls;
 		controls.throttle = (user_throttle == -1) ? 100 : user_throttle;
@@ -273,7 +292,7 @@ int main(int argc, char **argv)
 		controls.pitch = 0;
 		recovery_pid(euler_angles[2], euler_angles[1], &controls, motors, &hist_x, &hist_y, elapsed);
 		
-		if (user_throttle > 0) update_motors(motors);
+		if (user_throttle > 0) set_throttle(motors);
 
 		// printf("Attitude MRP = [%f, %f, %f] ->\t[%f, %f, %f]^t\t (%f, %f, %f)\n", measurement[6], measurement[7], measurement[8], ukf.state[0], ukf.state[1], ukf.state[2], euler_angles[0], euler_angles[1], euler_angles[2]);
 	}
@@ -281,14 +300,18 @@ int main(int argc, char **argv)
 	// pthread_kill(sensor_poll_thread, SIGKILL);
 	stop_loop();
 
-	memset(motors, 0, sizeof(motors));
-	update_motors(motors);
+	// memset(motors, 0, sizeof(motors));
+	// set_throttle(motors);
+
+	pthread_join(sensor_poll_thread, NULL);
 
 	gyro_power_off();
 	accl_power_off();
 	comp_power_off();
 
 	log_complete();
+
+	pthread_join(motor_update_thread, NULL);
 
 	return 0;
 }

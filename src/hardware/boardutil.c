@@ -41,6 +41,9 @@ static int g_bus = -1; /* used to store the i2c bus file descriptor */
 static pthread_mutex_t bus_lock = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
 static pthread_mutex_t output_lock = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
 
+static pthread_mutex_t motor_lock = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
+static volatile int curr_throttle[4] = {0, 0, 0, 0};
+
 static Vector3 curr_gyro;
 static Vector3 curr_accel;
 static Vector3 curr_compass;
@@ -263,24 +266,24 @@ int accl_poll(Vector3 *output)
 	int error;
 
 	result = i2c_smbus_read_byte_data(g_bus, 0x28);
-	if (result < 0) error = -1;
+	if (result < 0) error = result;
 	output->x = (int16_t)result;
 	result = i2c_smbus_read_byte_data(g_bus, 0x29);
-	if (result < 0) error = -1;
+	if (result < 0) error = result;
 	output->x |= (int16_t)result << 8;
 
 	result = i2c_smbus_read_byte_data(g_bus, 0x2A);
-	if (result < 0) error = -1;
+	if (result < 0) error = result;
 	output->y = (int16_t)result;
 	result = i2c_smbus_read_byte_data(g_bus, 0x2B);
-	if (result < 0) error = -1;
+	if (result < 0) error = result;
 	output->y |= (int16_t)result << 8;
 
 	result = i2c_smbus_read_byte_data(g_bus, 0x2C);
-	if (result < 0) error = -1;
+	if (result < 0) error = result;
 	output->z = (int16_t)result;
 	result = i2c_smbus_read_byte_data(g_bus, 0x2D);
-	if (result < 0) error = -1;
+	if (result < 0) error = result;
 	output->z |= (int16_t)result << 8;
 
 	pthread_mutex_unlock(&bus_lock);
@@ -333,27 +336,6 @@ static int send_update(int device, int motor, int8_t throttle)
 	return i2c_smbus_write_byte_data(g_bus, motor, throttle);
 }
 
-int update_motors(int *settings)
-/* settings points to a 4-length array of integers */
-{
-	char buffer[100];
-	int err[4];
-	int i;
-
-	pthread_mutex_lock(&bus_lock);
-	err[0] = send_update( FORWARD_CONTROL, MOTOR_PORT,      (int8_t)settings[0] );
-	err[1] = send_update( FORWARD_CONTROL, MOTOR_STARBOARD, (int8_t)settings[1] );
-	err[2] = send_update( REAR_CONTROL,    MOTOR_PORT,      (int8_t)settings[2] );
-	err[3] = send_update( REAR_CONTROL,    MOTOR_STARBOARD, (int8_t)settings[3] );
-	pthread_mutex_unlock(&bus_lock);
-
-	for (i = 0; i < 4; i++) {
-		snprintf(buffer, 100, "motor=%d throttle=%d error=%d", i, settings[i], err[i]);
-		log_error(buffer);
-	}
-	return 0;
-}
-
 void get_sensor_data(Vector3 *gyro, Vector3 *accel)
 {
 	pthread_mutex_lock(&output_lock);
@@ -397,12 +379,22 @@ void *poll_loop(void *arg)
 		Vector3 temp_accel;
 		Vector3 temp_compass;
 
+		char error_buffer[30];
 		error = accl_poll(&temp_accel);
-		if (error < 0) log_error("Error reading from accelerometer in 'poll_loop()'");
+		if (error < 0) {
+			snprintf(error_buffer, 30*sizeof(char), "Error \"%d\" reading from accelerometer'", error);
+			log_error(error_buffer);
+		}
 		error = comp_poll(&temp_compass);
-		if (error < 0) log_error("Error reading from compass in 'poll_loop()'");
+		if (error < 0) {
+			snprintf(error_buffer, 30*sizeof(char), "Error \"%d\" reading from compass'", error);
+			log_error(error_buffer);
+		}
 		error = gyro_poll(&temp_gyro);
-		if (error < 0) log_error("Error reading from gyroscope in 'poll_loop()'");
+		if (error < 0) {
+			snprintf(error_buffer, 30*sizeof(char), "Error \"%d\" reading from gyroscope'", error);
+			log_error(error_buffer);
+		}
 		else gyro_count = error;
 
 		pthread_mutex_lock(&output_lock);
@@ -420,6 +412,61 @@ void *poll_loop(void *arg)
 
 		pthread_mutex_unlock(&output_lock);
 	}
+
+	return NULL;
+}
+
+void set_throttle(int *settings)
+{
+	pthread_mutex_lock(&motor_lock);
+	int i;
+	for (i = 0; i < 4; i++) {
+		curr_throttle[i] = settings[i];
+	}
+	pthread_mutex_unlock(&motor_lock);
+}
+
+static int update_motors(int *settings)
+/* settings points to a 4-length array of integers */
+{
+	//char buffer[100];
+	//int err[4];
+
+	pthread_mutex_lock(&bus_lock);
+	/* err[0] = */ send_update( FORWARD_CONTROL, MOTOR_PORT,      (int8_t)settings[0] );
+	/* err[1] = */ send_update( FORWARD_CONTROL, MOTOR_STARBOARD, (int8_t)settings[1] );
+	/* err[2] = */ send_update( REAR_CONTROL,    MOTOR_PORT,      (int8_t)settings[2] );
+	/* err[3] = */ send_update( REAR_CONTROL,    MOTOR_STARBOARD, (int8_t)settings[3] );
+	pthread_mutex_unlock(&bus_lock);
+
+	//int i;
+	// for (i = 0; i < 4; i++) {
+	// 	snprintf(buffer, 100, "motor=%d throttle=%d error=%d", i, settings[i], err[i]);
+	// 	log_error(buffer);
+	// }
+	return 0;
+}
+
+void *motor_loop(void *arg)
+{
+	//update the motors from the most recent motor position
+
+	int motors[4];
+	while(!stop) {
+		pthread_mutex_lock(&motor_lock);
+		int i;
+		for (i = 0; i < 4; i++) {
+			motors[i] = curr_throttle[i];
+		}
+		pthread_mutex_unlock(&motor_lock);
+		update_motors(motors);
+	}
+
+	int i;
+	for (i = 0; i < 4; i++) {
+		motors[i] = 0;
+	}
+	update_motors(motors);
 
 	return NULL;
 }
