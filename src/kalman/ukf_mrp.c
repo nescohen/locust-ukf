@@ -237,7 +237,7 @@ void custom_scaled_points(double *x, double *P, double *chi, int n, double a, do
 #ifdef DEBUG
 	//debug printing for testing
 	printf("SIGMA POINTS\n");
-	matrix_quick_print(chi, n, 2*n+1);
+	matrix_quick_print(chi, 2*n+1, n);
 	printf("\n");
 #endif
 
