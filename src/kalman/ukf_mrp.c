@@ -233,6 +233,14 @@ void custom_scaled_points(double *x, double *P, double *chi, int n, double a, do
 			chi[i*n + j] = x[j] - temp[(i-n-1) + j*n];
 		}
 	}
+
+#ifdef DEBUG
+	//debug printing for testing
+	printf("SIGMA POINTS\n");
+	matrix_quick_print(chi, n, 2*n+1);
+	printf("\n");
+#endif
+
 }
 
 void process_noise(double *Q, double dt, double scale)
