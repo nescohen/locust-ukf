@@ -13,6 +13,11 @@
 #include <unistd.h>
 #include <errno.h>
 
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+
 #include "hardware/boardutil.h"
 #include "hardware/flight-input.h"
 #include "error/error_log.h"
@@ -20,6 +25,10 @@
 #include "kalman/ukf_mrp.h"
 #include "math/matrix_util.h"
 #include "math/quaternion_util.h"
+
+#define SOCKET_PORT 6969
+#define SERVER_ADDRESS "192.168.1.36"
+#define NETWORK_THROTTLE 1
 
 #define SIGNED_16_MAX 0x7FFF
 #define NSEC_TO_SEC 1e-9
@@ -97,7 +106,15 @@ void recovery_pid(double x, double y, Controls *controls, int *motors, Pidhist *
 			motors[i] = 200;
 		}
 	}
-	//printf("[%f, %f] => [%f, %f] => [%d, %d, %d, %d]\n", error_x, error_y, correct_x, correct_y, motors[0], motors[1], motors[2], motors[3]);
+
+	static int cap = 0;
+	if (cap > 1000) {
+		printf("[%f, %f] => [%f, %f] => [%d, %d, %d, %d]\n", error_x, error_y, correct_x, correct_y, motors[0], motors[1], motors[2], motors[3]);
+		cap = 0;
+	}
+	else {
+		cap += 1;
+	}
 }
 
 int detect_nans(double *array, int size)
@@ -108,6 +125,49 @@ int detect_nans(double *array, int size)
 		if (array[i] != array[i]) nan = 1;
 	}
 	return nan;
+}
+
+int decode_int(char *buffer)
+// WARNING: assumes int is 32 bits or greater
+{
+	int result = 0;
+	int i;
+	for (i = 0; i < 4; i++) {
+		result |= buffer[i] << i*8;
+	}
+
+	return result;
+}
+
+int establish_connection()
+{
+	int sock_fd = socket(AF_INET, SOCK_STREAM, 0);
+	if (sock_fd <= 0) {
+		log_error("Socket creation failure");
+		return -1;
+	}
+	
+	struct sockaddr_in serv_addr;
+	memset(&serv_addr, 0, sizeof(serv_addr));
+	serv_addr.sin_family = AF_INET;
+	serv_addr.sin_port = htons(SOCKET_PORT);
+	
+	int err = inet_pton(AF_INET, SERVER_ADDRESS, &(serv_addr.sin_addr));
+	if (err <= 0) {
+		log_error("Address translation failure");
+		return -1;
+	}
+
+	err = connect(sock_fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
+	if (err < 0) {
+		log_error("Connection to server failed");
+		return -1;
+	}
+
+	char *confirm = "Connection confirmed";
+	write(sock_fd, confirm, strlen(confirm));
+
+	return sock_fd;
 }
 
 int main(int argc, char **argv)
@@ -133,6 +193,11 @@ int main(int argc, char **argv)
 	else if (argc != 1) {
 		printf("Invalid arguments. Exiting.\n");
 		return 1;
+	}
+
+	int sock = -1;
+	if (user_throttle < 0) {
+		sock = establish_connection();
 	}
 
 	if (open_bus(DEVICE_FILE) != 0) {
@@ -291,10 +356,30 @@ int main(int argc, char **argv)
 		controls.roll = 0;
 		controls.pitch = 0;
 		recovery_pid(euler_angles[2], euler_angles[1], &controls, motors, &hist_x, &hist_y, elapsed);
+
+		// check for network throttle instructions
+		if (sock > 0) {
+			int done = 0;
+			while (!done) {
+				char buffer[8];
+				int count = read(sock, buffer, 8);
+				if (count == 0) done = 1;
+				else {
+					int code = decode_int(buffer);
+					int value = decode_int(buffer + 4);
+					if (value > 200) value = 200;
+					if (value < 0) value = 0;
+
+					if (code == NETWORK_THROTTLE) {
+						user_throttle = value;
+					}
+				}
+			}
+		}
 		
 		if (user_throttle > 0) set_throttle(motors);
 
-		// printf("Attitude MRP = [%f, %f, %f] ->\t[%f, %f, %f]^t\t (%f, %f, %f)\n", measurement[6], measurement[7], measurement[8], ukf.state[0], ukf.state[1], ukf.state[2], euler_angles[0], euler_angles[1], euler_angles[2]);
+		//printf("Attitude MRP = [%f, %f, %f] ->\t[%f, %f, %f]^t\t (%f, %f, %f)\r", measurement[6], measurement[7], measurement[8], ukf.state[0], ukf.state[1], ukf.state[2], euler_angles[0], euler_angles[1], euler_angles[2]);
 	}
 
 	// pthread_kill(sensor_poll_thread, SIGKILL);
