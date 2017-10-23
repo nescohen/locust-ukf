@@ -1,6 +1,7 @@
 // Nes Cohen
 // 07/07/2017
 // Program used for analyzing the UKF
+#define TESTING
 
 #include <stdio.h>
 #include <stdlib.h>
