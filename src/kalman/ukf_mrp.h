@@ -4,9 +4,9 @@
 #define SIZE_STATE 6
 #define SIZE_MEASUREMENT 9
 
-#define ALPHA 0.5
+#define ALPHA 0.01
 #define BETA 2.0
-#define KAPPA /*0.0*/ (double)(3 - SIZE_STATE)
+#define KAPPA 0.0 /* (double)(3 - SIZE_STATE) */
 
 #define POWER_ITERATIONS 100
 
