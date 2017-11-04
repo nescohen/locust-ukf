@@ -10,7 +10,7 @@
 #define NETWORK_THROTTLE 1
 #define NETWORK_OFF 2
 
-const char off_arr[8] = {1, 0, 0, 0, 0, 0, 0, 0};
+const char off_arr[8] = {NETWORK_OFF, 0, 0, 0, 0, 0, 0, 0};
 
 void encode_int(int value, char *buffer)
 // asumes int is at least 32 bits
@@ -19,7 +19,7 @@ void encode_int(int value, char *buffer)
 	int i;
 	for (i = 0; i < 4; i++) {
 		int mask = 0xFF;
-		char to_send = (char)((value >> i) & mask);
+		char to_send = (char)((value >> i*8) & mask);
 		buffer[i] = to_send;
 	}
 }
@@ -74,7 +74,7 @@ int main()
 		
 		if (strcmp(command, "throttle") == 0) {
 			if (argument >= 0) {
-			char send_arr[8];
+				char send_arr[8];
 				encode_int(NETWORK_THROTTLE, send_arr);
 				encode_int(argument, send_arr + 4);
 				write(new_sock, send_arr, 8);
