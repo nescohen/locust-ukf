@@ -29,6 +29,7 @@
 #define SOCKET_PORT 6969
 #define SERVER_ADDRESS "192.168.1.36"
 #define NETWORK_THROTTLE 1
+#define NETWORK_OFF 2
 
 #define SIGNED_16_MAX 0x7FFF
 #define NSEC_TO_SEC 1e-9
@@ -128,12 +129,13 @@ int detect_nans(double *array, int size)
 }
 
 int decode_int(char *buffer)
-// WARNING: assumes int is 32 bits or greater
+// WARNING: assumes int is at least 32 bits
+// decodes assuming little endian
 {
 	int result = 0;
 	int i;
 	for (i = 0; i < 4; i++) {
-		result |= buffer[i] << i*8;
+		result |= (int)buffer[i] << i*8;
 	}
 
 	return result;
@@ -367,11 +369,20 @@ int main(int argc, char **argv)
 				else {
 					int code = decode_int(buffer);
 					int value = decode_int(buffer + 4);
-					if (value > 200) value = 200;
-					if (value < 0) value = 0;
 
-					if (code == NETWORK_THROTTLE) {
-						user_throttle = value;
+					switch(code) {
+						case NETWORK_THROTTLE:
+							if (value > 200) value = 200;
+							if (value < 0) value = 0;
+							user_throttle = value;
+							break;
+						case NETWORK_OFF:
+							if (value == 0) {
+								stop = 1;
+							}
+							break;
+						default:
+							log_error("Received unrecognized network command");
 					}
 				}
 			}

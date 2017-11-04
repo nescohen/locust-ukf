@@ -1,3 +1,4 @@
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -6,6 +7,22 @@
 #include <arpa/inet.h>
 
 #define PORT 6969
+#define NETWORK_THROTTLE 1
+#define NETWORK_OFF 2
+
+const char off_arr[8] = {1, 0, 0, 0, 0, 0, 0, 0};
+
+void encode_int(int value, char *buffer)
+// asumes int is at least 32 bits
+// encodes little endian
+{
+	int i;
+	for (i = 0; i < 4; i++) {
+		int mask = 0xFF;
+		char to_send = (char)((value >> i) & mask);
+		buffer[i] = to_send;
+	}
+}
 
 int main()
 {
@@ -48,6 +65,25 @@ int main()
 	buffer[count] = 0;
 
 	printf("%s\n", buffer);
+
+	int running = 1;
+	while(running) {
+		char command[20];
+		char argument[20];
+		scanf("%20s %20s\n", buffer, argument);
+		
+		if (strcmp(command, "throttle") == 0) {
+			int value = strtol(argument, NULL, 0);
+			char send_arr[8];
+			encode_int(NETWORK_THROTTLE, send_arr);
+			encode_int(value, send_arr);
+			write(new_sock, send_arr, 8);
+		}
+		else if (strcmp(command, "off") == 0) {
+			write(new_sock, off_arr, 8);
+			running = 0;
+		}
+	}
 
 	return 0;
 }
