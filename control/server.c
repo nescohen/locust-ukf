@@ -69,19 +69,26 @@ int main()
 	int running = 1;
 	while(running) {
 		char command[20];
-		char argument[20];
-		scanf("%20s %20s\n", buffer, argument);
+		int argument = -1;
+		scanf("%19s %d", command, &argument);
 		
 		if (strcmp(command, "throttle") == 0) {
-			int value = strtol(argument, NULL, 0);
+			if (argument >= 0) {
 			char send_arr[8];
-			encode_int(NETWORK_THROTTLE, send_arr);
-			encode_int(value, send_arr);
-			write(new_sock, send_arr, 8);
+				encode_int(NETWORK_THROTTLE, send_arr);
+				encode_int(argument, send_arr + 4);
+				write(new_sock, send_arr, 8);
+			}
+			else {
+				printf("Invalid throttle value\n");
+			}
 		}
 		else if (strcmp(command, "off") == 0) {
 			write(new_sock, off_arr, 8);
 			running = 0;
+		}
+		else {
+			printf("unrecognized command - '%s'\n", command);
 		}
 	}
 
