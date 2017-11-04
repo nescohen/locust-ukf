@@ -12,6 +12,7 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <errno.h>
+#include <fcntl.h>
 
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -165,6 +166,8 @@ int establish_connection()
 		log_error("Connection to server failed");
 		return -1;
 	}
+
+	fcntl(sock_fd, F_SETFL, O_NONBLOCK);
 
 	char *confirm = "Connection confirmed";
 	write(sock_fd, confirm, strlen(confirm));
@@ -361,29 +364,25 @@ int main(int argc, char **argv)
 
 		// check for network throttle instructions
 		if (sock > 0) {
-			int done = 0;
-			while (!done) {
-				char buffer[8];
-				int count = read(sock, buffer, 8);
-				if (count == 0) done = 1;
-				else {
-					int code = decode_int(buffer);
-					int value = decode_int(buffer + 4);
+			char buffer[8];
+			int count = read(sock, buffer, 8);
+			if (count > 0) {
+				int code = decode_int(buffer);
+				int value = decode_int(buffer + 4);
 
-					switch(code) {
-						case NETWORK_THROTTLE:
-							if (value > 200) value = 200;
-							if (value < 0) value = 0;
-							user_throttle = value;
-							break;
-						case NETWORK_OFF:
-							if (value == 0) {
-								stop = 1;
-							}
-							break;
-						default:
-							log_error("Received unrecognized network command");
-					}
+				switch(code) {
+					case NETWORK_THROTTLE:
+						if (value > 200) value = 200;
+						if (value < 0) value = 0;
+						user_throttle = value;
+						break;
+					case NETWORK_OFF:
+						if (value == 0) {
+							stop = 1;
+						}
+						break;
+					default:
+						log_error("Received unrecognized network command");
 				}
 			}
 		}
