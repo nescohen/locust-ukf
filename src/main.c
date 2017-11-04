@@ -1,6 +1,15 @@
 /* Nes Cohen */
 /* 6/28/2016 */
 
+#include "navigation/navigation.h"
+#include "hardware/boardutil.h"
+#include "hardware/flight-input.h"
+#include "error/error_log.h"
+#include "pid/pid.h"
+#include "kalman/ukf_mrp.h"
+#include "math/matrix_util.h"
+#include "math/quaternion_util.h"
+
 #include <time.h>
 #include <math.h>
 #include <stdio.h>
@@ -19,13 +28,11 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
-#include "hardware/boardutil.h"
-#include "hardware/flight-input.h"
-#include "error/error_log.h"
-#include "pid/pid.h"
-#include "kalman/ukf_mrp.h"
-#include "math/matrix_util.h"
-#include "math/quaternion_util.h"
+#define GYRO_SENSATIVITY 4.36332f
+#define ACCL_SENSATIVITY (2.f * GRAVITY) // 2gs max converted to ms^-2
+#define GYRO_VARIANCE 0.193825 // 11.111... degress in radians
+#define ACCL_VARIANCE 1.1772
+#define COMP_VARIANCE 1.1772
 
 #define SOCKET_PORT 6969
 #define SERVER_ADDRESS "192.168.1.36"
@@ -34,13 +41,7 @@
 
 #define SIGNED_16_MAX 0x7FFF
 #define NSEC_TO_SEC 1e-9
-#define SEC_TO_NSEC (long)1e9
-
-#define GYRO_SENSATIVITY 4.36332f
-#define ACCL_SENSATIVITY 2.f * GRAVITY // 2gs max converted to ms^-2
-#define GYRO_VARIANCE 0.193825 // 11.111... degress in radians
-#define ACCL_VARIANCE 1.1772
-#define COMP_VARIANCE INT_MAX
+#define SEC_TO_NSEC ((long)1e9)
 
 #define GRAVITY 9.81f
 #define EPSILON 1.0f

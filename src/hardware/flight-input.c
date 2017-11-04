@@ -1,9 +1,10 @@
+#include "flight-input.h"
+#include "../error/error_log.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
 #include <string.h>
-#include "flight-input.h"
-#include "../error/error_log.h"
 
 static Controls g_controls = {0, 0, 0};
 static int g_update = 1; /* 1 = needs update, 0 = no update needed */
