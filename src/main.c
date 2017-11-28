@@ -1,7 +1,7 @@
 /* Nes Cohen */
 /* 6/28/2016 */
 
-#include "navigation/navigation.h"
+#include "nav/navigation.h"
 #include "hardware/boardutil.h"
 #include "hardware/flight-input.h"
 #include "error/error_log.h"
@@ -9,6 +9,7 @@
 #include "kalman/ukf_mrp.h"
 #include "math/matrix_util.h"
 #include "math/quaternion_util.h"
+#include "client/client.h"
 
 #include <time.h>
 #include <math.h>
@@ -23,21 +24,11 @@
 #include <errno.h>
 #include <fcntl.h>
 
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-
 #define GYRO_SENSATIVITY 4.36332f
 #define ACCL_SENSATIVITY (2.f * GRAVITY) // 2gs max converted to ms^-2
 #define GYRO_VARIANCE 0.193825 // 11.111... degress in radians
 #define ACCL_VARIANCE 1.1772
 #define COMP_VARIANCE 1.1772
-
-#define SOCKET_PORT 6969
-#define SERVER_ADDRESS "192.168.1.36"
-#define NETWORK_THROTTLE 1
-#define NETWORK_OFF 2
 
 #define SIGNED_16_MAX 0x7FFF
 #define NSEC_TO_SEC 1e-9
@@ -143,39 +134,6 @@ int decode_int(char *buffer)
 	return result;
 }
 
-int establish_connection()
-{
-	int sock_fd = socket(AF_INET, SOCK_STREAM, 0);
-	if (sock_fd <= 0) {
-		log_error("Socket creation failure");
-		return -1;
-	}
-	
-	struct sockaddr_in serv_addr;
-	memset(&serv_addr, 0, sizeof(serv_addr));
-	serv_addr.sin_family = AF_INET;
-	serv_addr.sin_port = htons(SOCKET_PORT);
-	
-	int err = inet_pton(AF_INET, SERVER_ADDRESS, &(serv_addr.sin_addr));
-	if (err <= 0) {
-		log_error("Address translation failure");
-		return -1;
-	}
-
-	err = connect(sock_fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
-	if (err < 0) {
-		log_error("Connection to server failed");
-		return -1;
-	}
-
-	fcntl(sock_fd, F_SETFL, O_NONBLOCK);
-
-	char *confirm = "Connection confirmed";
-	write(sock_fd, confirm, strlen(confirm));
-
-	return sock_fd;
-}
-
 int main(int argc, char **argv)
 {
 	struct timespec curr_clock;
@@ -219,10 +177,17 @@ int main(int argc, char **argv)
 		stop = 1;
 	}
 
+	// create and start sensor polling thread
 	pthread_t sensor_poll_thread;
 	pthread_create(&sensor_poll_thread, NULL, &poll_loop, NULL);
+
+	// create and start motor controlling thread
 	pthread_t motor_update_thread;
 	pthread_create(&motor_update_thread, NULL, &motor_loop, NULL);
+
+	// create and start network handling thread
+	pthread_t network_client_thread;
+	pthread_create(&network_client_thread, NULL, &network_client_start);
 
 	//TODO: have the alignment step also run a self-test on the gyro and make corrections
 	// Addendum: the filter seems to be performing quite well with out this, it may not be necessary
@@ -363,30 +328,6 @@ int main(int argc, char **argv)
 		controls.pitch = 0;
 		recovery_pid(euler_angles[2], euler_angles[1], &controls, motors, &hist_x, &hist_y, elapsed);
 
-		// check for network throttle instructions
-		if (sock > 0) {
-			char buffer[8];
-			int count = read(sock, buffer, 8);
-			if (count > 0) {
-				int code = decode_int(buffer);
-				int value = decode_int(buffer + 4);
-
-				switch(code) {
-					case NETWORK_THROTTLE:
-						if (value > 200) value = 200;
-						if (value < 0) value = 0;
-						user_throttle = value;
-						break;
-					case NETWORK_OFF:
-						if (value == 0) {
-							stop = 1;
-						}
-						break;
-					default:
-						log_error("Received unrecognized network command");
-				}
-			}
-		}
 		
 		if (user_throttle >= 0) set_throttle(motors);
 
