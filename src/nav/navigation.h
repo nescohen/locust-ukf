@@ -10,6 +10,8 @@ typedef drone_state {
 
 } Drone_state;
 
+void get_motor_positions(int *motors, Drone_state *state);
 
+void 
 
 #endif
