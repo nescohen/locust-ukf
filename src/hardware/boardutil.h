@@ -26,7 +26,7 @@ int comp_poll(Vector3 *output);
 
 void get_sensor_data(Vector3 *gyro, Vector3 *accel);
 void get_compass_data(Vector3 *compass);
-void stop_loop();
+void stop_hardware_loop();
 void *poll_loop(void *arg);
 
 void set_throttle(int *settings);

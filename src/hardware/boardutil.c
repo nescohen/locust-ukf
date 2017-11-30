@@ -357,7 +357,7 @@ void get_compass_data(Vector3 *compass)
 	pthread_mutex_unlock(&output_lock);
 }
 
-void stop_loop()
+void stop_hardware_loop()
 {
 	stop = 1;
 }
