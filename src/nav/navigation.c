@@ -4,14 +4,38 @@
 #include "../pid/pid.h"
 #include "../math/matrix_util.h"
 #include "../math/quaternion_util.h"
+#include "../kalman/kalman.h"
 
+#include <stdio.h>
+#include <string.h>
+#include <float.h>
 #include <time.h>
+#include <math.h>
 #include <pthread.h>
+
+#define GRAVITY 9.81f
+#define EPSILON 1.0f
+
+#define GYRO_SENSATIVITY 4.36332f
+#define ACCL_SENSATIVITY (2.f * GRAVITY) // 2gs max converted to ms^-2
+#define GYRO_VARIANCE 0.193825 // 11.111... degress in radians
+#define ACCL_VARIANCE 1.1772
+#define COMP_VARIANCE 1.1772
+
+#define ALIGN_TIME 2.5 // in seconds
+#define SIGNED_16_MAX 0x7FFF
+#define PID_SCALE 30 // 100 / 2 * M_PI
+#define NSEC_TO_SEC 1e-9
+#define SEC_TO_NSEC ((long)1e9)
 
 #define NAV_PRINT
 
-Pidhist g_hist_x;
-Pidhist g_hist_y;
+
+double g_north[3];
+double g_down[3];
+
+pthread_t sensor_poll_thread;
+pthread_t motor_update_thread;
 
 void mrp_to_euler(double *euler_angles, double *mrp)
 //expects 3x1 array to write and 3x1 mrp, returns equivelent euler_angle representation from mrp
@@ -34,6 +58,51 @@ void mrp_to_euler(double *euler_angles, double *mrp)
 	memcpy(euler_angles, result, sizeof(result));
 }
 
+int detect_nans(double *array, int size)
+{
+	int i;
+	int nan = 0;
+	for (i = 0; i < size; i++) {
+		if (array[i] != array[i]) nan = 1;
+	}
+	return nan;
+}
+
+void recovery_pid(double x, double y, Controls *controls, int *motors, Pidhist *hist_x, Pidhist *hist_y, double delta_t)
+{
+	double error_x = x - controls->roll;
+	double error_y = y - controls->pitch;
+
+	double correct_x = PID_SCALE*pid(hist_x, error_x, delta_t);
+	double correct_y = PID_SCALE*pid(hist_y, error_y, delta_t);
+
+	motors[0] = controls->throttle + (int)(0.5*correct_x) + (int)(0.5*correct_y);
+	motors[1] = controls->throttle + (int)(0.5*correct_x) + (int)(-0.5*correct_y);
+	motors[2] = controls->throttle + (int)(-0.5*correct_x) + (int)(0.5*correct_y);
+	motors[3] = controls->throttle + (int)(-0.5*correct_x) + (int)(-0.5*correct_y);
+
+	int i;
+	for (i = 0; i < 4; i++) {
+		if (motors[i] < 0) {
+			motors[i] = 0;
+		}
+		if (motors[i] > 200) {
+			motors[i] = 200;
+		}
+	}
+
+#ifdef PID_PRINT
+	static int cap = 0;
+	if (cap > 1000) {
+		printf("[%f, %f] => [%f, %f] => [%d, %d, %d, %d]\n", error_x, error_y, correct_x, correct_y, motors[0], motors[1], motors[2], motors[3]);
+		cap = 0;
+	}
+	else {
+		cap += 1;
+	}
+#endif
+}
+
 void sensor_to_array(double array[3], Vector3 sensor, double sensativity)
 {
 	array[0] = (double)sensor.x / (double)SIGNED_16_MAX * sensativity;
@@ -47,7 +116,9 @@ void init_drone_state(Drone_state *state)
 	for (i = 0; i < 4; i++) {
 		state->motors[i] = 0;
 	}
-	ukf_param_init(&(state->ukf_params));
+	ukf_param_init(&(state->ukf_param));
+	init_hist(&(state->hist_x));
+	init_hist(&(state->hist_y));
 }
 
 int start_sensors()
@@ -78,11 +149,8 @@ int init_nav(Drone_state *state)
 	}
 
 	// create and start sensor polling thread
-	pthread_t sensor_poll_thread;
 	pthread_create(&sensor_poll_thread, NULL, &poll_loop, NULL);
-
 	// create and start motor controlling thread
-	pthread_t motor_update_thread;
 	pthread_create(&motor_update_thread, NULL, &motor_loop, NULL);
 
 	init_drone_state(state);
@@ -97,9 +165,7 @@ int align_nav(Drone_state *state)
 	double align_var[SIZE_MEASUREMENT];
 	double weight_sum = 0;
 
-	struct timespec curr_clock;
-	struct timespec last_clock;
-
+	struct timespec curr_clock, last_clock;
 	if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) {
 		log_error("Failed to get system time during alignment");
 		return 1;
@@ -138,20 +204,73 @@ int align_nav(Drone_state *state)
 	memcpy(g_down, align_mean, sizeof(g_down));
 	memcpy(g_north, align_mean + 3, sizeof(g_north));
 
-	memset(state->ukf_params.state, 0, 3*sizeof(double));
-	memcpy(state->ukf_params.state + 3, align_mean + 6, 3*sizeof(double));
+	memset(state->ukf_param.state, 0, 3*sizeof(double));
+	memcpy(state->ukf_param.state + 3, align_mean + 6, 3*sizeof(double));
 
 #ifdef NAV_PRINT
 	printf("Align State:\n");
-	matrix_quick_print(state->ukf_params.covariance, SIZE_STATE, SIZE_STATE);
+	matrix_quick_print(state->ukf_param.covariance, SIZE_STATE, SIZE_STATE);
 #endif
 
 	return 0;
 }
 
-int update_nav(Drone_state *state, double delta_t)
+int update_nav(Drone_state *state, Controls *controls, double delta_t)
 {
-	
+	double measurement[SIZE_MEASUREMENT];
+	Vector3 gyro;
+	Vector3 accel;
+	Vector3 north;
+
+	get_sensor_data(&gyro, &accel);
+	get_compass_data(&north);
+
+	double accel_var[3];
+	double comp_var[3];
+	double gyro_var[3];
+	double acceleration[3];
+	sensor_to_array(acceleration, accel, ACCL_SENSATIVITY);
+	double accel_mag = vector_magnitude(acceleration);
+	if (accel_mag + EPSILON > GRAVITY && accel_mag - EPSILON < GRAVITY) {
+		normalize_vector(acceleration, measurement + 0);
+		matrix_init(accel_var, ACCL_VARIANCE, 3, 1);
+	}
+	else {
+		matrix_init(accel_var, DBL_MAX, 3, 1);
+	}
+	sensor_to_array(measurement + 3, north, 1);
+	normalize_vector(measurement + 3, measurement + 3);
+	matrix_init(comp_var, COMP_VARIANCE, 3, 1);
+	sensor_to_array(measurement + 6, gyro, GYRO_SENSATIVITY);
+	matrix_init(gyro_var, GYRO_VARIANCE, 3, 1);
+
+	int i;
+	for (i = 0; i < 3; i++) {
+		state->ukf_param.R[i*SIZE_MEASUREMENT + i] = accel_var[i];
+	}
+	for (i = 3; i < 6; i++) {
+		state->ukf_param.R[i*SIZE_MEASUREMENT + i] = comp_var[i - 3];
+	}
+	for (i = 6; i < 9; i++) {
+		state->ukf_param.R[i*SIZE_MEASUREMENT + i] = gyro_var[i - 6];
+	}
+
+	ukf_run(&(state->ukf_param), measurement, delta_t);
+
+	// convert mrp to euler angles for pid
+	double euler_angles[3];
+	mrp_to_euler(euler_angles, state->ukf_param.state);
+
+	if (detect_nans(measurement, SIZE_MEASUREMENT) ||
+		detect_nans(euler_angles, 3))
+	{
+		printf("NAN detected\n");
+		return 1;
+	}
+
+	recovery_pid(euler_angles[2], euler_angles[1], controls, state->motors, &(state->hist_x), &(state->hist_y), delta_t);
+
+	return 0;
 }
 
 void stop_nav()
@@ -162,39 +281,4 @@ void stop_nav()
 	accl_power_off();
 	comp_power_off();
 	pthread_join(motor_update_thread, NULL);
-}
-
-void recovery_pid(double x, double y, Controls *controls, int *motors, Pidhist *hist_x, Pidhist *hist_y, double delta_t)
-{
-	double error_x = x - controls->roll;
-	double error_y = y - controls->pitch;
-
-	double correct_x = PID_SCALE*pid(hist_x, error_x, delta_t);
-	double correct_y = PID_SCALE*pid(hist_y, error_y, delta_t);
-
-	motors[0] = controls->throttle + (int)(0.5*correct_x) + (int)(0.5*correct_y);
-	motors[1] = controls->throttle + (int)(0.5*correct_x) + (int)(-0.5*correct_y);
-	motors[2] = controls->throttle + (int)(-0.5*correct_x) + (int)(0.5*correct_y);
-	motors[3] = controls->throttle + (int)(-0.5*correct_x) + (int)(-0.5*correct_y);
-
-	int i;
-	for (i = 0; i < 4; i++) {
-		if (motors[i] < 0) {
-			motors[i] = 0;
-		}
-		if (motors[i] > 200) {
-			motors[i] = 200;
-		}
-	}
-
-#ifdef PID_PRINT
-	static int cap = 0;
-	if (cap > 1000) {
-		printf("[%f, %f] => [%f, %f] => [%d, %d, %d, %d]\n", error_x, error_y, correct_x, correct_y, motors[0], motors[1], motors[2], motors[3]);
-		cap = 0;
-	}
-	else {
-		cap += 1;
-	}
-#endif
 }

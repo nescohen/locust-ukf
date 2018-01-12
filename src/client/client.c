@@ -1,5 +1,10 @@
 #include "client.h"
+#include "../error/error_log.h"
 
+#include <unistd.h>
+#include <string.h>
+#include <pthread.h>
+#include <fcntl.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <arpa/inet.h>
@@ -10,7 +15,22 @@
 
 static int g_sock;
 volatile int g_stop;
+volatile int g_throttle;
 pthread_mutex_t client_lock;
+
+static int decode_int(char *buffer)
+// WARNING: assumes int is at least 32 bits
+// decodes assuming little endian
+{
+	int result = 0;
+	int i;
+	for (i = 0; i < 4; i++) {
+		result |= (int)buffer[i] << i*8;
+	}
+
+	return result;
+}
+
 
 int establish_connection()
 {
@@ -47,7 +67,7 @@ int establish_connection()
 
 void network_client_init()
 {
-	pthread_mutex_init(&client_lock);
+	pthread_mutex_init(&client_lock, NULL);
 }
 
 void *network_client_start(void *arg)
@@ -69,11 +89,15 @@ void *network_client_start(void *arg)
 				case NETWORK_THROTTLE:
 					if (value > 200) value = 200;
 					if (value < 0) value = 0;
-					user_throttle = value;
+					pthread_mutex_lock(&client_lock);
+					g_throttle = value;
+					pthread_mutex_unlock(&client_lock);
 					break;
 				case NETWORK_OFF:
 					if (value == 0) {
-						stop = 1;
+						pthread_mutex_lock(&client_lock);
+						g_stop = 1;
+						pthread_mutex_unlock(&client_lock);
 					}
 					break;
 				default:
@@ -82,6 +106,21 @@ void *network_client_start(void *arg)
 		}
 	}
 	return NULL;
+}
+
+int network_client_get_throttle()
+// returns -1 if stopped
+{
+	pthread_mutex_lock(&client_lock);
+	if (g_stop) {
+		pthread_mutex_unlock(&client_lock);
+		return -1;
+	}
+	else {
+		int result = g_throttle;
+		pthread_mutex_unlock(&client_lock);
+		return result;
+	}
 }
 
 void network_client_stop()
