@@ -4,6 +4,7 @@
 // network related definitions
 #define NETWORK_THROTTLE 1
 #define NETWORK_OFF 2
+#define NETWORK_REPORT 3
 
 void network_client_init();
 

@@ -9,8 +9,10 @@
 #define PORT 6969
 #define NETWORK_THROTTLE 1
 #define NETWORK_OFF 2
+#define NETWORK_REPORT 3
 
 const char off_arr[8] = {NETWORK_OFF, 0, 0, 0, 0, 0, 0, 0};
+const char report_arr[8] = {NETWORK_REPORT, 0, 0, 0, 0, 0, 0, 0};
 
 void encode_int(int value, char *buffer)
 // asumes int is at least 32 bits
@@ -21,6 +23,21 @@ void encode_int(int value, char *buffer)
 		int mask = 0xFF;
 		char to_send = (char)((value >> i*8) & mask);
 		buffer[i] = to_send;
+	}
+}
+
+int translate_command(char *str) {
+	if (strcmp(command, "throttle") == 0) {
+		return NETWORK_THROTTLE;
+	}
+	else if (strcmp(command, "off") == 0) {
+		return NETWORK_OFF;
+	}
+	else if (strcmp(command, "report") == 0) {
+		return NETWORK_REPORT;
+	}
+	else {
+		return -1;
 	}
 }
 
@@ -86,6 +103,9 @@ int main()
 		else if (strcmp(command, "off") == 0) {
 			write(new_sock, off_arr, 8);
 			running = 0;
+		}
+		else if (strcmp(command, "report") == 0) {
+			write(new_sock, report_arr, 8);
 		}
 		else {
 			printf("unrecognized command - '%s'\n", command);

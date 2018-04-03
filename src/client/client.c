@@ -70,6 +70,11 @@ void network_client_init()
 	pthread_mutex_init(&client_lock, NULL);
 }
 
+void write_status(int sock) {
+	char *status = "test status";
+	write(sock, status, strlen(status) + 1);
+}
+
 void *network_client_start(void *arg)
 // this function initiate connection with server and handle the connection
 {
@@ -100,6 +105,8 @@ void *network_client_start(void *arg)
 						pthread_mutex_unlock(&client_lock);
 					}
 					break;
+				case NETWORK_REPORT:
+					write_status(g_sock);
 				default:
 					log_error("Received unrecognized network command");
 			}
