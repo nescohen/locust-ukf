@@ -26,7 +26,7 @@ void encode_int(int value, char *buffer)
 	}
 }
 
-int translate_command(char *str) {
+int translate_command(char *command) {
 	if (strcmp(command, "throttle") == 0) {
 		return NETWORK_THROTTLE;
 	}

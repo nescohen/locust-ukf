@@ -98,7 +98,7 @@ int main(int argc, char **argv)
 		
 		if (user_throttle >= 0) set_throttle(drone_state.motors);
 
-		//printf("Attitude MRP = [%f, %f, %f] ->\t[%f, %f, %f]^t\t (%f, %f, %f)\r", measurement[6], measurement[7], measurement[8], ukf.state[0], ukf.state[1], ukf.state[2], euler_angles[0], euler_angles[1], euler_angles[2]);
+		printf("Attitude MRP = [%f, %f, %f] ->\t[%f, %f, %f]^t\t (%f, %f, %f)\r", measurement[6], measurement[7], measurement[8], ukf.state[0], ukf.state[1], ukf.state[2], euler_angles[0], euler_angles[1], euler_angles[2]);
 	}
 
 	stop_nav();
