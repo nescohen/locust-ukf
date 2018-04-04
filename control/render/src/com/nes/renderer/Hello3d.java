@@ -1,3 +1,5 @@
+package com.nes.renderer;
+
 import com.sun.j3d.utils.universe.SimpleUniverse;
 import com.sun.j3d.utils.geometry.ColorCube;
 import javax.media.j3d.BranchGroup;
