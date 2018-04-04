@@ -57,6 +57,7 @@ int main(int argc, char **argv)
 	}
 
 	// create and start network handling thread
+	network_client_init();
 	pthread_t network_client_thread;
 	pthread_create(&network_client_thread, NULL, &network_client_start, NULL);
 
@@ -89,8 +90,9 @@ int main(int argc, char **argv)
 		if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
 		double elapsed = (double)(curr_clock.tv_nsec - last_clock.tv_nsec)*NSEC_TO_SEC + (double)(curr_clock.tv_sec - last_clock.tv_sec); 
 
+		user_throttle = network_client_get_throttle();
 		Controls controls;
-		controls.throttle = (user_throttle == -1) ? 100 : user_throttle;
+		controls.throttle = (user_throttle == -1) ? 0 : user_throttle;
 		controls.roll = 0;
 		controls.pitch = 0;
 
