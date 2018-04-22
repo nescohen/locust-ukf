@@ -78,15 +78,16 @@ int network_client_init()
 	time_t start;
 	time(&start);
 	while ((g_sock = establish_connection()) == -1) {
-		sleep(15);
+		sleep(TIMEOUT_INCREMENT);
 		printf("Connection unsuccessful, trying again...\n");
 		time_t now;
 		time(&now);
 		if (difftime(now, start) >= CONNECTION_TIMEOUT) {
-			printf("Connection to server timed out");
+			printf("Connection to server timed out, shutting down\n");
 			return 0;
 		}
 	}
+	printf("Connection Estabished\n");
 	return 1;
 }
 
