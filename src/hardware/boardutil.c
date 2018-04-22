@@ -42,14 +42,14 @@ static pthread_mutex_t bus_lock = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
 static pthread_mutex_t output_lock = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
 
 static pthread_mutex_t motor_lock = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
-static volatile int curr_throttle[4] = {0, 0, 0, 0};
+static int curr_throttle[4] = {0, 0, 0, 0};
 
 static Vector3 curr_gyro;
 static Vector3 curr_accel;
 static Vector3 curr_compass;
 static int curr_gyro_count;
 
-static volatile sig_atomic_t stop = 0;
+static sig_atomic_t stop = 0;
 
 int open_bus(char *filename)
 // must be called before multi-threading starts

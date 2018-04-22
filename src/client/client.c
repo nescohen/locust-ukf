@@ -19,9 +19,10 @@
 #define TIMEOUT_INCREMENT ((int)15)
 
 static int g_sock;
-volatile int g_stop;
-volatile int g_throttle;
+static int g_stop;
+static int g_throttle;
 pthread_mutex_t client_lock;
+
 
 static int decode_int(char *buffer)
 // WARNING: assumes int is at least 32 bits

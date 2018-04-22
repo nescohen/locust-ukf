@@ -24,10 +24,10 @@
 #include <errno.h>
 #include <fcntl.h>
 
-#define NSEC_TO_SEC 1e-9
+#define NSEC_TO_SEC ((double)1e-9)
 #define SEC_TO_NSEC ((long)1e9)
 
-volatile sig_atomic_t stop;
+sig_atomic_t stop;
 void inthand(int signum)
 {
 	stop = 1;
