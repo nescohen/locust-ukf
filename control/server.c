@@ -85,11 +85,13 @@ int main()
 
 	int running = 1;
 	while(running) {
+		printf("Prompt: ");
 		char command[20];
 		int argument = -1;
-		scanf("%19s %d", command, &argument);
+		scanf("%19s", command);
 		
 		if (strcmp(command, "throttle") == 0) {
+			scanf("%d", &argument);
 			if (argument >= 0) {
 				char send_arr[8];
 				encode_int(NETWORK_THROTTLE, send_arr);
