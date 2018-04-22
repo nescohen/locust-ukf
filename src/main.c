@@ -57,7 +57,10 @@ int main(int argc, char **argv)
 	}
 
 	// create and start network handling thread
-	network_client_init();
+	int net_success = network_client_init();
+	if (!net_success) {
+		return 1;
+	}
 	pthread_t network_client_thread;
 	pthread_create(&network_client_thread, NULL, &network_client_start, NULL);
 

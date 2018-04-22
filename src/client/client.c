@@ -1,6 +1,7 @@
 #include "client.h"
 #include "../error/error_log.h"
 
+#include <time.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
@@ -11,8 +12,11 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
-#define SOCKET_PORT 6969
+#define SOCKET_PORT ((int)6969)
 #define SERVER_ADDRESS "192.168.1.36"
+
+#define CONNECTION_TIMEOUT ((int)120)
+#define TIMEOUT_INCREMENT ((int)15)
 
 static int g_sock;
 volatile int g_stop;
@@ -66,9 +70,24 @@ int establish_connection()
 	return sock_fd;
 }
 
-void network_client_init()
+int network_client_init()
 {
 	pthread_mutex_init(&client_lock, NULL);
+
+	printf("Establishing connection...\n");
+	time_t start;
+	time(&start);
+	while ((g_sock = establish_connection()) == -1) {
+		sleep(15);
+		printf("Connection unsuccessful, trying again...\n");
+		time_t now;
+		time(&now);
+		if (difftime(now, start) >= CONNECTION_TIMEOUT) {
+			printf("Connection to server timed out");
+			return 0;
+		}
+	}
+	return 1;
 }
 
 void write_status(int sock) {
@@ -82,7 +101,6 @@ void *network_client_start(void *arg)
 	pthread_mutex_lock(&client_lock);
 	g_stop = 0;
 	pthread_mutex_unlock(&client_lock);
-	g_sock = establish_connection();
 	while (!g_stop && g_sock > 0) {
 		// check for network throttle instructions
 		char buffer[8];

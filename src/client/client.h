@@ -6,7 +6,8 @@
 #define NETWORK_OFF 2
 #define NETWORK_REPORT 3
 
-void network_client_init();
+int network_client_init();
+// returns true if successful and false if failed
 
 void *network_client_start(void *arg);
 
