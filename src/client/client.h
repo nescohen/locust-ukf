@@ -2,9 +2,14 @@
 #define CLIENT_H
 
 // network related definitions
-#define NETWORK_THROTTLE 1
-#define NETWORK_OFF 2
-#define NETWORK_REPORT 3
+#define NETWORK_THROTTLE ((int)1)
+#define NETWORK_OFF ((int)2)
+#define NETWORK_REPORT ((int)3)
+
+typedef struct command {
+	int type;
+	int value;
+} Command;
 
 int network_client_init();
 // returns true if successful and false if failed
