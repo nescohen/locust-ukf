@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <errno.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -70,10 +71,10 @@ int main()
 	}
 
 	struct sockaddr_in new_address;
-	socklen_t new_addr_len;
+	socklen_t new_addr_len = sizeof(new_address);
 	int new_sock = accept(sockfd, (struct sockaddr *)&new_address, &new_addr_len);
-	while (new_sock <= 0) {
-		printf("Connection accept error\n");
+	if (new_sock <= 0) {
+		printf("Connection accept error: %d\n", errno);
 		return 1;
 	}
 
