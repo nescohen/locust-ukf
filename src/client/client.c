@@ -18,11 +18,38 @@
 #define CONNECTION_TIMEOUT ((int)120)
 #define TIMEOUT_INCREMENT ((int)15)
 
+#define QUEUE_LENGTH ((int)16)
+
 static int g_sock;
 static int g_stop;
 static int g_throttle;
 pthread_mutex_t client_lock;
 
+static Command g_queue[QUEUE_LENGTH];
+static int g_queue_head;
+static int g_queue_tail;
+
+static int enqueue(Command *insert)
+{
+	int result;
+	pthread_mutex_lock(&client_lock);
+	if ((g_queue_tail + 1)%QUEUE_LENGTH == g_queue_head) {
+		// queue full
+		result = 0;
+	}
+	else {
+		g_queue_tail = (g_queue_tail + 1) % QUEUE_LENGTH;
+	}
+	pthread_mutex_unlock(&client_lock);
+	return result;
+}
+
+static int dequeue(Command *result)
+{
+	pthread_mutex_lock(&client_lock);
+	
+	pthread_mutex_unlock(&client_lock);
+}
 
 static int decode_int(char *buffer)
 // WARNING: assumes int is at least 32 bits
@@ -36,7 +63,6 @@ static int decode_int(char *buffer)
 
 	return result;
 }
-
 
 int establish_connection()
 {
@@ -74,6 +100,9 @@ int establish_connection()
 int network_client_init()
 {
 	pthread_mutex_init(&client_lock, NULL);
+	pthread_mutex_lock(&client_lock);
+	g_queue_head = 0;
+	g_queue_tail = 0;
 
 	printf("Establishing connection...\n");
 	time_t start;
@@ -85,16 +114,28 @@ int network_client_init()
 		time(&now);
 		if (difftime(now, start) >= CONNECTION_TIMEOUT) {
 			printf("Connection to server timed out, shutting down\n");
+			pthread_mutex_unlock(&client_lock);
 			return 0;
 		}
 	}
+	pthread_mutex_unlock(&client_lock);
 	printf("Connection Estabished\n");
 	return 1;
 }
 
-void write_status(int sock) {
+void write_status(int sock)
+{
 	char *status = "test status";
 	write(sock, status, strlen(status) + 1);
+}
+
+static int continue_loop()
+{
+	int result;
+	pthread_mutex_lock(&client_lock);
+	result = (!g_stop && g_sock > 0);
+	pthread_mutex_unlock(&client_lock);
+	return result;
 }
 
 void *network_client_start(void *arg)
@@ -103,7 +144,7 @@ void *network_client_start(void *arg)
 	pthread_mutex_lock(&client_lock);
 	g_stop = 0;
 	pthread_mutex_unlock(&client_lock);
-	while (!g_stop && g_sock > 0) {
+	while (continue_loop()) {
 		// check for network throttle instructions
 		char buffer[8];
 		int count = read(g_sock, buffer, 8);
