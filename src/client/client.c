@@ -1,6 +1,7 @@
 #include "client.h"
 #include "../error/error_log.h"
 
+#include <stdio.h>
 #include <unistd.h>
 #include <string.h>
 #include <pthread.h>
@@ -89,6 +90,20 @@ void *network_client_start(void *arg)
 		if (count > 0) {
 			int code = decode_int(buffer);
 			int value = decode_int(buffer + 4);
+
+#ifdef DEBUG
+			switch(code) {
+				case NETWORK_THROTTLE:
+					printf("Received network THROTTLE command\n");
+					break;
+				case NETWORK_OFF:
+					printf("Received network OFF command\n");
+					break;
+				case NETWORK_REPORT:
+					printf("Received network REPORT command\n");
+					break;
+			}
+#endif
 
 			switch(code) {
 				case NETWORK_THROTTLE:

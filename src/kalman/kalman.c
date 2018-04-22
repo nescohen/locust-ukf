@@ -200,8 +200,8 @@ void ukf_update(double *x, double *z, double *P, double *R, double *gamma, doubl
 
 #ifdef DEBUG
 	//debug printing for testing
-	printf("TRANSFORMED SIGMA POINTS MEAN\n");
-	matrix_quick_print(u_z, options->m, 1);
+	//printf("TRANSFORMED SIGMA POINTS MEAN\n");
+	//matrix_quick_print(u_z, options->m, 1);
 #endif
 
 	// P_z = sum[ w_c*(Z-u_z)(Z-u_z)^t ] + R .. Covariance of the sigma points in measurement space

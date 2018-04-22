@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if ! gcc -o bin/test.bin -g -Wall -O3 src/main.c src/hardware/boardutil.c src/hardware/flight-input.c src/error/error_log.c src/pid/pid.c src/kalman/ukf_mrp.c src/kalman/kalman.c src/math/quaternion_util.c src/math/matrix_util.c src/nav/navigation.c src/client/client.c -lm -lpthread -lgsl -lgslcblas
+if ! gcc -o bin/test.bin -g -Wall -O3 -D DEBUG src/main.c src/hardware/boardutil.c src/hardware/flight-input.c src/error/error_log.c src/pid/pid.c src/kalman/ukf_mrp.c src/kalman/kalman.c src/math/quaternion_util.c src/math/matrix_util.c src/nav/navigation.c src/client/client.c -lm -lpthread -lgsl -lgslcblas
 then
 	echo "Compilation failed."
 	exit 1
