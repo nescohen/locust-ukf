@@ -11,6 +11,9 @@ typedef struct command {
 	int value;
 } Command;
 
+int poll_command(Command *next);
+// non-blocking, true if command is present, false if not
+
 int network_client_init();
 // returns true if successful and false if failed
 

@@ -28,27 +28,47 @@ pthread_mutex_t client_lock;
 static Command g_queue[QUEUE_LENGTH];
 static int g_queue_head;
 static int g_queue_tail;
+static int g_queue_items;
 
 static int enqueue(Command *insert)
 {
 	int result;
 	pthread_mutex_lock(&client_lock);
-	if ((g_queue_tail + 1)%QUEUE_LENGTH == g_queue_head) {
+	if (g_queue_tail == g_queue_head && g_queue_items != 0) {
 		// queue full
 		result = 0;
 	}
 	else {
+		memcpy( (g_queue + g_queue_tail), insert, sizeof(Command));
 		g_queue_tail = (g_queue_tail + 1) % QUEUE_LENGTH;
+		g_queue_items += 1;
+		result = 1;
 	}
 	pthread_mutex_unlock(&client_lock);
 	return result;
 }
 
-static int dequeue(Command *result)
+static int dequeue(Command *writeback)
 {
+	int result;
 	pthread_mutex_lock(&client_lock);
-	
+	if (g_queue_tail == g_queue_head && g_queue_items == 0) {
+		// queue empty
+		result = 0;
+	}
+	else {
+		memcpy(writeback, (g_queue + g_queue_head), sizeof(Command));
+		g_queue_head = (g_queue_head + 1) % QUEUE_LENGTH;
+		g_queue_items -= 1;
+		result = 1;
+	}
 	pthread_mutex_unlock(&client_lock);
+	return result;
+}
+
+int poll_command(Command *next)
+{
+	return dequeue(next);
 }
 
 static int decode_int(char *buffer)
@@ -103,6 +123,7 @@ int network_client_init()
 	pthread_mutex_lock(&client_lock);
 	g_queue_head = 0;
 	g_queue_tail = 0;
+	g_queue_items = 0;
 
 	printf("Establishing connection...\n");
 	time_t start;
