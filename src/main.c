@@ -27,10 +27,23 @@
 #define NSEC_TO_SEC ((double)1e-9)
 #define SEC_TO_NSEC ((long)1e9)
 
-sig_atomic_t stop;
+static sig_atomic_t stop;
+
 void inthand(int signum)
 {
 	stop = 1;
+}
+
+void handle_command(Drone_state *state, Command *command)
+{
+	switch (command->type) {
+		case NETWORK_THROTTLE:
+			break;
+		case NETWORK_OFF:
+			break;
+		case NETWORK_REPORT:
+			break;
+	}
 }
 
 int main(int argc, char **argv)
@@ -93,7 +106,7 @@ int main(int argc, char **argv)
 		if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
 		double elapsed = (double)(curr_clock.tv_nsec - last_clock.tv_nsec)*NSEC_TO_SEC + (double)(curr_clock.tv_sec - last_clock.tv_sec); 
 
-		user_throttle = network_client_get_throttle();
+		// DEPRECIATED! user_throttle = network_client_get_throttle();
 		Controls controls;
 		controls.throttle = (user_throttle == -1) ? 0 : user_throttle;
 		controls.roll = 0;

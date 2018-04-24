@@ -21,9 +21,6 @@ void *network_client_start(void *arg);
 
 int establish_connection();
 
-int network_client_get_throttle();
-// returns -1 if stopped
-
 void network_client_stop();
 
 #endif

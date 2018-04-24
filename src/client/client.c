@@ -22,7 +22,6 @@
 
 static int g_sock;
 static int g_stop;
-static int g_throttle;
 pthread_mutex_t client_lock;
 
 static Command g_queue[QUEUE_LENGTH];
@@ -166,7 +165,6 @@ void *network_client_start(void *arg)
 	g_stop = 0;
 	pthread_mutex_unlock(&client_lock);
 	while (continue_loop()) {
-		// check for network throttle instructions
 		char buffer[8];
 		int count = read(g_sock, buffer, 8);
 		if (count > 0) {
@@ -187,44 +185,13 @@ void *network_client_start(void *arg)
 			}
 #endif
 
-			switch(code) {
-				case NETWORK_THROTTLE:
-					if (value > 200) value = 200;
-					if (value < 0) value = 0;
-					pthread_mutex_lock(&client_lock);
-					g_throttle = value;
-					pthread_mutex_unlock(&client_lock);
-					break;
-				case NETWORK_OFF:
-					if (value == 0) {
-						pthread_mutex_lock(&client_lock);
-						g_stop = 1;
-						pthread_mutex_unlock(&client_lock);
-					}
-					break;
-				case NETWORK_REPORT:
-					write_status(g_sock);
-				default:
-					log_error("Received unrecognized network command");
-			}
+			Command curr;
+			curr.type = code;
+			curr.value = value;
+			enqueue(curr);
 		}
 	}
 	return NULL;
-}
-
-int network_client_get_throttle()
-// returns -1 if stopped
-{
-	pthread_mutex_lock(&client_lock);
-	if (g_stop) {
-		pthread_mutex_unlock(&client_lock);
-		return -1;
-	}
-	else {
-		int result = g_throttle;
-		pthread_mutex_unlock(&client_lock);
-		return result;
-	}
 }
 
 void network_client_stop()
