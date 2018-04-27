@@ -26,7 +26,7 @@
 #define NSEC_TO_SEC ((double)1e-9)
 #define SEC_TO_NSEC ((long)1e9)
 
-static sig_atomic_t g_signal_stop = 0;
+volatile sig_atomic_t g_signal_stop;
 
 void inthand(int signum)
 {
@@ -90,7 +90,10 @@ int main(int argc, char **argv)
 	pthread_t navigation_thread;
 	pthread_create(&navigation_thread, NULL, &navigation_main, NULL);
 
-	command_listen_main(NULL);
+	pthread_t command_thread;
+	pthread_create(&command_thread, NULL, &command_listen_main, NULL);
+
+	pthread_join(command_thread, NULL);
 
 	void *retval;
 	pthread_join(navigation_thread, &retval);

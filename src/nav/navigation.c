@@ -1,4 +1,5 @@
 #include "navigation.h"
+#include "../signal.h"
 #include "../hardware/boardutil.h"
 #include "../error/error_log.h"
 #include "../pid/pid.h"
@@ -373,16 +374,16 @@ void *navigation_main(void *arg)
 		Directives directives;
 		get_directives(&directives);
 		
-		if (directives.stop) {
-			stop = 1;
-		}
-
 		Controls controls;
 		controls.throttle = directives.throttle;
 		controls.roll = 0;
 		controls.pitch = 0;
 
 		update_nav(&drone_state, &controls, elapsed);
+
+		if (directives.stop || g_signal_stop) {
+			stop = 1;
+		}
 	}
 
 	stop_nav();
