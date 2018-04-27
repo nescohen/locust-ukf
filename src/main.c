@@ -27,47 +27,44 @@
 #define NSEC_TO_SEC ((double)1e-9)
 #define SEC_TO_NSEC ((long)1e9)
 
-static sig_atomic_t stop;
-
 void inthand(int signum)
 {
-	stop = 1;
+	//TODO: set nav controls to indicate it to stop
 }
 
-void handle_command(Drone_state *state, Command *command)
+int handle_command(Command *command)
 {
-	switch (command->type) {
+	int result = 0;
+	switch(command->type) {
 		case NETWORK_THROTTLE:
-			break;
-		case NETWORK_OFF:
 			break;
 		case NETWORK_REPORT:
 			break;
+		case NETWORK_OFF:
+			// potentially do other things
+			result = 1;
+			break;
 	}
+
+	return result;
+}
+
+void *command_listen_main(void *arg)
+{
+	Command curr;
+
+	int stop = 0;
+	while (!stop) {
+		get_command(&curr); // this will block until a command is actually available
+		stop = handle_command(&curr);
+	}
+	pthread_exit(NULL);
 }
 
 int main(int argc, char **argv)
 {
-	// signal handlers to prevent motors from staying on
 	signal(SIGINT, inthand);
 	signal(SIGTSTP, inthand);
-
-	int user_throttle = -1;
-	if (argc == 3) {
-		char *end = NULL;
-		long input = strtol(argv[2], &end, 10);
-		if (end != argv[2] && !strcmp(argv[1], "throttle") && input >= 0 && input <= 200) {
-			user_throttle = (int) input;
-		}
-		else {
-			printf("Invalid arguments. Exiting.\n");
-			return 1;
-		}
-	}
-	else if (argc != 1) {
-		printf("Invalid arguments. Exiting.\n");
-		return 1;
-	}
 
 	// create and start network handling thread
 	int net_success = network_client_init();
@@ -77,49 +74,14 @@ int main(int argc, char **argv)
 	pthread_t network_client_thread;
 	pthread_create(&network_client_thread, NULL, &network_client_start, NULL);
 
-	//TODO: have the alignment step also run a self-test on the gyro and make corrections
-	// Addendum: the filter seems to be performing quite well with out this, it may not be necessary
-	//TODO: find the source of the NaNs. In the final program it should be impossible to generate a NaN
-
-	Drone_state drone_state;
-
-	// Navigation initialization
-	int error = init_nav(&drone_state);
-	if (error) {
-		printf("Navigation initialization failed. Exiting.\n");
-		return 1;
+	pthread_t navigation_thread;
+	pthread_create(&navigation_thread, NULL, &navigation_main, NULL);
+	void *retval;
+	pthread_join(navigation_thread, &retval);
+	if (*((int *)retval) != 0) {
+		printf("Error occurred during navigation thread execution\n");
 	}
 
-	//Navigation alignment
-	error = align_nav(&drone_state);
-	if (error) {
-		printf("Navigation alignment failed. Exiting.\n");
-		stop_nav();
-		return 1;
-	}
-
-	struct timespec curr_clock, last_clock;
-	if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
-	while(!stop) {
-		// calculate time elapsed during last loop iteration
-		last_clock = curr_clock;
-		if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
-		double elapsed = (double)(curr_clock.tv_nsec - last_clock.tv_nsec)*NSEC_TO_SEC + (double)(curr_clock.tv_sec - last_clock.tv_sec); 
-
-		// DEPRECIATED! user_throttle = network_client_get_throttle();
-		Controls controls;
-		controls.throttle = (user_throttle == -1) ? 0 : user_throttle;
-		controls.roll = 0;
-		controls.pitch = 0;
-
-		update_nav(&drone_state, &controls, elapsed);
-		
-		if (user_throttle >= 0) set_throttle(drone_state.motors);
-
-		//printf("Attitude MRP = [%f, %f, %f] ->\t[%f, %f, %f]^t\t (%f, %f, %f)\r", measurement[6], measurement[7], measurement[8], ukf.state[0], ukf.state[1], ukf.state[2], euler_angles[0], euler_angles[1], euler_angles[2]);
-	}
-
-	stop_nav();
 	network_client_stop();
 	pthread_join(network_client_thread, NULL);
 	log_complete();

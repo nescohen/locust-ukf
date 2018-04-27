@@ -29,4 +29,7 @@ int update_nav(Drone_state *state, Controls *controls, double delta_t);
 void stop_nav();
 // shuts down sensors and the sensor and motor threads
 
+void *navigation_main(void *arg);
+// main navigation loop, running on worker thread
+
 #endif

@@ -13,29 +13,31 @@
 #include <math.h>
 #include <pthread.h>
 
-#define GRAVITY 9.81f
-#define EPSILON 1.0f
+#define GRAVITY (9.81f)
+#define EPSILON (1.0f)
 
-#define GYRO_SENSATIVITY 4.36332f
+#define GYRO_SENSATIVITY (4.36332f)
 #define ACCL_SENSATIVITY (2.f * GRAVITY) // 2gs max converted to ms^-2
-#define GYRO_VARIANCE 0.193825 // 11.111... degress in radians
-#define ACCL_VARIANCE 1.1772
-#define COMP_VARIANCE 1.1772
+#define GYRO_VARIANCE (0.193825) // 11.111... degress in radians
+#define ACCL_VARIANCE (1.1772)
+#define COMP_VARIANCE (1.1772)
 
-#define ALIGN_TIME 2.5 // in seconds
-#define SIGNED_16_MAX 0x7FFF
-#define PID_SCALE 30 // 100 / 2 * M_PI
-#define NSEC_TO_SEC 1e-9
+#define ALIGN_TIME (2.5) // in seconds
+#define SIGNED_16_MAX (0x7FFF)
+#define PID_SCALE (30) // 100 / 2 * M_PI
+#define NSEC_TO_SEC (1e-9)
 #define SEC_TO_NSEC ((long)1e9)
 
 #define NAV_PRINT
 
-
+// TODO: make this more modular, referenced from elsewhere
+// NOTE: do not make static until this is fixed
 double g_north[3];
 double g_down[3];
 
 pthread_t sensor_poll_thread;
 pthread_t motor_update_thread;
+static int g_thread_return;
 
 void mrp_to_euler(double *euler_angles, double *mrp)
 //expects 3x1 array to write and 3x1 mrp, returns equivelent euler_angle representation from mrp
@@ -281,4 +283,54 @@ void stop_nav()
 	accl_power_off();
 	comp_power_off();
 	pthread_join(motor_update_thread, NULL);
+}
+
+void *navigation_main(void *arg)
+{
+	Drone_state drone_state;
+
+	// Navigation initialization
+	int error = init_nav(&drone_state);
+	if (error) {
+		printf("Navigation initialization failed. Exiting.\n");
+		g_thread_return = 1;
+		pthread_exit(&g_thread_return);
+	}
+
+	//Navigation alignment
+	error = align_nav(&drone_state);
+	if (error) {
+		printf("Navigation alignment failed. Exiting.\n");
+		stop_nav();
+		g_thread_return = 1;
+		pthread_exit(&g_thread_return);
+	}
+
+	//TODO: have the alignment step also run a self-test on the gyro and make corrections
+	// Addendum: the filter seems to be performing quite well with out this, it may not be necessary
+	//TODO: find the source of the NaNs. In the final program it should be impossible to generate a NaN
+
+	int stop = 0;
+	struct timespec curr_clock, last_clock;
+	if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
+	while(!stop) {
+		// calculate time elapsed during last loop iteration
+		last_clock = curr_clock;
+		if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
+		double elapsed = (double)(curr_clock.tv_nsec - last_clock.tv_nsec)*NSEC_TO_SEC + (double)(curr_clock.tv_sec - last_clock.tv_sec); 
+
+		// DEPRECIATED! user_throttle = network_client_get_throttle();
+		Controls controls;
+		controls.throttle = 0; //(user_throttle == -1) ? 0 : user_throttle;
+		controls.roll = 0;
+		controls.pitch = 0;
+
+		update_nav(&drone_state, &controls, elapsed);
+		
+		//if (user_throttle >= 0) set_throttle(drone_state.motors);
+	}
+
+	stop_nav();
+	g_thread_return = 0;
+	pthread_exit(&g_thread_return);
 }

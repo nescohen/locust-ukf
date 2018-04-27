@@ -22,7 +22,12 @@
 
 static int g_sock;
 static int g_stop;
-pthread_mutex_t client_lock;
+static pthread_mutex_t client_lock = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t queue_lock = PTHREAD_MUTEX_INITIALIZER;
+
+static pthread_mutex_t command_lock = PTHREAD_MUTEX_INITIALIZER;
+static pthread_cond_t command_add = PTHREAD_COND_INITIALIZER;
+static int g_commands_available = 0;
 
 static Command g_queue[QUEUE_LENGTH];
 static int g_queue_head;
@@ -32,7 +37,7 @@ static int g_queue_items;
 static int enqueue(Command *insert)
 {
 	int result;
-	pthread_mutex_lock(&client_lock);
+	pthread_mutex_lock(&queue_lock);
 	if (g_queue_tail == g_queue_head && g_queue_items != 0) {
 		// queue full
 		result = 0;
@@ -42,15 +47,18 @@ static int enqueue(Command *insert)
 		g_queue_tail = (g_queue_tail + 1) % QUEUE_LENGTH;
 		g_queue_items += 1;
 		result = 1;
+		pthread_mutex_lock(&command_lock);
+		g_commands_available += 1;
+		pthread_mutex_unlock(&command_lock);
 	}
-	pthread_mutex_unlock(&client_lock);
+	pthread_mutex_unlock(&queue_lock);
 	return result;
 }
 
 static int dequeue(Command *writeback)
 {
 	int result;
-	pthread_mutex_lock(&client_lock);
+	pthread_mutex_lock(&queue_lock);
 	if (g_queue_tail == g_queue_head && g_queue_items == 0) {
 		// queue empty
 		result = 0;
@@ -60,14 +68,25 @@ static int dequeue(Command *writeback)
 		g_queue_head = (g_queue_head + 1) % QUEUE_LENGTH;
 		g_queue_items -= 1;
 		result = 1;
+		pthread_mutex_lock(&command_lock);
+		g_commands_available -= 1;
+		pthread_mutex_unlock(&command_lock);
 	}
-	pthread_mutex_unlock(&client_lock);
+	pthread_mutex_unlock(&queue_lock);
 	return result;
 }
 
-int poll_command(Command *next)
+void get_command(Command *next)
 {
-	return dequeue(next);
+	Command result;
+	while (!dequeue(&result)) {
+		pthread_mutex_lock(&command_lock);
+		while (g_commands_available <= 0) {
+			pthread_cond_wait(&command_add, &command_lock);
+		}
+		pthread_mutex_unlock(&command_lock);
+	}
+	memcpy(next, &result, sizeof(Command));
 }
 
 static int decode_int(char *buffer)
@@ -118,7 +137,6 @@ int establish_connection()
 
 int network_client_init()
 {
-	pthread_mutex_init(&client_lock, NULL);
 	pthread_mutex_lock(&client_lock);
 	g_queue_head = 0;
 	g_queue_tail = 0;
@@ -188,7 +206,7 @@ void *network_client_start(void *arg)
 			Command curr;
 			curr.type = code;
 			curr.value = value;
-			enqueue(curr);
+			enqueue(&curr);
 		}
 	}
 	return NULL;
