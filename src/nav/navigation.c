@@ -372,6 +372,10 @@ void *navigation_main(void *arg)
 
 		Directives directives;
 		get_directives(&directives);
+		
+		if (directives.stop) {
+			stop = 1;
+		}
 
 		Controls controls;
 		controls.throttle = directives.throttle;
