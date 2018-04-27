@@ -3,7 +3,6 @@
 
 #include "nav/navigation.h"
 #include "hardware/boardutil.h"
-#include "hardware/flight-input.h"
 #include "error/error_log.h"
 #include "pid/pid.h"
 #include "kalman/ukf_mrp.h"
@@ -27,23 +26,37 @@
 #define NSEC_TO_SEC ((double)1e-9)
 #define SEC_TO_NSEC ((long)1e9)
 
+static sig_atomic_t g_signal_stop = 0;
+
 void inthand(int signum)
 {
-	//TODO: set nav controls to indicate it to stop
+	g_signal_stop = 1;
 }
 
 int handle_command(Command *command)
 {
 	int result = 0;
+	Directives directives;
+	init_directives(&directives);
 	switch(command->type) {
 		case NETWORK_THROTTLE:
-			break;
+		{
+			int new_throttle = command->value;
+			if (new_throttle > 200) new_throttle = 200;
+			if (new_throttle < 0) new_throttle = 0;
+			directives.throttle = new_throttle;
+			nav_set_directives(&directives);
+		} break;
 		case NETWORK_REPORT:
-			break;
+		{
+			// TODO: figure out how to report current position
+		} break;
 		case NETWORK_OFF:
-			// potentially do other things
+		{
+			directives.stop = 1;
+			nav_set_directives(&directives);
 			result = 1;
-			break;
+		} break;
 	}
 
 	return result;
@@ -76,6 +89,9 @@ int main(int argc, char **argv)
 
 	pthread_t navigation_thread;
 	pthread_create(&navigation_thread, NULL, &navigation_main, NULL);
+
+	command_listen_main(NULL);
+
 	void *retval;
 	pthread_join(navigation_thread, &retval);
 	if (*((int *)retval) != 0) {

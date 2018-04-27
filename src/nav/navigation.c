@@ -5,6 +5,7 @@
 #include "../math/matrix_util.h"
 #include "../math/quaternion_util.h"
 #include "../kalman/kalman.h"
+#include "../kalman/ukf_mrp.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -30,14 +31,53 @@
 
 #define NAV_PRINT
 
+typedef struct controls
+{
+	int throttle;
+	int roll; 
+	int pitch;
+} Controls;
+
+typedef struct drone_state
+{
+	int motors[4];
+	Pidhist hist_x;
+	Pidhist hist_y;
+	Ukf_parameters ukf_param;
+} Drone_state;
+
 // TODO: make this more modular, referenced from elsewhere
 // NOTE: do not make static until this is fixed
 double g_north[3];
 double g_down[3];
 
-pthread_t sensor_poll_thread;
-pthread_t motor_update_thread;
+static pthread_t sensor_poll_thread;
+static pthread_t motor_update_thread;
 static int g_thread_return;
+
+static pthread_mutex_t directives_lock = PTHREAD_MUTEX_INITIALIZER;
+static Directives g_directives;
+
+void init_directives(Directives *directives)
+{
+	directives->throttle = 0;
+	directives->stop = 0;
+}
+
+void nav_set_directives(Directives *directives)
+{
+	pthread_mutex_lock(&directives_lock);
+	memcpy(&g_directives, directives, sizeof(Directives));
+	pthread_mutex_unlock(&directives_lock);
+}
+
+static void get_directives(Directives *writeback)
+// warning: blocking
+{
+	pthread_mutex_lock(&directives_lock);
+	memcpy(writeback, &g_directives, sizeof(Directives));
+	pthread_mutex_unlock(&directives_lock);
+}
 
 void mrp_to_euler(double *euler_angles, double *mrp)
 //expects 3x1 array to write and 3x1 mrp, returns equivelent euler_angle representation from mrp
@@ -143,6 +183,8 @@ int start_sensors()
 }
 
 int init_nav(Drone_state *state)
+// start nav system not including alignment, initialize state
+// returns 0 on success, non-zero value indicates failure
 {
 	// turn on sensors
 	int result = start_sensors();
@@ -156,11 +198,16 @@ int init_nav(Drone_state *state)
 	pthread_create(&motor_update_thread, NULL, &motor_loop, NULL);
 
 	init_drone_state(state);
+	pthread_mutex_lock(&directives_lock);
+	init_directives(&g_directives);
+	pthread_mutex_unlock(&directives_lock);
 
 	return 0;
 }
 
 int align_nav(Drone_state *state)
+// align state with data from sensors
+// returns 0 on success, non-zero value indicates failure
 {
 	int align = 1;
 	double align_mean[SIZE_MEASUREMENT];
@@ -218,6 +265,8 @@ int align_nav(Drone_state *state)
 }
 
 int update_nav(Drone_state *state, Controls *controls, double delta_t)
+// read from sensors, perform single update of kalman filter and pid
+// returns 0 on success, non-zero value indicates failure
 {
 	double measurement[SIZE_MEASUREMENT];
 	Vector3 gyro;
@@ -276,6 +325,7 @@ int update_nav(Drone_state *state, Controls *controls, double delta_t)
 }
 
 void stop_nav()
+// shuts down sensors and the sensor and motor threads
 {
 	stop_hardware_loop();
 	pthread_join(sensor_poll_thread, NULL);
@@ -286,6 +336,7 @@ void stop_nav()
 }
 
 void *navigation_main(void *arg)
+// main navigation loop, running on navigation thread
 {
 	Drone_state drone_state;
 
@@ -319,15 +370,15 @@ void *navigation_main(void *arg)
 		if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
 		double elapsed = (double)(curr_clock.tv_nsec - last_clock.tv_nsec)*NSEC_TO_SEC + (double)(curr_clock.tv_sec - last_clock.tv_sec); 
 
-		// DEPRECIATED! user_throttle = network_client_get_throttle();
+		Directives directives;
+		get_directives(&directives);
+
 		Controls controls;
-		controls.throttle = 0; //(user_throttle == -1) ? 0 : user_throttle;
+		controls.throttle = directives.throttle;
 		controls.roll = 0;
 		controls.pitch = 0;
 
 		update_nav(&drone_state, &controls, elapsed);
-		
-		//if (user_throttle >= 0) set_throttle(drone_state.motors);
 	}
 
 	stop_nav();
