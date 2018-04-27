@@ -93,6 +93,12 @@ int main(int argc, char **argv)
 	pthread_t command_thread;
 	pthread_create(&command_thread, NULL, &command_listen_main, NULL);
 
+	int signal_watch = 1;
+	while (signal_watch) {
+		// TODO: check for signal here, figure out how to exit
+		sleep(1);
+	}
+
 	pthread_join(command_thread, NULL);
 
 	void *retval;
