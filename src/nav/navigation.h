@@ -4,7 +4,6 @@
 typedef struct directives
 {
 	int throttle;
-	int stop;
 } Directives;
 
 void init_directives(Directives *directives);

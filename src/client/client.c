@@ -50,6 +50,7 @@ static int enqueue(Command *insert)
 		result = 1;
 		pthread_mutex_lock(&command_lock);
 		g_commands_available += 1;
+		pthread_cond_broadcast(&command_add);
 		pthread_mutex_unlock(&command_lock);
 	}
 	pthread_mutex_unlock(&queue_lock);

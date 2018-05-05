@@ -62,7 +62,6 @@ static Directives g_directives;
 void init_directives(Directives *directives)
 {
 	directives->throttle = 0;
-	directives->stop = 0;
 }
 
 void nav_set_directives(Directives *directives)
@@ -381,9 +380,8 @@ void *navigation_main(void *arg)
 
 		update_nav(&drone_state, &controls, elapsed);
 
-		if (directives.stop) {
-			stop = 1;
-		}
+		set_throttle(drone_state.motors);
+
 		if (check_global_stop()) {
 			stop = 1;
 		}

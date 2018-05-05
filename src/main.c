@@ -54,8 +54,7 @@ int handle_command(Command *command)
 		} break;
 		case NETWORK_OFF:
 		{
-			directives.stop = 1;
-			nav_set_directives(&directives);
+			set_global_stop();
 			result = 1;
 		} break;
 		case INTERNAL_STOP:
@@ -100,8 +99,10 @@ int main(int argc, char **argv)
 
 	int signal_watch = 1;
 	while (signal_watch) {
-		// TODO: check for signal here, figure out how to exit
-		if (g_signal_stop == 1) {
+		if (check_global_stop()) {
+			signal_watch = 0;
+		}
+		else if (g_signal_stop == 1) {
 			signal_watch = 0;
 			set_global_stop();
 		}
