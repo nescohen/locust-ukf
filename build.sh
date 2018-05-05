@@ -1,6 +1,8 @@
 #!/bin/bash
 
-if ! gcc -o bin/test.bin -g -Wall -O3 -D DEBUG src/main.c src/hardware/boardutil.c src/error/error_log.c src/pid/pid.c src/kalman/ukf_mrp.c src/kalman/kalman.c src/math/quaternion_util.c src/math/matrix_util.c src/nav/navigation.c src/client/client.c -lm -lpthread -lgsl -lgslcblas
+SOURCE_FILES="src/main.c src/hardware/boardutil.c src/error/error_log.c src/pid/pid.c src/kalman/ukf_mrp.c src/kalman/kalman.c src/math/quaternion_util.c src/math/matrix_util.c src/nav/navigation.c src/client/client.c src/stop.c"
+
+if ! gcc -o bin/test.bin -g -Wall -O3 -D DEBUG $SOURCE_FILES -lm -lpthread -lgsl -lgslcblas
 then
 	echo "Compilation failed."
 	exit 1

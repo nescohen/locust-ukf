@@ -9,6 +9,7 @@
 #include "math/matrix_util.h"
 #include "math/quaternion_util.h"
 #include "client/client.h"
+#include "stop.h"
 
 #include <time.h>
 #include <math.h>
@@ -57,6 +58,10 @@ int handle_command(Command *command)
 			nav_set_directives(&directives);
 			result = 1;
 		} break;
+		case INTERNAL_STOP:
+		{
+			result = 1;
+		} break;
 	}
 
 	return result;
@@ -96,6 +101,10 @@ int main(int argc, char **argv)
 	int signal_watch = 1;
 	while (signal_watch) {
 		// TODO: check for signal here, figure out how to exit
+		if (g_signal_stop == 1) {
+			signal_watch = 0;
+			set_global_stop();
+		}
 		sleep(1);
 	}
 

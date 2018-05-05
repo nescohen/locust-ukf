@@ -1,5 +1,6 @@
 #include "client.h"
 #include "../error/error_log.h"
+#include "../stop.h"
 
 #include <time.h>
 #include <stdio.h>
@@ -167,6 +168,14 @@ void write_status(int sock)
 	write(sock, status, strlen(status) + 1);
 }
 
+static void enqueue_internal_stop()
+{
+	Command stop;
+	stop.type = INTERNAL_STOP;
+	stop.value = 0;
+	enqueue(&stop);
+}
+
 static int continue_loop()
 {
 	int result;
@@ -183,30 +192,38 @@ void *network_client_start(void *arg)
 	g_stop = 0;
 	pthread_mutex_unlock(&client_lock);
 	while (continue_loop()) {
-		char buffer[8];
-		int count = read(g_sock, buffer, 8);
-		if (count > 0) {
-			int code = decode_int(buffer);
-			int value = decode_int(buffer + 4);
+		if (check_global_stop()) {
+			enqueue_internal_stop();
+			pthread_mutex_lock(&client_lock);
+			g_stop = 1;
+			pthread_mutex_unlock(&client_lock);
+		}
+		else {
+			char buffer[8];
+			int count = read(g_sock, buffer, 8);
+			if (count > 0) {
+				int code = decode_int(buffer);
+				int value = decode_int(buffer + 4);
 
-#ifdef DEBUG
-			switch(code) {
-				case NETWORK_THROTTLE:
-					printf("Received network THROTTLE command\n");
-					break;
-				case NETWORK_OFF:
-					printf("Received network OFF command\n");
-					break;
-				case NETWORK_REPORT:
-					printf("Received network REPORT command\n");
-					break;
+	#ifdef DEBUG
+				switch(code) {
+					case NETWORK_THROTTLE:
+						printf("Received network THROTTLE command\n");
+						break;
+					case NETWORK_OFF:
+						printf("Received network OFF command\n");
+						break;
+					case NETWORK_REPORT:
+						printf("Received network REPORT command\n");
+						break;
+				}
+	#endif
+
+				Command curr;
+				curr.type = code;
+				curr.value = value;
+				enqueue(&curr);
 			}
-#endif
-
-			Command curr;
-			curr.type = code;
-			curr.value = value;
-			enqueue(&curr);
 		}
 	}
 	return NULL;

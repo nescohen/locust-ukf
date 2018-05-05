@@ -6,6 +6,7 @@
 #include "../math/quaternion_util.h"
 #include "../kalman/kalman.h"
 #include "../kalman/ukf_mrp.h"
+#include "../stop.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -381,6 +382,9 @@ void *navigation_main(void *arg)
 		update_nav(&drone_state, &controls, elapsed);
 
 		if (directives.stop) {
+			stop = 1;
+		}
+		if (check_global_stop()) {
 			stop = 1;
 		}
 	}
