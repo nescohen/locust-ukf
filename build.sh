@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SOURCE_FILES="src/main.c src/hardware/boardutil.c src/error/error_log.c src/pid/pid.c src/kalman/ukf_mrp.c src/kalman/kalman.c src/math/quaternion_util.c src/math/matrix_util.c src/nav/navigation.c src/client/client.c src/stop/stop.c"
+SOURCE_FILES="src/main.c src/hardware/boardutil.c src/error/error_log.c src/pid/pid.c src/kalman/ukf_mrp.c src/kalman/kalman.c src/math/quaternion_util.c src/math/matrix_util.c src/nav/navigation.c src/client/client.c src/client/listener.c src/stop/stop.c"
 
 COMPILER_FLAGS="-o bin/test.bin -g -Wall -O3 -D DEBUG"
 
