@@ -58,10 +58,13 @@ static int g_thread_return;
 
 static pthread_mutex_t directives_lock = PTHREAD_MUTEX_INITIALIZER;
 static Directives g_directives;
+static pthread_mutex_t report_lock = PTHREAD_MUTEX_INITIALIZER;
+static Report g_report;
 
 void init_directives(Directives *directives)
 {
 	directives->throttle = 0;
+	directives->next_action = ACTION_NOACTION;
 }
 
 void nav_set_directives(Directives *directives)
@@ -71,7 +74,30 @@ void nav_set_directives(Directives *directives)
 	pthread_mutex_unlock(&directives_lock);
 }
 
-static void get_directives(Directives *writeback)
+void init_report(Report *report)
+{
+	report->curr_state = STATE_UNINITIALIZED;
+}
+
+void nav_get_report(Report *writeback)
+// warning: blocking
+{
+	pthread_mutex_lock(&report_lock);
+	memcpy(writeback, &g_report, sizeof(Report));
+	pthread_mutex_unlock(&report_lock);
+}
+
+static int get_directives_nonblock(Directives *writeback)
+{
+	if (!pthread_mutex_trylock(&directives_lock)) {
+		memcpy(writeback, &g_directives, sizeof(Directives));
+		pthread_mutex_unlock(&directives_lock);
+		return 0;
+	}
+	else return 1;
+}
+
+static void get_directives_block(Directives *writeback)
 // warning: blocking
 {
 	pthread_mutex_lock(&directives_lock);
@@ -201,6 +227,10 @@ int init_nav(Drone_state *state)
 	pthread_mutex_lock(&directives_lock);
 	init_directives(&g_directives);
 	pthread_mutex_unlock(&directives_lock);
+	pthread_mutex_lock(&report_lock);
+	init_report(&g_report);
+	report->state = STATE_INITIALIZED;
+	pthread_mutex_unlock(&report_lock);
 
 	return 0;
 }
@@ -371,7 +401,7 @@ void *navigation_main(void *arg)
 		double elapsed = (double)(curr_clock.tv_nsec - last_clock.tv_nsec)*NSEC_TO_SEC + (double)(curr_clock.tv_sec - last_clock.tv_sec); 
 
 		Directives directives;
-		get_directives(&directives);
+		get_directives_non_block(&directives);
 		
 		Controls controls;
 		controls.throttle = directives.throttle;
