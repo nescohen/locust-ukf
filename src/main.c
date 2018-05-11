@@ -9,7 +9,7 @@
 #include "math/matrix_util.h"
 #include "math/quaternion_util.h"
 #include "client/client.h"
-#include "stop.h"
+#include "stop/stop.h"
 
 #include <time.h>
 #include <math.h>

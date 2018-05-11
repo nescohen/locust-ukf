@@ -1,6 +1,6 @@
 #include "client.h"
 #include "../error/error_log.h"
-#include "../stop.h"
+#include "../stop/stop.h"
 
 #include <time.h>
 #include <stdio.h>

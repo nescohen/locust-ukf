@@ -6,7 +6,7 @@
 #include "../math/quaternion_util.h"
 #include "../kalman/kalman.h"
 #include "../kalman/ukf_mrp.h"
-#include "../stop.h"
+#include "../stop/stop.h"
 
 #include <stdio.h>
 #include <string.h>

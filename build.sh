@@ -1,8 +1,12 @@
 #!/bin/bash
 
-SOURCE_FILES="src/main.c src/hardware/boardutil.c src/error/error_log.c src/pid/pid.c src/kalman/ukf_mrp.c src/kalman/kalman.c src/math/quaternion_util.c src/math/matrix_util.c src/nav/navigation.c src/client/client.c src/stop.c"
+SOURCE_FILES="src/main.c src/hardware/boardutil.c src/error/error_log.c src/pid/pid.c src/kalman/ukf_mrp.c src/kalman/kalman.c src/math/quaternion_util.c src/math/matrix_util.c src/nav/navigation.c src/client/client.c src/stop/stop.c"
 
-if ! gcc -o bin/test.bin -g -Wall -O3 -D DEBUG $SOURCE_FILES -lm -lpthread -lgsl -lgslcblas
+COMPILER_FLAGS="-o bin/test.bin -g -Wall -O3 -D DEBUG"
+
+LINKER_FLAGS="-lm -lpthread -lgsl -lgslcblas"
+
+if ! gcc $COMPILER_FLAGS $SOURCE_FILES $LINKER_FLAGS
 then
 	echo "Compilation failed."
 	exit 1
