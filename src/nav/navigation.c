@@ -229,7 +229,7 @@ int init_nav(Drone_state *state)
 	pthread_mutex_unlock(&directives_lock);
 	pthread_mutex_lock(&report_lock);
 	init_report(&g_report);
-	report->state = STATE_INITIALIZED;
+	g_report.curr_state = STATE_INITIALIZED;
 	pthread_mutex_unlock(&report_lock);
 
 	return 0;
@@ -401,9 +401,9 @@ void *navigation_main(void *arg)
 		double elapsed = (double)(curr_clock.tv_nsec - last_clock.tv_nsec)*NSEC_TO_SEC + (double)(curr_clock.tv_sec - last_clock.tv_sec); 
 
 		Directives directives;
-		get_directives_non_block(&directives);
-		
 		Controls controls;
+
+		int success = get_directives_nonblock(&directives);
 		controls.throttle = directives.throttle;
 		controls.roll = 0;
 		controls.pitch = 0;
