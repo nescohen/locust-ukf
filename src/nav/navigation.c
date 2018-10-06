@@ -390,6 +390,8 @@ void *navigation_main(void *arg)
 	//TODO: have the alignment step also run a self-test on the gyro and make corrections
 	// Addendum: the filter seems to be performing quite well with out this, it may not be necessary
 	//TODO: find the source of the NaNs. In the final program it should be impossible to generate a NaN
+	Directives directives;
+	init_directives(&directives);
 
 	int stop = 0;
 	struct timespec curr_clock, last_clock;
@@ -400,10 +402,9 @@ void *navigation_main(void *arg)
 		if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
 		double elapsed = (double)(curr_clock.tv_nsec - last_clock.tv_nsec)*NSEC_TO_SEC + (double)(curr_clock.tv_sec - last_clock.tv_sec); 
 
-		Directives directives;
 		Controls controls;
 
-		int success = get_directives_nonblock(&directives);
+		get_directives_nonblock(&directives);
 		controls.throttle = directives.throttle;
 		controls.roll = 0;
 		controls.pitch = 0;
