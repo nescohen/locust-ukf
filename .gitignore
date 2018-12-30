@@ -2,3 +2,4 @@ error.log
 main_error.txt
 bin/*
 !bin/.gitkeep
+*.swp
