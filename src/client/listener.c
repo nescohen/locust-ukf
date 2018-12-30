@@ -15,6 +15,21 @@ static int handle_command(Command *command)
 	Directives directives;
 	init_directives(&directives);
 	switch(command->type) {
+		case NETWORK_INIT:
+		{
+			directives.next_action = ACTION_INIT;
+			nav_set_directives(&directives);
+		} break;
+		case NETWORK_ALIGN:
+		{
+			directives.next_action = ACTION_ALIGN;
+			nav_set_directives(&directives);
+		} break;
+		case NETWORK_START:
+		{
+			directives.next_action = ACTION_START;
+			nav_set_directives(&directives);
+		} break;
 		case NETWORK_THROTTLE:
 		{
 			int new_throttle = command->value;

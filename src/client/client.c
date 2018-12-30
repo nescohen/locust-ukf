@@ -30,12 +30,21 @@ static pthread_mutex_t command_lock = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t command_add = PTHREAD_COND_INITIALIZER;
 static int g_commands_available = 0;
 
+static pthread_mutex_t response_lock = PTHREAD_MUTEX_INITIALIZER;
+static pthread_cond_t response_add = PTHREAD_COND_INITIALIZER;
+static int g_responses_available = 0;
+
 static Command g_queue[QUEUE_LENGTH];
 static int g_queue_head;
 static int g_queue_tail;
 static int g_queue_items;
 
-static int enqueue(Command *insert)
+static Response g_res_queue[QUEUE_LENGTH];
+static int g_res_queue_head;
+static int g_res_queue_tail;
+static int g_res_queue_items;
+
+static int c_enqueue(Command *insert)
 {
 	int result;
 	pthread_mutex_lock(&queue_lock);
@@ -57,7 +66,7 @@ static int enqueue(Command *insert)
 	return result;
 }
 
-static int dequeue(Command *writeback)
+static int c_dequeue(Command *writeback)
 {
 	int result;
 	pthread_mutex_lock(&queue_lock);
@@ -78,10 +87,58 @@ static int dequeue(Command *writeback)
 	return result;
 }
 
+static int r_enqueue(Response *insert)
+{
+	int result;
+	pthread_mutex_lock(&queue_lock);
+	if (g_res_queue_tail == g_res_queue_head && g_res_queue_items != 0) {
+		// queue full
+		result = 0;
+	}
+	else {
+		memcpy( (g_res_queue + g_res_queue_tail), insert, sizeof(Response));
+		g_res_queue_tail = (g_res_queue_tail + 1) % QUEUE_LENGTH;
+		g_res_queue_items += 1;
+		result = 1;
+		pthread_mutex_lock(&response_lock);
+		g_responses_available += 1;
+		pthread_cond_broadcast(&response_add);
+		pthread_mutex_unlock(&response_lock);
+	}
+	pthread_mutex_unlock(&queue_lock);
+	return result;
+}
+
+static int r_dequeue(Response *writeback)
+{
+	int result;
+	pthread_mutex_lock(&queue_lock);
+	if (g_res_queue_tail == g_res_queue_head && g_res_queue_items == 0) {
+		// queue empty
+		result = 0;
+	}
+	else {
+		memcpy(writeback, (g_res_queue + g_res_queue_head), sizeof(Response));
+		g_res_queue_head = (g_res_queue_head + 1) % QUEUE_LENGTH;
+		g_res_queue_items -= 1;
+		result = 1;
+		pthread_mutex_lock(&response_lock);
+		g_responses_available -= 1;
+		pthread_mutex_unlock(&response_lock);
+	}
+	pthread_mutex_unlock(&queue_lock);
+	return result;
+}
+
+int send_response(Response *resp)
+{
+	return r_enqueue(resp);
+}
+
 void get_command(Command *next)
 {
 	Command result;
-	while (!dequeue(&result)) {
+	while (!c_dequeue(&result)) {
 		pthread_mutex_lock(&command_lock);
 		while (g_commands_available <= 0) {
 			pthread_cond_wait(&command_add, &command_lock);
@@ -102,6 +159,18 @@ static int decode_int(char *buffer)
 	}
 
 	return result;
+}
+
+void encode_int(int value, char *buffer)
+// asumes int is at least 32 bits
+// encodes little endian
+{
+	int i;
+	for (i = 0; i < 4; i++) {
+		int mask = 0xFF;
+		char to_send = (char)((value >> i*8) & mask);
+		buffer[i] = to_send;
+	}
 }
 
 int establish_connection()
@@ -140,9 +209,14 @@ int establish_connection()
 int network_client_init()
 {
 	pthread_mutex_lock(&client_lock);
+
 	g_queue_head = 0;
 	g_queue_tail = 0;
 	g_queue_items = 0;
+
+	g_res_queue_head = 0;
+	g_res_queue_tail = 0;
+	g_res_queue_items = 0;
 
 	printf("Establishing connection...\n");
 	time_t start;
@@ -174,7 +248,7 @@ static void enqueue_internal_stop()
 	Command stop;
 	stop.type = INTERNAL_STOP;
 	stop.value = 0;
-	enqueue(&stop);
+	c_enqueue(&stop);
 }
 
 static int continue_loop()
@@ -184,6 +258,12 @@ static int continue_loop()
 	result = (!g_stop && g_sock > 0);
 	pthread_mutex_unlock(&client_lock);
 	return result;
+}
+
+void translate_response(Response *response, char *buffer)
+{
+	encode_int(response->c_type, buffer);
+	encode_int(response->value, buffer + 4);
 }
 
 void *network_client_start(void *arg)
@@ -200,30 +280,24 @@ void *network_client_start(void *arg)
 			pthread_mutex_unlock(&client_lock);
 		}
 		else {
+			// Check for received commands
 			char buffer[8];
-			int count = read(g_sock, buffer, 8);
+			int count = read(g_sock, buffer, sizeof(buffer));
 			if (count > 0) {
 				int code = decode_int(buffer);
 				int value = decode_int(buffer + 4);
 
-	#ifdef DEBUG
-				switch(code) {
-					case NETWORK_THROTTLE:
-						printf("Received network THROTTLE command\n");
-						break;
-					case NETWORK_OFF:
-						printf("Received network OFF command\n");
-						break;
-					case NETWORK_REPORT:
-						printf("Received network REPORT command\n");
-						break;
-				}
-	#endif
-
 				Command curr;
 				curr.type = code;
 				curr.value = value;
-				enqueue(&curr);
+				c_enqueue(&curr);
+			}
+			// Check for messages to be sent
+			Response response;
+			int existing = r_dequeue(&response);
+			if (existing) {
+				translate_response(&response, buffer);
+				write(g_sock, buffer, sizeof(buffer));
 			}
 		}
 	}

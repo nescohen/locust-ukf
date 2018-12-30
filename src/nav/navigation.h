@@ -1,15 +1,17 @@
 #ifndef NAVIGATION_H
 #define NAVIGATION_H
 
-#define ACTION_NOACTION ((int) 0x0)
-#define ACTION_INIT ((int) 0x1)
-#define ACTION_ALIGN ((int) 0x2)
-#define ACTION_START ((int) 0x3)
+#include "../kalman/ukf_mrp.h"
+
+#define ACTION_NOACTION 	((int) 0x0)
+#define ACTION_INIT 		((int) 0x1)
+#define ACTION_ALIGN 		((int) 0x3)
+#define ACTION_START 		((int) 0x3)
 
 #define STATE_UNINITIALIZED ((int) 0x10)
-#define STATE_INITIALIZED ((int) 0x11)
-#define STATE_ALIGNED ((int) 0x12)
-#define STATE_RUNNING ((int) 0x13)
+#define STATE_INITIALIZED   ((int) 0x11)
+#define STATE_ALIGNED 		((int) 0x12)
+#define STATE_RUNNING 		((int) 0x13)
 
 typedef struct directives
 {
@@ -20,6 +22,7 @@ typedef struct directives
 typedef struct report
 {
 	int curr_state;
+	double ukf_state[SIZE_STATE];
 } Report;
 
 void init_directives(Directives *directives);

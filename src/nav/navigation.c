@@ -15,20 +15,20 @@
 #include <math.h>
 #include <pthread.h>
 
-#define GRAVITY (9.81f)
-#define EPSILON (1.0f)
+#define GRAVITY 			(9.81f)
+#define EPSILON 			(1.0f)
 
-#define GYRO_SENSATIVITY (4.36332f)
-#define ACCL_SENSATIVITY (2.f * GRAVITY) // 2gs max converted to ms^-2
-#define GYRO_VARIANCE (0.193825) // 11.111... degress in radians
-#define ACCL_VARIANCE (1.1772)
-#define COMP_VARIANCE (1.1772)
+#define GYRO_SENSATIVITY 	(4.36332f)
+#define ACCL_SENSATIVITY 	(2.f * GRAVITY) // 2gs max converted to ms^-2
+#define GYRO_VARIANCE 		(0.193825) // 11.111... degress in radians
+#define ACCL_VARIANCE 		(1.1772)
+#define COMP_VARIANCE 		(1.1772)
 
-#define ALIGN_TIME (2.5) // in seconds
-#define SIGNED_16_MAX (0x7FFF)
-#define PID_SCALE (30) // 100 / 2 * M_PI
-#define NSEC_TO_SEC (1e-9)
-#define SEC_TO_NSEC ((long)1e9)
+#define ALIGN_TIME 			(2.5) // in seconds
+#define SIGNED_16_MAX 		(0x7FFF)
+#define PID_SCALE 			(30) // 100 / 2 * M_PI
+#define NSEC_TO_SEC 		(1e-9)
+#define SEC_TO_NSEC 		((long)1e9)
 
 #define NAV_PRINT
 
@@ -77,6 +77,7 @@ void nav_set_directives(Directives *directives)
 void init_report(Report *report)
 {
 	report->curr_state = STATE_UNINITIALIZED;
+	memset(report->ukf_state, 0, sizeof(report->ukf_state));
 }
 
 void nav_get_report(Report *writeback)
@@ -85,6 +86,20 @@ void nav_get_report(Report *writeback)
 	pthread_mutex_lock(&report_lock);
 	memcpy(writeback, &g_report, sizeof(Report));
 	pthread_mutex_unlock(&report_lock);
+}
+
+static int set_report(const Report *report)
+// WARNING: blocking
+{
+	int fail = pthread_mutex_trylock(&report_lock);
+	if (fail) {
+		return 1;
+	}
+	else {
+		memcpy(&g_report, report, sizeof(Report));
+		pthread_mutex_unlock(&report_lock);
+		return 0;
+	}
 }
 
 static int get_directives_nonblock(Directives *writeback)
@@ -365,31 +380,34 @@ void stop_nav()
 	pthread_join(motor_update_thread, NULL);
 }
 
+//TODO: have the alignment step also run a self-test on the gyro and make corrections
+// Addendum: the filter seems to be performing quite well with out this, it may not be necessary
+//TODO: find the source of the NaNs. In the final program it should be impossible to generate a NaN
+
+static void nav_cycle(Drone_state *state, Directives *directives, double elapsed)
+{
+	Controls controls;
+	get_directives_nonblock(directives);
+	controls.throttle = directives->throttle;
+	controls.roll = 0;
+	controls.pitch = 0;
+
+	update_nav(state, &controls, elapsed);
+
+	set_throttle(state->motors);
+}
+
 void *navigation_main(void *arg)
 // main navigation loop, running on navigation thread
 {
 	Drone_state drone_state;
 
-	// Navigation initialization
-	int error = init_nav(&drone_state);
-	if (error) {
-		printf("Navigation initialization failed. Exiting.\n");
-		g_thread_return = 1;
-		pthread_exit(&g_thread_return);
-	}
+	int nav_state = STATE_UNINITIALIZED;
 
-	//Navigation alignment
-	error = align_nav(&drone_state);
-	if (error) {
-		printf("Navigation alignment failed. Exiting.\n");
-		stop_nav();
-		g_thread_return = 1;
-		pthread_exit(&g_thread_return);
-	}
+	Report report;
+	init_report(&report);
+	set_report(&report);
 
-	//TODO: have the alignment step also run a self-test on the gyro and make corrections
-	// Addendum: the filter seems to be performing quite well with out this, it may not be necessary
-	//TODO: find the source of the NaNs. In the final program it should be impossible to generate a NaN
 	Directives directives;
 	init_directives(&directives);
 
@@ -402,16 +420,57 @@ void *navigation_main(void *arg)
 		if (clock_gettime(CLOCK_REALTIME, &curr_clock) < 0) stop = 1;
 		double elapsed = (double)(curr_clock.tv_nsec - last_clock.tv_nsec)*NSEC_TO_SEC + (double)(curr_clock.tv_sec - last_clock.tv_sec); 
 
-		Controls controls;
-
-		get_directives_nonblock(&directives);
-		controls.throttle = directives.throttle;
-		controls.roll = 0;
-		controls.pitch = 0;
-
-		update_nav(&drone_state, &controls, elapsed);
-
-		set_throttle(drone_state.motors);
+		switch(nav_state) {
+			case STATE_UNINITIALIZED: {
+				// Check for relavent action
+				int stale = get_directives_nonblock(&directives);
+				if (!stale && directives.next_action == ACTION_INIT) {
+					// Navigation initialization
+					int error = init_nav(&drone_state);
+					if (error) {
+						printf("Navigation initialization failed. Exiting.\n");
+						g_thread_return = 1;
+						pthread_exit(&g_thread_return);
+					}
+					nav_state = STATE_INITIALIZED;
+					report.curr_state = STATE_INITIALIZED;
+					set_report(&report);
+				}
+			} break;
+			case STATE_INITIALIZED: {
+				// Check for relavent action
+				int stale = get_directives_nonblock(&directives);
+				if (!stale && directives.next_action == ACTION_ALIGN) {
+					// Navigation alignment
+					int error = align_nav(&drone_state);
+					if (error) {
+						printf("Navigation alignment failed. Exiting.\n");
+						stop_nav();
+						g_thread_return = 1;
+						pthread_exit(&g_thread_return);
+					}
+					nav_state = STATE_ALIGNED;
+					report.curr_state = STATE_ALIGNED;
+					memcpy(&report.ukf_state, &drone_state.ukf_param.state, sizeof(report.ukf_state));
+					set_report(&report);
+				}
+			} break;
+			case STATE_ALIGNED: {
+				// Check for relavent action
+				int stale = get_directives_nonblock(&directives);
+				if (!stale && directives.next_action == ACTION_START) {
+					nav_state = STATE_RUNNING;
+					report.curr_state = STATE_ALIGNED;
+					set_report(&report);
+				}
+			} break;
+			case STATE_RUNNING: {
+				nav_cycle(&drone_state, &directives, elapsed);
+			} break;
+			default: {
+				//TODO: implement error handling here: fsm corruption?
+			} break;
+		}
 
 		if (check_global_stop()) {
 			stop = 1;
