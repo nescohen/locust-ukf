@@ -8,6 +8,9 @@ bash build.sh
 
 valgrind --error-exitcode=1 --tool=cachegrind --cachegrind-out-file=cachegrind.out -- ./test.bin > /dev/null
 
-cg_annotate --include="${projRoot}/src" --show=D1mr,DLmr cachegrind.out
+# Make paths relative
+sed -i -e "s|${projRoot}"'/test/src/||g' cachegrind.out
+
+cg_annotate --include="${projRoot}/test/src/" --show=D1mr,DLmr cachegrind.out math/matrix_util.c
 
 popd > /dev/null
