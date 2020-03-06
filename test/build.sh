@@ -5,7 +5,3 @@ then
 	echo "Compilation failed."
 	exit 1
 fi
-if ! valgrind --error-exitcode=1 --track-origins=yes --log-file=test_error.txt --tool=memcheck -- ./test.bin > /dev/null
-then
-	echo "Valgrind returned error(s). NOTE: This means that either valgrind found problems OR the program itself returned a non-zero value."
-fi
