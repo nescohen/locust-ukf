@@ -112,13 +112,13 @@ static int get_directives_nonblock(Directives *writeback)
 	else return 1;
 }
 
-static void get_directives_block(Directives *writeback)
-// warning: blocking
-{
-	pthread_mutex_lock(&directives_lock);
-	memcpy(writeback, &g_directives, sizeof(Directives));
-	pthread_mutex_unlock(&directives_lock);
-}
+// static void get_directives_block(Directives *writeback)
+// // warning: blocking
+// {
+// 	pthread_mutex_lock(&directives_lock);
+// 	memcpy(writeback, &g_directives, sizeof(Directives));
+// 	pthread_mutex_unlock(&directives_lock);
+// }
 
 void mrp_to_euler(double *euler_angles, double *mrp)
 //expects 3x1 array to write and 3x1 mrp, returns equivelent euler_angle representation from mrp

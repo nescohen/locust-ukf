@@ -4,7 +4,7 @@ SOURCE_FILES="src/main.c src/hardware/boardutil.c src/error/error_log.c src/pid/
 
 COMPILER_FLAGS="-o bin/test.bin -g -Wall -O3 -D DEBUG"
 
-LINKER_FLAGS="-lm -lpthread -lgsl -lgslcblas"
+LINKER_FLAGS="-lm -lpthread -lgsl -lgslcblas -li2c"
 
 if ! gcc $COMPILER_FLAGS $SOURCE_FILES $LINKER_FLAGS
 then

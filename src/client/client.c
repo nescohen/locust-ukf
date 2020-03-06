@@ -201,7 +201,10 @@ int establish_connection()
 	fcntl(sock_fd, F_SETFL, O_NONBLOCK);
 
 	char *confirm = "Connection confirmed";
-	write(sock_fd, confirm, strlen(confirm));
+	ssize_t written = write(sock_fd, confirm, strlen(confirm));
+	if(written != strlen(confirm)) {
+		log_error("Write truncated");
+	}
 
 	return sock_fd;
 }
@@ -240,7 +243,10 @@ int network_client_init()
 void write_status(int sock)
 {
 	char *status = "test status";
-	write(sock, status, strlen(status) + 1);
+	ssize_t written = write(sock, status, strlen(status) + 1);
+	if(written != strlen(status)) {
+		log_error("Write truncated");
+	}
 }
 
 static void enqueue_internal_stop()
@@ -297,7 +303,10 @@ void *network_client_start(void *arg)
 			int existing = r_dequeue(&response);
 			if (existing) {
 				translate_response(&response, buffer);
-				write(g_sock, buffer, sizeof(buffer));
+				ssize_t written = write(g_sock, buffer, sizeof(buffer));
+				if(written != strlen(buffer)) {
+					log_error("Write truncated");
+				}
 			}
 		}
 	}

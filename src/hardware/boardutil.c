@@ -1,7 +1,9 @@
 /* Nes Cohen */
 /* 6/28/2016 */
 
+#include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
+#include <i2c/smbus.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
@@ -362,6 +364,8 @@ void stop_hardware_loop()
 	stop = 1;
 }
 
+#define ERR_BUF_SIZE ((size_t) 50)
+
 void *poll_loop(void *arg)
 // Starting point for sensor polling thread
 {
@@ -379,20 +383,20 @@ void *poll_loop(void *arg)
 		Vector3 temp_accel;
 		Vector3 temp_compass;
 
-		char error_buffer[30];
+		char error_buffer[ERR_BUF_SIZE];
 		error = accl_poll(&temp_accel);
 		if (error < 0) {
-			snprintf(error_buffer, 30*sizeof(char), "Error \"%d\" reading from accelerometer'", error);
+			snprintf(error_buffer, ERR_BUF_SIZE*sizeof(char), "Error \"%d\" reading from accelerometer'", error);
 			log_error(error_buffer);
 		}
 		error = comp_poll(&temp_compass);
 		if (error < 0) {
-			snprintf(error_buffer, 30*sizeof(char), "Error \"%d\" reading from compass'", error);
+			snprintf(error_buffer, ERR_BUF_SIZE*sizeof(char), "Error \"%d\" reading from compass'", error);
 			log_error(error_buffer);
 		}
 		error = gyro_poll(&temp_gyro);
 		if (error < 0) {
-			snprintf(error_buffer, 30*sizeof(char), "Error \"%d\" reading from gyroscope'", error);
+			snprintf(error_buffer, ERR_BUF_SIZE*sizeof(char), "Error \"%d\" reading from gyroscope'", error);
 			log_error(error_buffer);
 		}
 		else gyro_count = error;
