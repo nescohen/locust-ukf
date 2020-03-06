@@ -60,9 +60,15 @@ void matrix_plus_matrix(double *a, double *b, double *result, int rows, int colu
 // if sign is nonzero matrices are added, if zero matrix b is subtracted from matrix a
 {
 	int i;
-	for (i = 0; i < rows*columns; i++) {
-		if (sign) result[i] = a[i] + b[i];
-		else result[i] = a[i] - b[i];
+	if (sign) {
+		for (i = 0; i < rows*columns; i++) {
+			result[i] = a[i] + b[i];
+		}
+	}
+	else {
+		for (i = 0; i < rows*columns; i++) {
+			result[i] = a[i] - b[i];
+		}
 	}
 }
 
